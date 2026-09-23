@@ -8,6 +8,7 @@
 - 已部署至豆包妙搭：应用 ID `app_17dzfrpfs2x`，**当前线上 17 个作品与本地一致（编号连续 01–17）**
 - ✅ 2026-09-23 新增第 16 号作品：Co-Desk 联机共创自习桌（HCI 课程全栈项目：Electron + React / FastAPI / WebSocket / SQLite，系统工程类「已完成」，GitHub 源码 https://github.com/duyv0826/co-desk；封面为 2026-05-05 本机实机主界面截图 work-16.jpg；附册与模态框均已补齐 16 号文案）
 - ✅ 2026-09-23 新增第 17 号作品：对话归档台 · AI 对话总结 MVP（AI 产品「历史对话自动总结」功能原型：本地 Ollama qwen3:8b 真实模型 + 规则引擎双降级，结构化要点 / 原文锚点 / 隐私开关 / 自动归档 / 智能命名，系统工程类「原型」，封面为 ?demo=summarized 演示态实机截图 work-17.jpg；模态框与附册均已补齐 17 号文案）
+- ✅ 2026-09-23 已迁移至 GitHub Pages 主部署：**https://duyv0826.github.io/game-portfolio/**（仓库 duyv0826/game-portfolio，public，Pages 源 master 根目录；已实测 17 作品与附册在线、无平台水印。原豆包工作托管 https://4m1405d04e4rc.doubaoapps.com/app/app_17dzfrpfs2x 保留不动）
 - ✅ 2026-09-23 第 17 号 story/附册文案同步 P2：归档库（全局记忆 + 摘要搜索）写入模态框第 4 段 story、附册新增 P2 段落与复盘验证；release_id 7688592816813067465，线上主页与附册均实测通过（含「多端同步需后端服务，本地版不做」边界说明）
 - ✅ 2026-09-23 模态框新增「开发过程 · 设计思路」板块：15 个作品全部补齐（数据驱动渲染，精炼版 2–3 段）；附册《开发过程与设计思路.html》（每作品含 概述 / 开发过程 / 设计思路 / 复盘 四段）随整目录发布上线。release_id 7688512285896428500，线上 15 卡片与附册页均实测通过
 - **公开分享链接（互联网公开，无需登录）：https://4m1405d04e4rc.aiforce.cloud/app/app_17dzfrpfs2x/**
