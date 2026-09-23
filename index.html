@@ -9,15 +9,16 @@
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
 <link rel="shortcut icon" href="favicon.ico">
-<!-- 社交分享卡片：og:image / twitter:image 使用部署域名绝对 URL（2026-09-16 修复，避免平台回退为默认应用图标） -->
+<!-- 社交分享卡片：og:image 使用本仓库自托管封面（2026-09-24 修复：不再依赖外部部署域名） -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="洪昺森 · 互动媒体艺术 / 游戏设计作品集">
-<meta property="og:description" content="游戏开发、互动媒体与视觉研究项目精选：Chrono Loop 时间循环解谜、AI 横版肉鸽、Blender 3D 创作、Co-Desk 联机自习桌、对话归档台 AI 对话总结 MVP 等 17 个作品。">
-<meta property="og:image" content="https://4m1405d04e4rc.aiforce.cloud/app/app_17dzfrpfs2x/og-cover.png">
+<meta property="og:description" content="澳门科技大学游戏设计方向在读硕士。学位作品《澳里·光景》氛围探索游戏 + 18 个可玩原型：Chrono Loop 时间循环解谜、声景生成器、LLM 分支叙事等，多个作品可在线直接试玩。">
+<meta property="og:url" content="https://duyv0826.github.io/game-portfolio/">
+<meta property="og:image" content="https://duyv0826.github.io/game-portfolio/og-cover.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="洪昺森 · 互动媒体艺术 / 游戏设计作品集">
-<meta name="twitter:description" content="游戏开发、互动媒体、视觉研究与系统工程项目精选 16 个作品。">
-<meta name="twitter:image" content="https://4m1405d04e4rc.aiforce.cloud/app/app_17dzfrpfs2x/og-cover.png">
+<meta name="twitter:description" content="学位作品《澳里·光景》+ 18 个可玩原型，多个作品可在线直接试玩。">
+<meta name="twitter:image" content="https://duyv0826.github.io/game-portfolio/og-cover.png">
 <link rel="preconnect" href="https://miaoda.feishu.cn">
 <link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Chakra+Petch:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap">
 <style>
@@ -602,7 +603,7 @@ html{scrollbar-color:var(--surface-3) var(--bg);scrollbar-width:thin;}
           <p class="hero-tag">GAME DESIGN · INTERACTIVE MEDIA</p>
           <h1 class="hero-name">洪昺森<span class="dot">.</span></h1>
           <p class="hero-title">互动媒体艺术 · 游戏设计方向 <strong>研究生</strong><br>澳门科技大学</p>
-          <p class="hero-sub">计算机科学本科出身，正攻读互动媒体艺术（游戏设计方向）硕士。擅长把编程能力转化为可玩的创意表达——用 Unity、Python 独立完成从玩法原型到可玩版本的全流程开发，也持续探索 3D 创作、交互与视觉研究。</p>
+          <p class="hero-sub">澳门科技大学互动媒体艺术（游戏设计方向）在读硕士。当前研究：氛围探索游戏的<b>弱目的性设计</b>——我放进游戏的引导，到底有没有被玩家接到。学位作品《澳里·光景》（Unity）：79 个自研脚本、204 个自动化测试全部通过；擅长把设计决策变成可以跑出来看的数。</p>
           <div class="hero-actions">
             <a class="btn btn-primary" href="#works">查看作品</a>
             <a class="btn btn-ghost" href="#contact">与我联系</a>
@@ -617,6 +618,8 @@ html{scrollbar-color:var(--surface-3) var(--bg);scrollbar-width:thin;}
             <p class="v"><b>M.U.S.T.</b> 澳门科技大学</p>
             <p class="v2">本科 计算机科学（2022–2026）</p>
             <p class="v2">硕士 互动媒体艺术 · 游戏设计（在读）</p>
+            <p class="cmd-line"><span class="k">$</span><span class="cmd">thesis</span></p>
+            <p class="v2">《澳里·光景》弱目的性氛围探索（Unity）</p>
             <p class="cmd-line"><span class="k">$</span><span class="cmd">focus</span></p>
             <p class="v">Game Design · Interactive Media</p>
             <p class="cmd-line"><span class="k">$</span><span class="cmd">status</span></p>
@@ -724,12 +727,13 @@ html{scrollbar-color:var(--surface-3) var(--bg);scrollbar-width:thin;}
         <h2 class="section-title">保持<em>联系</em></h2>
       </div>
       <p class="contact-lead rv">如果你想聊聊游戏、互动媒体或合作机会，欢迎通过邮箱、LinkedIn、GitHub 或 Itch.io 联系我。</p>
-      <div class="contact-mail rv" id="contactMail">1151374965@qq.com</div>
+      <div class="contact-mail rv" id="contactMail">2260030089@student.must.edu.mo</div>
       <div class="contact-actions rv">
         <button class="btn btn-primary" id="copyMail">复制邮箱地址</button>
-        <a class="btn btn-ghost" href="mailto:1151374965@qq.com">发送邮件</a>
+        <a class="btn btn-ghost" href="mailto:2260030089@student.must.edu.mo">发送邮件</a>
       </div>
       <div class="contact-links rv">
+        <a href="https://game-design-portfolio-99765.app.workbuddy.host/" target="_blank" rel="noopener">学位作品 ·《澳里·光景》</a>
         <a href="https://www.linkedin.com/in/bingsen-hong-must" target="_blank" rel="noopener">LinkedIn</a>
         <a href="https://github.com/duyv0826" target="_blank" rel="noopener">GitHub</a>
         <a href="https://duyv0826.itch.io" target="_blank" rel="noopener">Itch.io</a>
@@ -775,7 +779,33 @@ html{scrollbar-color:var(--surface-3) var(--bg);scrollbar-width:thin;}
    ============================================================ */
 const WORKS = [
   {
+    no: '00',
+    title: '《澳里·光景》Aoli — 学位作品',
+    type: '学位作品 · 氛围探索',
+    status: '开发中 · 可试玩原型',
+    tags: ['Unity', 'C#', '氛围探索', '弱目的性设计', '澳门老城纹样', '无头仿真', '204 自动化测试'],
+    cover: 'assets/work-18.jpg',
+    desc: '研究生学位作品：在一座没有任务清单的岛城里，玩家靠光、声音与痕迹去理解发生过的事。题材取自澳门老城的招牌、窗花与瓷砖纹样。',
+    detail: 'Unity 开发的氛围探索游戏。核心研究问题很朴素：我放进去的引导，到底有没有被玩家接到。工程现状：79 个自研脚本、一万五千余行，204 个自动化测试（EditMode 201 + PlayMode 3）全部通过，提交历史在 GitHub 可查；已搭建无头仿真、叙事导演与谜题状态机，把游戏当作「可验证的系统」来做——设计决策可以用数据检验，而不是凭感觉。Tap 点击回应 / Hum 哼鸣互动 / Companion AI 同伴 / 水晶信标 / LineRenderer 光轨 / 记忆墙。',
+    story: ["学位作品：Unity 氛围探索游戏，把任务清单、数值和进度条全部拿掉，研究弱目的性设计下「引导是否抵达玩家」。", "题材取自澳门老城的招牌、窗花与瓷砖纹样；记忆墙是叙事核心，光轨与哼鸣构成非语言交互。", "工程纪律：79 个自研脚本、204 个自动化测试全部通过、GitHub 提交历史完整可查；配套低目的性 HTML5 原型《微光原野》与 5 档策略 bot × 220 局仿真验证设计意图。"],
+    link: 'https://game-design-portfolio-99765.app.workbuddy.host/',
+    hint: '学位作品页：系统架构一页图 + 12 张界面截图'
+  },
+  {
     no: '01',
+    title: '《微光原野》Glimmer Field — 弱目的性原型',
+    type: '学位作品配套 · 可直接试玩',
+    status: '可试玩',
+    tags: ['HTML5', 'Canvas 2D', '氛围探索', '弱目的性', '策略仿真'],
+    cover: 'assets/work-19.jpg',
+    desc: '《澳里·光景》的设计对照案例：把任务清单、目标箭头、进度条全部拿掉，玩家只是「随便走的人」。点开即玩，无需安装。',
+    detail: 'HTML5 Canvas 写的弱目的性氛围原型，与《澳里·光景》构成同一条自变量轴（目的性／控制权）上的两个极值。配套策略仿真：5 档 bot × 220 局 × 120 秒，读流取道策略 3.91 异光/100s、2.7 倍压过狂推策略——赢的策略恰好符合设计意图，输的则否。相比依赖眼动仪等生理设备，这条验证路径不需要被试、不需要实验室排期。',
+    story: ["弱目的性氛围原型：没有目标、没有失败、没有计时，光尘在洋流里漂，玩家骑着急流点亮异光。", "身份是设计对照案例（design contrast case）：与《澳里·光景》同作者、同一条自变量轴上的两个极值，而非简单对照组。", "用 5 档策略 bot × 220 局仿真把「这样设计成不成立」变成可以跑出来看的数；赢的策略恰好验证设计意图。"],
+    link: 'https://game-design-portfolio-99765.app.workbuddy.host/glimmer-field.html',
+    hint: '鼠标拖拽推进 · 带着速度穿过异光 · H 唤出数值面板'
+  },
+  {
+    no: '02',
     title: '《Chrono Loop》时间循环解谜',
     type: '游戏设计',
     status: '已完成',
@@ -786,7 +816,7 @@ const WORKS = [
     story: ["独立开发的 Unity 解谜游戏，从创意构思、玩法设计到可玩版本全流程一人主导，同时承担程序实现与像素美术。", "核心机制是「时间回溯」：玩家可把角色倒回数秒前的位置重新规划路线。围绕它设计了阶梯式关卡——前期以单点回溯做教学，中后期叠加多段回溯与移动平台，难度按认知负荷渐进。", "全程用即时反馈（残影、音效、结算表现）降低试错挫败感，优化留存与游玩体验；美术用 Aseprite 绘制，保持统一的像素视觉语言。"]
   },
   {
-    no: '02',
+    no: '03',
     title: 'AI 辅助横版肉鸽游戏',
     type: '游戏设计',
     status: '已完成',
@@ -797,7 +827,7 @@ const WORKS = [
     story: ["4 人团队项目，担任负责人：用 Trello 拆分任务、跟进里程碑，协调美术与程序进度，按期交付可玩版本。", "负责 AI 系统：为敌人设计行为树（巡逻 / 追击 / 攻击 / 逃跑的状态迁移），并实现基于玩家操作习惯的动态难度——根据生命值、失误率等指标实时调整敌人密度与攻击频率。", "内测数据显示游戏体验满意度提升 32%，验证了「AI 难度自适应」对留存的正向作用。"]
   },
   {
-    no: '03',
+    no: '04',
     title: 'Blender 3D 数字内容创作',
     type: '视觉研究',
     status: '已完成',
@@ -808,7 +838,7 @@ const WORKS = [
     story: ["以桌面静物为对象的 3D 数字创作，独立完成核心模型（桌面与杯具）建模、Cycles 材质调试与渲染优化。", "半透明材质（玻璃与液体）是主要难点：通过多层材质节点叠加透射与折射，配合布光反复调试才获得通透感。", "用 Python 脚本把场景自动化搭建、镜头路径动画与批量渲染脚本化，把重复劳动交给工具，专注视觉打磨。"]
   },
   {
-    no: '04',
+    no: '05',
     title: 'Android 互动贪吃蛇',
     type: '游戏设计',
     status: '已完成',
@@ -819,7 +849,7 @@ const WORKS = [
     story: ["独立完成的移动端游戏，用 Kotlin + Android Studio 覆盖从界面到逻辑的完整开发流程。", "核心实现屏幕触控操控、碰撞检测（边界与自身）、实时暂停与得分统计，并整合多场景音效资源；针对移动端交互习惯优化操作手感与反馈。"]
   },
   {
-    no: '05',
+    no: '06',
     title: 'YOLOv8 车型识别系统',
     type: '视觉研究',
     status: '已完成',
@@ -830,7 +860,7 @@ const WORKS = [
     story: ["目标是在资源受限的边缘设备上实时识别小米 SU7 车型。采用「正反样本」策略构建 1100 张数据集（700 张 SU7 + 400 张相似车型），按 90/5/5 划分训练 / 验证 / 测试。", "对比 YOLOv8n（3M 参数）与 YOLOv8s（11M 参数）两个模型：统一 640×640 输入、300 轮训练，验证小数据集下 nano 模型已达到最优性价比。", "导出 ONNX 解除框架依赖，支持跨平台边缘部署，为「小样本 + 轻量模型」的落地方案提供完整链路。"]
   },
   {
-    no: '06',
+    no: '07',
     title: 'RTSP 流媒体服务器',
     type: '互动媒体',
     status: '已完成',
@@ -841,7 +871,7 @@ const WORKS = [
     story: ["从零实现 RTSP 流媒体服务器（不依赖现成库），完整实现 OPTIONS、DESCRIBE、SETUP、PLAY、TEARDOWN 五个核心命令，支持多客户端并发连接。", "设计会话管理机制，为每个会话动态生成符合标准的 SDP 描述文件；基于 Socket + 多线程处理并发，用 FFplay / VLC 实测验证：延迟 <200ms、30FPS 稳定传输。"]
   },
   {
-    no: '07',
+    no: '08',
     title: '《Chrono Loop Web》时间回溯原型',
     type: '互动媒体',
     status: '可试玩',
@@ -853,7 +883,7 @@ const WORKS = [
     link: 'chrono-web.html'
   },
   {
-    no: '08',
+    no: '09',
     title: 'XV6 MLFQ 调度器实现与可视化分析',
     type: '系统工程',
     status: '已完成',
@@ -864,7 +894,7 @@ const WORKS = [
     story: ["本科毕业设计：在 XV6 教学内核中从零实现多级反馈队列（MLFQ）调度器，替换默认 Round-Robin。", "扩展进程控制块新增 queuelevel（0–2 优先级）、ticksinqueue、wait_ticks 字段，完全重写 scheduler()：新进程默认进入 Q0，CPU 密集型进程用完时间片自动降级，I/O 密集型进程因频繁等待保留高优先级，并引入基于定时器的防饥饿机制。", "构建 Python 可视化框架，从真实调度日志生成 MLFQ 降级甘特图与 CPU / I/O 优先级对比图，实验验证 MLFQ 对交互型进程的响应速度显著优于 Round-Robin。"]
   },
   {
-    no: '09',
+    no: '10',
     title: '《物语系列》设定深挖全景图',
     type: '互动媒体',
     status: '可试玩',
@@ -876,19 +906,18 @@ const WORKS = [
     link: 'monogatari-map.html'
   },
   {
-    no: '10',
+    no: '11',
     title: '全球游戏销量数据看板',
     type: '互动媒体',
-    status: '可试玩',
+    status: '已完成',
     tags: ['数据可视化', 'ECharts', '交互式看板', '游戏行业'],
     cover: 'assets/work-10.jpg',
     desc: '覆盖 1980–2020 年全球游戏销量的交互式分析看板：年份/地区/品类三维筛选联动，5 个 KPI 实时刷新，5 种图表交叉对比。',
     detail: '基于 16,327 款销量 ≥10 万套的游戏数据构建的交互式数据看板：年份区间滑块 + 地区（北美/欧洲/日本/其他）+ 品类（Action/Adventure 等 12 类）三维筛选联动，所有 KPI 与图表实时刷新。包含年度销量趋势堆叠面积图（可切换分线对比）、地区销量占比环形图、品类销量对比条形图、平台销量排名等 5 种可视化，深色游戏风格视觉，响应式布局。数据口径透明标注于页面底部。',
-    story: ["基于 16,327 款销量 ≥10 万套的游戏数据构建的交互式分析看板，覆盖 1980–2020 年。", "年份区间滑块 + 地区（北美 / 欧洲 / 日本 / 其他）+ 品类（12 类）三维筛选联动，所有 KPI 与图表实时刷新；年度趋势堆叠面积图（可切换分线对比）、地区占比环形图、品类对比条形图、平台排名等 5 种可视化交叉验证。", "深色游戏风格视觉、响应式布局，数据口径透明标注于页面底部，保证结论可追溯。"],
-    link: 'https://4m1405d04e4rc.aiforce.cloud/app/app_17dwm333k54'
+    story: ["基于 16,327 款销量 ≥10 万套的游戏数据构建的交互式分析看板，覆盖 1980–2020 年。", "年份区间滑块 + 地区（北美 / 欧洲 / 日本 / 其他）+ 品类（12 类）三维筛选联动，所有 KPI 与图表实时刷新；年度趋势堆叠面积图（可切换分线对比）、地区占比环形图、品类对比条形图、平台排名等 5 种可视化交叉验证。", "深色游戏风格视觉、响应式布局，数据口径透明标注于页面底部，保证结论可追溯。"]
   },
   {
-    no: '11',
+    no: '12',
     title: '《脉冲星场》交互式声景生成器',
     type: '互动媒体',
     status: '可试玩',
@@ -901,7 +930,7 @@ const WORKS = [
     hint: '单击/拖动演奏 · 左右定音高 · 上下定力度 · 1–4 切换音色 · 空格 巡航 · M 静音'
   },
   {
-    no: '12',
+    no: '13',
     title: '《星尘捕手》交互式收集游戏',
     type: '游戏设计',
     status: '可试玩',
@@ -910,11 +939,11 @@ const WORKS = [
     desc: '单文件可玩的小型街机收集游戏：移动泡泡接住坠落星辰，连击越高单颗得分越高，粒子反馈、屏幕震动与程序化合成音效营造完整反馈闭环。',
     detail: '以「接住坠落星辰」为核心循环的休闲街机游戏：鼠标/触屏控制泡泡接住金色星辰累计连击与得分，青色稀有星辰提供高额奖励，红色流星碰撞会损失生命；游玩时长越长，星辰生成越密、下落越快。接星伴随吸入动画、粒子爆裂与屏幕震动，连击每 5 次触发得分倍率提升；背景音乐与全部音效由 Web Audio 实时合成（零采样依赖），最高纪录持久化保存在本地。单文件零依赖，支持 ?demo=1 静置预览模式。',
     story: ["以「接住坠落星辰」为核心循环的休闲街机游戏：控制泡泡接住金色星辰累计连击，青色稀有星辰提供高额奖励，红色流星碰撞损失生命；游玩越久生成越密、下落越快。", "接星伴随吸入动画、粒子爆裂与屏幕震动，连击每 5 次提升得分倍率；背景音乐与全部音效由 Web Audio 实时合成（零采样依赖），最高纪录持久化保存在本地。", "单文件零依赖，支持 ?demo=1 静置预览模式，无需操作即可直接展示画面与音效。"],
-    link: 'https://4m1405d04e4rc.aiforce.cloud/app/app_17e3gnzk49c',
+    link: '星尘捕手.html',
     hint: '移动泡泡接住星辰 · 避开流星 · 连击越多分越高 · M 静音 · P 暂停'
   },
   {
-    no: '13',
+    no: '14',
     title: '《岔路 Branch Road》LLM 即时分支叙事游戏',
     type: '游戏设计',
     status: '原型',
@@ -927,7 +956,7 @@ const WORKS = [
     hint: '回车开始 · 每回合选一个行动或直接输入你想做的事 · 结局后回看平行结局'
   },
   {
-    no: '14',
+    no: '15',
     title: '《抉择的房间 Room of Choice》分支叙事游戏',
     type: '游戏设计',
     status: '可试玩',
@@ -941,7 +970,7 @@ const WORKS = [
     hint: '每个场景选一个动作 · 走到结局不算失败 · 重新开始不会清空已记住的东西'
   },
   {
-    no: '15',
+    no: '16',
     title: '《生生不息》互动媒体艺术游戏',
     type: '互动媒体',
     status: '原型',
@@ -954,7 +983,7 @@ const WORKS = [
     hint: '移动·引导 · 点击·注入能量 · 空格·暂停 · M·声音 · 1–4·模式'
   },
   {
-    no: '16',
+    no: '17',
     title: 'Co-Desk 联机共创自习桌',
     type: '系统工程',
     status: '已完成',
@@ -966,7 +995,7 @@ const WORKS = [
     github: 'https://github.com/duyv0826/co-desk'
   },
   {
-    no: '17',
+    no: '18',
     title: '对话归档台 · AI 对话总结 MVP',
     type: '系统工程',
     status: '原型',
@@ -1208,7 +1237,7 @@ if (hud && !matchMedia('(pointer: coarse)').matches && !reducedMotion) {
 
 /* ---------- 复制邮箱 ---------- */
 $('#copyMail').addEventListener('click', () => {
-  const mail = '1151374965@qq.com';
+  const mail = '2260030089@student.must.edu.mo';
   const done = () => toast('邮箱地址已复制：' + mail);
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(mail).then(done).catch(() => fallbackCopy(mail, done));
