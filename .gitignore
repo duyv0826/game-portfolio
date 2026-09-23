@@ -1,0 +1,8 @@
+# 备份与自检产物（不上传）
+_backup/
+_shots/
+_uploaded.bin
+index.backup-*.html
+
+# 历史 AI 原图备份
+assets/_ai_backup/

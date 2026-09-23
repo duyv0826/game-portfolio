@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>开发过程 · 设计思路 — 洪昺森作品集附册</title>
+<link rel="icon" href="favicon.ico">
+<style>
+:root{
+  --bg:#0B0907;
+  --surface:#16120D;
+  --surface-2:#1E1811;
+  --border:rgba(243,236,225,.12);
+  --border-strong:rgba(243,236,225,.26);
+  --text:#F4EDE1;
+  --muted:#B6AB99;
+  --faint:rgba(243,236,225,.55);
+  --accent:#F0B24B;
+  --accent-dim:#D18F2E;
+  --accent-2:#FF8A5C;
+  --accent-soft:rgba(240,178,75,.10);
+  --font-display:'Chakra Petch','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif;
+  --font-body:'Noto Sans SC','Microsoft YaHei',system-ui,-apple-system,sans-serif;
+  --maxw:1180px;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);color:var(--text);font-family:var(--font-body);
+  line-height:1.85;font-size:15px;
+}
+::selection{background:rgba(240,178,75,.28);}
+a{color:var(--accent);text-decoration:none;transition:color .2s var(--ease);}
+a:hover{color:var(--accent-2);}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 26px;}
+
+/* 顶部 */
+header.site{
+  position:sticky;top:0;z-index:50;background:rgba(11,9,7,.92);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+}
+.navbar{display:flex;align-items:center;justify-content:space-between;padding:14px 26px;max-width:var(--maxw);margin:0 auto;}
+.brand{font-family:var(--font-display);font-size:14px;letter-spacing:.16em;color:var(--muted);}
+.brand b{color:var(--accent);}
+.navbar .links{display:flex;gap:18px;font-size:13.5px;letter-spacing:.08em;font-family:var(--font-display);}
+.navbar .links a{color:var(--muted);}
+.navbar .links a:hover{color:var(--accent);}
+
+/* Hero */
+.hero{padding:72px 0 54px;text-align:center;position:relative;overflow:hidden;}
+.hero::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 70% 45% at 50% -10%, rgba(240,178,75,.10), transparent 60%),
+    repeating-linear-gradient(0deg, transparent, transparent 23px, rgba(243,236,225,.025) 24px),
+    repeating-linear-gradient(90deg, transparent, transparent 23px, rgba(243,236,225,.025) 24px);
+}
+.hero .kicker{font-family:var(--font-display);font-size:12.5px;letter-spacing:.34em;color:var(--accent-2);margin-bottom:18px;}
+.hero h1{font-family:var(--font-display);font-size:clamp(30px,5vw,52px);font-weight:800;letter-spacing:.04em;}
+.hero h1 .dot{color:var(--accent);}
+.hero .sub{margin-top:14px;color:var(--muted);font-size:15px;max-width:640px;margin-inline:auto;}
+.hero .meta{margin-top:20px;font-family:var(--font-display);font-size:13px;letter-spacing:.12em;color:var(--faint);}
+.hero .meta span{color:var(--accent);}
+
+/* 目录 */
+.toc{
+  margin:10px 0 56px;padding:22px 24px;background:var(--surface);
+  border:1px solid var(--border);border-radius:14px;
+}
+.toc .toc-title{font-family:var(--font-display);font-size:12.5px;letter-spacing:.24em;color:var(--accent);margin-bottom:14px;}
+.toc .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(238px,1fr));gap:8px 14px;}
+.toc a{display:flex;align-items:baseline;gap:9px;font-size:13.5px;color:var(--muted);padding:5px 8px;border-radius:8px;transition:all .2s var(--ease);}
+.toc a:hover{background:var(--accent-soft);color:var(--accent);}
+.toc a .no{font-family:var(--font-display);font-size:11px;color:var(--accent-dim);flex:none;}
+
+/* 作品区块 */
+.work{
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:30px 30px 26px;margin-bottom:22px;scroll-margin-top:84px;
+  position:relative;overflow:hidden;
+}
+.work::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent-2));opacity:.75;}
+.work .head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;}
+.work .no{font-family:var(--font-display);font-size:15px;font-weight:700;color:var(--accent);letter-spacing:.1em;}
+.work h2{font-family:var(--font-display);font-size:21px;font-weight:800;letter-spacing:.02em;}
+.work .badges{margin:10px 0 14px;display:flex;gap:8px;flex-wrap:wrap;}
+.badge{font-size:12px;padding:4px 10px;border-radius:999px;border:1px solid var(--border-strong);color:var(--muted);letter-spacing:.04em;font-family:var(--font-display);}
+.badge.type{color:var(--accent);border-color:rgba(240,178,75,.4);}
+.badge.status{color:var(--accent-2);border-color:rgba(255,138,92,.4);}
+.work .sec{margin-top:16px;}
+.work .sec h3{
+  font-family:var(--font-display);font-size:12px;font-weight:700;letter-spacing:.22em;
+  color:var(--accent-dim);margin-bottom:8px;display:flex;align-items:center;gap:9px;
+}
+.work .sec h3::before{content:"";width:16px;height:1px;background:var(--accent-dim);opacity:.6;flex:none;}
+.work p{color:var(--muted);font-size:14.5px;}
+.work p + p{margin-top:8px;}
+.work .overview p{color:var(--text);}
+
+/* 页脚 */
+footer{padding:42px 0 56px;text-align:center;color:var(--faint);font-size:13px;}
+footer a{color:var(--accent);}
+
+@media (max-width:680px){
+  .work{padding:24px 18px 20px;}
+  .navbar .links{display:none;}
+  .hero{padding:54px 0 40px;}
+  .toc .grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="navbar">
+    <div class="brand">HONG BINGSEN · <b>DEV NOTES</b></div>
+    <nav class="links">
+      <a href="index.html">← 返回作品集</a>
+      <a href="#toc">目录</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="kicker">PORTFOLIO APPENDIX · DEV PROCESS &amp; DESIGN THINKING</p>
+    <h1>开发过程 · 设计思路<span class="dot">.</span></h1>
+    <p class="sub">作品集 16 个项目的完整开发说明：每个项目拆成「概述 · 开发过程 · 设计思路 · 复盘」四段，记录我是怎么做的、为什么这么做，以及做完之后的反思。</p>
+    <p class="meta">16 PROJECTS · 游戏设计 6 / 互动媒体 6 / 视觉研究 2 / 系统工程 2 · <span>2026.09</span></p>
+  </div>
+</section>
+
+<div class="wrap">
+<nav class="toc" id="toc">
+  <p class="toc-title">CONTENTS · 目录</p>
+  <div class="grid">
+    <a href="#w01"><span class="no">01</span>《Chrono Loop》时间循环解谜</a>
+    <a href="#w02"><span class="no">02</span>AI 辅助横版肉鸽游戏</a>
+    <a href="#w03"><span class="no">03</span>Blender 3D 数字内容创作</a>
+    <a href="#w04"><span class="no">04</span>Android 互动贪吃蛇</a>
+    <a href="#w05"><span class="no">05</span>YOLOv8 车型识别系统</a>
+    <a href="#w06"><span class="no">06</span>RTSP 流媒体服务器</a>
+    <a href="#w07"><span class="no">07</span>《Chrono Loop Web》时间回溯原型</a>
+    <a href="#w08"><span class="no">08</span>XV6 MLFQ 调度器实现与可视化</a>
+    <a href="#w09"><span class="no">09</span>《物语系列》设定深挖全景图</a>
+    <a href="#w10"><span class="no">10</span>全球游戏销量数据看板</a>
+    <a href="#w11"><span class="no">11</span>《脉冲星场》交互式声景生成器</a>
+    <a href="#w12"><span class="no">12</span>《星尘捕手》交互式收集游戏</a>
+    <a href="#w13"><span class="no">13</span>《岔路 Branch Road》LLM 分支叙事</a>
+    <a href="#w14"><span class="no">14</span>《抉择的房间》分支叙事游戏</a>
+    <a href="#w15"><span class="no">15</span>《生生不息》互动媒体艺术游戏</a>
+    <a href="#w16"><span class="no">16</span>Co-Desk 联机共创自习桌</a>
+    <a href="#w17"><span class="no">17</span>对话归档台 · AI 对话总结 MVP</a>
+  </div>
+</nav>
+
+<!-- ===== 01 ===== -->
+<article class="work" id="w01">
+  <div class="head">
+    <span class="no">NO.01</span><h2>《Chrono Loop》时间循环解谜</h2>
+  </div>
+  <div class="badges">
+    <span class="badge type">游戏设计</span><span class="badge status">已完成</span>
+    <span class="badge">Unity</span><span class="badge">C#</span><span class="badge">Aseprite</span><span class="badge">时间回溯</span>
+  </div>
+  <div class="sec overview"><h3>概述</h3>
+    <p>独立开发的 Unity 时间循环解谜游戏，从创意构思、玩法设计到可玩版本全流程一人主导，同时承担程序实现与像素美术。核心卖点是「时间回溯」——不是把回溯当作附加技能，而是把它当作整个解谜循环的地基。</p>
+  </div>
+  <div class="sec"><h3>开发过程</h3>
+    <p><b>概念阶段：</b>先用纸面原型界定回溯的规则边界——回溯多长、回溯后哪些状态保留、哪些重置。这一步决定了后续所有关卡设计的前提，也避免了「机制听起来酷但玩起来空」的陷阱。</p>
+    <p><b>实现阶段：</b>用 Unity + C# 完成交互逻辑与回溯系统的搭建；美术用 Aseprite 逐帧绘制，保持统一的像素视觉语言，让玩法与美术在同一套审美体系里。</p>
+    <p><b>调优阶段：</b>结合用户认知心理设计阶梯式关卡难度——前期用单点回溯做教学，中后期叠加多段回溯与移动平台，难度按认知负荷渐进；全程用即时反馈（残影、音效、结算表现）降低试错挫败感。</p>
+  </div>
+  <div class="sec"><h3>设计思路</h3>
+    <p>把「失败—回溯—重来」变成正反馈循环：玩家不会被一次失误惩罚，而是获得重新规划行动的机会。相比传统解谜的「一次答对」，它鼓励的是探索与试错——这也正是时间循环题材最适合承载的情绪。</p>
+  </div>
+  <div class="sec"><h3>复盘</h3>
+    <p>验证了「一个人也能完成从玩法设计到美术交付的全流程」。后续可扩展的方向是让回溯影响更多游戏状态（敌人位置、机关状态），从「角色回溯」升级为「世界回溯」。</p>
+  </div>
+</article>
+
+<!-- ===== 02 ===== -->
+<article class="work" id="w02">
+  <div class="head">
+    <span class="no">NO.02</span><h2>AI 辅助横版肉鸽游戏</h2>
+  </div>
+  <div class="badges">
+    <span class="badge type">游戏设计</span><span class="badge status">已完成</span>
+    <span class="badge">Python</span><span class="badge">Pygame</span><span class="badge">行为树</span><span class="badge">项目管理</span>
+  </div>
+  <div class="sec overview"><h3>概述</h3>
+    <p>4 人团队 Pygame 横版肉鸽游戏。我担任项目负责人，负责 AI 敌人系统与动态难度设计，并用 Trello 协调团队按期交付可玩版本。</p>
+  </div>
+  <div class="sec"><h3>开发过程</h3>
+    <p><b>项目推进：</b>用 Trello 把任务拆到可执行粒度、跟进里程碑，协调程序 / 美术 / 策划的依赖关系，保证团队按时交付完整可玩版本。</p>
+    <p><b>AI 实现：</b>为敌人设计行为树，实现巡逻 / 追击 / 攻击 / 逃跑的状态迁移，行为选择依赖玩家距离、血量等实时状态，让敌人既有规律可循又有应对变化的能力。</p>
+    <p><b>动态难度：</b>实现基于玩家操作习惯的难度自适应——根据生命值、失误率、通关速度等指标实时调整敌人密度与攻击频率，让挑战始终贴合玩家当前水平。</p>
+  </div>
+  <div class="sec"><h3>设计思路</h3>
+    <p>「AI 难度自适应」是这次的核心命题：难度不该是写死的曲线，而应跟随玩家表现动态调整——新手不被劝退、老手不感无聊。行为树的引入让敌人行为可预测又有多样性，是难度系统能落地的基础。</p>
+  </div>
+  <div class="sec"><h3>复盘</h3>
+    <p>内测数据显示游戏体验满意度提升 32%，验证了自适应难度的价值。项目管理层面，Trello 看板把 4 人协作的沟通成本显著降了下来——这让我意识到：游戏开发里「怎么组织人」和「怎么写代码」同样重要。</p>
+  </div>
+</article>
+
+<!-- ===== 03 ===== -->
+<article class="work" id="w03">
+  <div class="head">
+    <span class="no">NO.03</span><h2>Blender 3D 数字内容创作</h2>
+  </div>
+  <div class="badges">
+    <span class="badge type">视觉研究</span><span class="badge status">已完成</span>
+    <span class="badge">Blender</span><span class="badge">Cycles</span><span class="badge">Python</span><span class="badge">材质渲染</span>
+  </div>
+  <div class="sec overview"><h3>概述</h3>
+    <p>以桌面静物为对象的 3D 数字创作。负责核心模型（桌面与杯具）建模、半透明材质调试与渲染优化，并通过 Python 脚本实现场景自动化搭建与渲染控制。</p>
+  </div>
+  <div class="sec"><h3>开发过程</h3>
+    <p><b>建模：</b>桌面与杯具是画面主体，重点在于比例、结构与轮廓的高还原，先做粗模确定构图，再逐步细化。</p>
+    <p><b>材质：</b>半透明材质（玻璃与液体）是主要难点——通过多层材质节点叠加透射与折射，配合布光反复调试，才获得通透而不发灰的质感。</p>
+    <p><b>脚本化：</b>用 Python 脚本实现场景自动化搭建、镜头路径动画与批量渲染控制，把可重复的机械劳动交给工具，把精力留给不可自动化的艺术打磨。</p>
+  </div>
+  <div class="sec"><h3>设计思路</h3>
+    <p>采用「程序化 + 手动精修」的结合：脚本处理批量、可复现的部分（搭建、渲染、路径），手动处理需要审美判断的部分（材质、打光、构图）。这也是我在 3D 工作流里最舒服的协作方式。</p>
+  </div>
+  <div class="sec"><h3>复盘</h3>
+    <p>通过这个项目系统掌握了 Blender Python API 与 Cycles 渲染管线，也意识到「技术工具化」对艺术产出的效率提升——同一套脚本可以复用到后续任何场景类创作。</p>
+  </div>
+</article>
+
+<!-- ===== 04 ===== -->
+<article class="work" id="w04">
+  <div class="head">
+    <span class="no">NO.04</span><h2>Android 互动贪吃蛇</h2>
+  </div>
+  <div class="badges">
+    <span class="badge type">游戏设计</span><span class="badge status">已完成</span>
+    <span class="badge">Android Studio</span><span class="badge">Kotlin</span><span class="badge">触控交互</span>
+  </div>
+  <div class="sec overview"><h3>概述</h3>
+    <p>独立完成的移动端贪吃蛇游戏，用 Kotlin + Android Studio 覆盖从界面到逻辑的完整开发流程，重点解决「触控怎么玩好一款键盘时代的经典游戏」。</p>
+  </div>
+  <div class="sec"><h3>开发过程</h3>
+    <p><b>框架搭建：</b>基于 Kotlin 搭建开发框架，整合游戏核心逻辑编码与多场景音效资源，理清 Activity / 生命周期 / 资源管理的基本结构。</p>
+    <p><b>核心实现：</b>实现屏幕触控操控（滑动转向）、碰撞检测（边界与自身）、实时暂停与得分统计，并整合音效交互。</p>
+    <p><b>交互优化：</b>针对移动端习惯反复调整操控灵敏度与判定，让触控操作有「跟手」的手感，而不是简单把键盘映射到屏幕。</p>
+  </div>
+  <div class="sec"><h3>设计思路</h3>
+    <p>触控适配是这次的关键：经典贪吃蛇依赖精确的时序转向，移动端必须容忍「滑动的手势延迟」，因此判定窗口与灵敏度需要专门调优。实时暂停与音效反馈则是为了让移动端的碎片化游玩体验更完整。</p>
+  </div>
+  <div class="sec"><h3>复盘</h3>
+    <p>完整走了一遍 Android 应用开发流程，从 Kotlin 语法到生命周期、资源与发布，补齐了移动端开发这条技能线。</p>
+  </div>
+</article>
+
+<!-- ===== 05 ===== -->
+<article class="work" id="w05">
+  <div class="head">
+    <span class="no">NO.05</span><h2>YOLOv8 车型识别系统</h2>
+  </div>
+  <div class="badges">
+    <span class="badge type">视觉研究</span><span class="badge status">已完成</span>
+    <span class="badge">Python</span><span class="badge">YOLOv8</span><span class="badge">OpenCV</span><span class="badge">数据增强</span>
+  </div>
+  <div class="sec overview"><h3>概述</h3>
+    <p>目标是在资源受限的边缘设备上实时识别小米 SU7 车型。采用「正反样本」策略构建数据集、对比 YOLOv8n / s 训练，并导出 ONNX 完成跨平台部署。</p>
+  </div>
+  <div class="sec"><h3>开发过程</h3>
+    <p><b>数据：</b>采用「正反样本」策略构建 1100 张数据集（700 张 SU7 + 400 张相似车型），按 90/5/5 划分训练 / 验证 / 测试。</p>
+    <p><b>训练：</b>对比 YOLOv8n（3M 参数）与 YOLOv8s（11M 参数）两个模型：统一 640×640 输入、300 轮训练，验证小数据集下 nano 模型已达到最优性价比。</p>
+    <p><b>部署：</b>导出 ONNX 解除框架依赖，支持跨平台边缘部署，为「小样本 + 轻量模型」的落地方案提供完整链路。</p>
+  </div>
+  <div class="sec"><h3>设计思路</h3>
+    <p>正反样本策略让模型学会区分「SU7 与相似车型」而非「车与非车」，这是识别任务的真正难点；轻量模型优先，因为目标设备资源受限——精度够用即可，部署成本与帧率才是硬约束。</p>
+  </div>
+  <div class="sec"><h3>复盘</h3>
+    <p>系统走完了「数据构建 → 训练对比 → 轻量化 → ONNX 部署」的完整链路，理解了真实项目中「数据质量」和「部署约束」往往比模型结构更能决定成败。</p>
+  </div>
+</article>
+
+<!-- ===== 06 ===== -->
+<article class="work" id="w06">
+  <div class="head">
+    <span class="no">NO.06</span><h2>RTSP 流媒体服务器</h2>
+  </div>
+  <div class="badges">
+    <span class="badge type">互动媒体</span><span class="badge status">已完成</span>
+    <span class="badge">Python</span><span class="badge">Socket</span><span class="badge">RTSP/RTP</span><span class="badge">多线程</span>
+  </div>
+  <div class="sec overview"><h3>概述</h3>
+    <p>从零构建支持多客户端连接的 RTSP 流媒体服务器（不依赖现成库），完整实现协议核心命令，支持多客户端并发连接与稳定视频流传输。</p>
+  </div>
+  <div class="sec"><h3>开发过程</h3>
+    <p><b>协议：</b>完整实现 OPTIONS、DESCRIBE、SETUP、PLAY、TEARDOWN 五个核心命令，把 RTSP 状态机按 RFC 规范逐条落地。</p>
+    <p><b>会话：</b>设计会话管理机制，为每个会话动态生成符合标准的 SDP 描述文件，保证不同客户端各自独立、互不干扰。</p>
+    <p><b>并发：</b>基于 Socket + 多线程处理多客户端连接，用 FFplay / VLC 实测验证：延迟 &lt;200ms、30FPS 稳定传输。</p>
+  </div>
+  <div class="sec"><h3>设计思路</h3>
+    <p>先啃协议再写代码——把每个命令的合法状态迁移画成状态图，再按图实现，避免「看似能跑、实则不符合规范」。会话与 SDP 的动态生成则保证了服务器不是为单客户端定制的玩具。</p>
+  </div>
+  <div class="sec"><h3>复盘</h3>
+    <p>深入理解了流媒体协议栈（RTSP / RTP / SDP）与网络并发编程，也体会到「协议合规」在系统类项目里是质量底线。</p>
+  </div>
+</article>
+
+<!-- ===== 07 ===== -->
+<article class="work" id="w07">
+  <div class="head">
+    <span class="no">NO.07</span><h2>《Chrono Loop Web》时间回溯原型</h2>
+  </div>
+  <div class="badges">
+    <span class="badge type">互动媒体</span><span class="badge status">可试玩</span>
+    <span class="badge">HTML5</span><span class="badge">Canvas</span><span class="badge">JavaScript</span><span class="badge">时间回溯</span>
+  </div>
+  <div class="sec overview"><h3>概述</h3>
+    <p>把《Chrono Loop》的时间回溯核心机制移植为浏览器可玩原型，用 Web 端验证「试错—倒带—重来」玩法循环的可行性，面试官可直接在浏览器里试玩。</p>
+  </div>
+  <div class="sec"><h3>开发过程</h3>
+    <p><b>状态记录：</b>按帧把角色状态写入 5 秒环形缓冲，轻量实现「可回放的历史」，无需存档系统。</p>
+    <p><b>回溯表现：</b>死亡后自动回溯 2.5 秒（2 倍速倒带），R 键可手动回溯 3 秒，倒带期间呈现残影拖尾与回流光点粒子，把「时间倒流」做成可见可感的效果。</p>
+    <p><b>关卡与修复：</b>含移动平台、尖刺陷阱与 EXIT 终点；开发中修复了历史耗尽兜底、按键残留等边界问题，并补充移动端触控虚拟按键与画布自适应。</p>
+  </div>
+  <div class="sec"><h3>设计思路</h3>
+    <p>用环形缓冲而非完整存档，是因为「最近几秒」恰好覆盖试错窗口；自动回溯 2.5 秒 + 手动 3 秒形成「被动救场 + 主动操作」两种回溯节奏。整个原型的目标是让人 30 秒内理解核心循环。</p>
+  </div>
+  <div class="sec"><h3>复盘</h3>
+    <p>验证了核心机制在 Web 端的可行性，也暴露了边界状态（历史耗尽、按键冲突）在回溯类玩法里必须提前设计——这正是从原型走向正式作品的关键经验。</p>
+  </div>
+</article>
+
+<!-- ===== 08 ===== -->
+<article class="work" id="w08">
+  <div class="head">
+    <span class="no">NO.08</span><h2>XV6 MLFQ 调度器实现与可视化分析</h2>
+  </div>
+  <div class="badges">
+    <span class="badge type">系统工程</span><span class="badge status">已完成</span>
+    <span class="badge">C</span><span class="badge">XV6</span><span class="badge">MLFQ</span><span class="badge">内核开发</span><span class="badge">Python可视化</span>
+  </div>
+  <div class="sec overview"><h3>概述</h3>
+    <p>本科毕业设计：在 XV6 教学内核中从零实现多级反馈队列（MLFQ）调度器，替换默认 Round-Robin，并用 Python 可视化真实调度日志做实验验证。</p>
+  </div>
+  <div class="sec"><h3>开发过程</h3>
+    <p><b>PCB 扩展：</b>直接修改 XV6 内核（proc.h / proc.c / trap.c），扩展进程控制块新增 queuelevel（0–2 优先级）、ticksinqueue、wait_ticks 三个字段。</p>
+    <p><b>调度器：</b>完全重写 scheduler() 实现 3 级优先级队列：新进程默认进入 Q0，CPU 密集型进程用完时间片自动降级，I/O 密集型进程因频繁等待保留高优先级。</p>
+    <p><b>防饥饿：</b>引入基于定时器的 anti-starvation 机制，防止低优先级进程长期得不到调度。</p>
+    <p><b>可视化：</b>构建 Python 可视化框架，从系统日志生成甘特图（MLFQ 降级过程）与对比柱状图（CPU vs I/O 优先级保留），用真实运行数据验证设计。</p>
+  </div>
+  <div class="sec"><h3>设计思路</h3>
+    <p>MLFQ 的核心是「经验驱动的优先级调整」：不依赖静态优先级，而是根据进程的实际行为（CPU 密集还是 I/O 密集）动态调整，从而在交互响应与 CPU 吞吐之间取得平衡。可视化的意义在于——调度器是对是错，日志不会说谎。</p>
+  </div>
+  <div class="sec"><h3>复盘</h3>
+    <p>实验验证 MLFQ 对交互型进程的响应速度显著优于默认 Round-Robin。这个项目把操作系统教材里的调度理论完整落到内核代码上，是我对「系统底层」理解最深的一次实践。</p>
+  </div>
+</article>
+
+<!-- ===== 09 ===== -->
+<article class="work" id="w09">
+  <div class="head">
+    <span class="no">NO.09</span><h2>《物语系列》设定深挖全景图</h2>
+  </div>
+  <div class="badges">
+    <span class="badge type">互动媒体</span><span class="badge status">可试玩</span>
+    <span class="badge">HTML5</span><span class="badge">SVG</span><span class="badge">JavaScript</span><span class="badge">数据可视化</span><span class="badge">互动叙事</span>
+  </div>
+  <div class="sec overview"><h3>概述</h3>
+    <p>以「从斧乃木余接出发的一次长线考据」为叙事主线的互动作品，把动画系列的设定考据做成三视图的探索空间：角色旅程时间线、可拖拽的关系网络图、2012–2019 全系列时间线。</p>
+  </div>
+  <div class="sec"><h3>开发过程</h3>
+    <p><b>考据：</b>全部事实来自日文一手资料查证，整理 8 位主要角色的出场顺序、关系脉络与 2012–2019 的关键剧情节点，形成可交互的信息底稿。</p>
+    <p><b>视图：</b>三视图结构——①余接的旅程：角色出场时间线与关键事件串联；②制造者—被造者母题：可拖拽 SVG 关系网络图，节点自由拖动、连线展示角色关系，支持重置布局；③2012–2019 关键时间线：系列发布与剧情节点对照。</p>
+    <p><b>交互：</b>8 位主要角色头像快捷跳转对应板块；单文件 HTML、内嵌角色立绘，离线可玩。</p>
+  </div>
+  <div class="sec"><h3>设计思路</h3>
+    <p>把「长线考据」转成可探索的空间，而不是一篇读完就忘的文章——用户不是在读设定，而是在地图里漫游，由自己的好奇驱动浏览路径。三个视图分别回答「这个角色经历了什么」「角色之间是什么关系」「整个系列如何演进」三个问题。</p>
+  </div>
+  <div class="sec"><h3>复盘</h3>
+    <p>这个作品考验的是信息架构与交互设计：资料量足够大时，怎么组织视图、怎么引导探索，比「放多少内容」更重要。</p>
+  </div>
+</article>
+
+<!-- ===== 10 ===== -->
+<article class="work" id="w10">
+  <div class="head">
+    <span class="no">NO.10</span><h2>全球游戏销量数据看板</h2>
+  </div>
+  <div class="badges">
+    <span class="badge type">互动媒体</span><span class="badge status">可试玩</span>
+    <span class="badge">数据可视化</span><span class="badge">ECharts</span><span class="badge">交互式看板</span><span class="badge">游戏行业</span>
+  </div>
+  <div class="sec overview"><h3>概述</h3>
+    <p>基于 16,327 款销量 ≥10 万套的游戏数据构建的交互式分析看板，覆盖 1980–2020 年，让用户通过筛选自行「切」出自己关心的市场切片。</p>
+  </div>
+  <div class="sec"><h3>开发过程</h3>
+    <p><b>数据：</b>清洗与整理 16,327 款销量 ≥10 万套的游戏数据，口径在页面底部透明标注，保证每个结论可追溯。</p>
+    <p><b>交互：</b>年份区间滑块 + 地区（北美 / 欧洲 / 日本 / 其他）+ 品类（Action / Adventure 等 12 类）三维筛选联动，所有 KPI 与图表实时刷新。</p>
+    <p><b>可视化：</b>年度销量趋势堆叠面积图（可切换分线对比）、地区销量占比环形图、品类销量对比条形图、平台销量排名等 5 种图表交叉对比，深色游戏风格视觉、响应式布局。</p>
+  </div>
+  <div class="sec"><h3>设计思路</h3>
+    <p>三维筛选联动的意义在于让用户自己提问、自己回答——「90 年代日本的动作游戏卖了多少」这类问题不需要预设答案页，筛选器本身就是答案。图表间的交叉对比则用来发现单一图表看不出的模式。</p>
+  </div>
+  <div class="sec"><h3>复盘</h3>
+    <p>实践了 ECharts 联动更新与响应式看板设计，也强化了「数据口径必须透明」的做数据产品的职业习惯。</p>
+  </div>
+</article>
+
+<!-- ===== 11 ===== -->
+<article class="work" id="w11">
+  <div class="head">
+    <span class="no">NO.11</span><h2>《脉冲星场》交互式声景生成器</h2>
+  </div>
+  <div class="badges">
+    <span class="badge type">互动媒体</span><span class="badge status">可试玩</span>
+    <span class="badge">Web Audio</span><span class="badge">Canvas 2D</span><span class="badge">生成式艺术</span><span class="badge">音画交互</span>
+  </div>
+  <div class="sec overview"><h3>概述</h3>
+    <p>以「深空仪器」为概念的交互式声景生成器：点击 / 拖动夜空即生成粒子星尘并实时合成音符，横坐标定音高、纵坐标定力度，把画布变成一件可以演奏的乐器。</p>
+  </div>
+  <div class="sec"><h3>开发过程</h3>
+    <p><b>音画映射：</b>横坐标映射 A 小调五声音阶音高，纵坐标映射力度，青 / 紫 / 品 / 金四相色随音符轮转——位置、颜色、声音三者在同一坐标系里统一。</p>
+    <p><b>声音合成：</b>全部声音由 Web Audio 原生合成（零采样依赖），四类合成音色（星弦 / 空鸣 / 脉动 / 风铃）覆盖不同演奏气质。</p>
+    <p><b>自走作曲：</b>内置 92BPM 巡航作曲器（i–VI–III–VII 和声进行），底鼓 / 踩镲 / 贝斯 / 旋律四轨以音频时钟 lookahead 调度，音画严格同步。</p>
+    <p><b>工程化：</b>单文件零依赖；静音开关常驻、尊重 reduced-motion、移动端触控适配，支持 ?demo=1 无声预览模式。</p>
+  </div>
+  <div class="sec"><h3>设计思路</h3>
+    <p>五声音阶的选择保证「任意点击都好听」——没有黑键，也就没有难听的音；lookahead 调度避免音频时钟漂移，让节奏严格稳定。整个作品的定位是「演奏」而非「播放」：用户的操作直接产生音乐，而不是触发预设片段。</p>
+  </div>
+  <div class="sec"><h3>复盘</h3>
+    <p>验证了「零采样、纯合成」的生成式音频方案在 Web 端的可行性与表现力；对音频调度、音高映射与音画同步有了完整的实践认知。</p>
+  </div>
+</article>
+
+<!-- ===== 12 ===== -->
+<article class="work" id="w12">
+  <div class="head">
+    <span class="no">NO.12</span><h2>《星尘捕手》交互式收集游戏</h2>
+  </div>
+  <div class="badges">
+    <span class="badge type">游戏设计</span><span class="badge status">可试玩</span>
+    <span class="badge">HTML5</span><span class="badge">Canvas 2D</span><span class="badge">Web Audio</span><span class="badge">粒子系统</span><span class="badge">程序化音频</span>
+  </div>
+  <div class="sec overview"><h3>概述</h3>
+    <p>以「接住坠落星辰」为核心循环的休闲街机收集游戏：移动泡泡接住金色星辰累计连击，青色稀有星辰提供高额奖励，红色流星碰撞损失生命——一个完整而紧凑的反馈闭环。</p>
+  </div>
+  <div class="sec"><h3>开发过程</h3>
+    <p><b>核心循环：</b>接住金色星辰累计连击与得分；青色稀有星辰高额奖励；红色流星扣命。游玩时间越长，星辰生成越密、下落越快，难度随时间自然渐进。</p>
+    <p><b>反馈设计：</b>接星伴随吸入动画、粒子爆裂与屏幕震动，连击每 5 次触发得分倍率提升——每一次操作都有即时的音画回报。</p>
+    <p><b>音频与数据：</b>背景音乐与全部音效由 Web Audio 实时合成（零采样依赖）；最高纪录持久化保存在本地，给重复游玩一个可超越的目标。</p>
+    <p><b>工程化：</b>单文件零依赖，支持 ?demo=1 静置预览模式，无需操作即可直接展示画面与音效。</p>
+  </div>
+  <div class="sec"><h3>设计思路</h3>
+    <p>「简单规则 + 密集反馈」是街机式体验的配方：玩法一句话能讲清，但反馈密度让每次接星都有满足感。连击倍率与稀有星辰则提供了「追求最优路线」的钩子，把休闲操作变成轻度的技巧挑战。</p>
+  </div>
+  <div class="sec"><h3>复盘</h3>
+    <p>在脉冲星场之后第二次实践程序化音频与粒子系统，反馈闭环的打磨更加熟练；也验证了「单文件零依赖」的交付方式非常适合放进作品集直接展示。</p>
+  </div>
+</article>
+
+<!-- ===== 13 ===== -->
+<article class="work" id="w13">
+  <div class="head">
+    <span class="no">NO.13</span><h2>《岔路 Branch Road》LLM 即时分支叙事游戏</h2>
+  </div>
+  <div class="badges">
+    <span class="badge type">游戏设计</span><span class="badge status">原型</span>
+    <span class="badge">LLM</span><span class="badge">AI 叙事</span><span class="badge">分支叙事</span><span class="badge">TTS</span><span class="badge">CogView</span>
+  </div>
+  <div class="sec overview"><h3>概述</h3>
+    <p>基于 LLM（glm-4-flash）即时生成分支的叙事游戏竖切 0.1（好玩验证版）：框架固定、分支即生，验证「AI 即时生成」能否撑起叙事沉浸感。</p>
+  </div>
+  <div class="sec"><h3>开发过程</h3>
+    <p><b>叙事框架：</b>末班地铁 / 林晚的手机 / 23:47 定时草稿 / 终点站四条线索渐次暗示，叙述者永不点破——框架固定，但分支由 LLM 即时生成，每次游玩都不同。</p>
+    <p><b>玩法：</b>每回合现生成行动选项，同时支持自由输入直接行动；8 回合抵达结局后可回看「如果你做了另一个选择」的平行结局。</p>
+    <p><b>表现：</b>终点站弹出 23:47 那封信的信卡，由 edge-tts 女声朗读；CogView 预生成 8 张场景图随剧情切换、游玩零等待。</p>
+    <p><b>验证：</b>内置探针埋点，验证核心命题「你会不会想知道另一种选法？」——用真实游玩数据检验设计假设。</p>
+  </div>
+  <div class="sec"><h3>设计思路</h3>
+    <p>「框架固定、分支即生」是对 LLM 叙事的务实取舍：不追求无限开放的沙盒，而是用固定框架保证叙事质量下限，用 LLM 生成保证每次游玩的差异性。自由输入让玩家真正「行动」，而不是在预设选项里做选择题。</p>
+  </div>
+  <div class="sec"><h3>复盘</h3>
+    <p>验证了 LLM 生成式叙事的沉浸感与成本可行性，也发现「AI 生成 + 人工框架」的混合模式是当下最稳的路径；探针埋点证明了数据驱动设计在叙事游戏里同样有效。</p>
+  </div>
+</article>
+
+<!-- ===== 14 ===== -->
+<article class="work" id="w14">
+  <div class="head">
+    <span class="no">NO.14</span><h2>《抉择的房间》分支叙事游戏</h2>
+  </div>
+  <div class="badges">
+    <span class="badge type">游戏设计</span><span class="badge status">可试玩</span>
+    <span class="badge">JavaScript</span><span class="badge">分支叙事</span><span class="badge">多结局</span><span class="badge">零依赖</span>
+  </div>
+  <div class="sec overview"><h3>概述</h3>
+    <p>纯前端分支叙事游戏，零依赖零构建、双击即玩。4 章 18 结局 18 线索，内容全部 config 驱动、引擎零改动，把「多结局叙事」当作一套可测试的系统来设计。</p>
+  </div>
+  <div class="sec"><h3>开发过程</h3>
+    <p><b>叙事结构：</b>4 章 18 结局 18 线索，包含第四章源头真结局（链式双线索）、真结局尾声（回访地基）、陷阱门控（假终结·双刃剑）、出口陷阱（伪出口·绕圈）、分歧点 × 陷阱合流等结构设计。</p>
+    <p><b>系统：</b>内置线索图鉴与结局图鉴（收集进度本地保存）、分歧点提示——把「收集」做成重复游玩的动力。</p>
+    <p><b>可测试性：</b>提供「运行回归测试」按钮，随时自检剧情图完整性，防止多结局逻辑穿帮。</p>
+    <p><b>架构：</b>全部内容 config 驱动，引擎零改动即可扩展新剧情——内容与逻辑分离，便于维护与迭代。</p>
+  </div>
+  <div class="sec"><h3>设计思路</h3>
+    <p>把多结局当成「图」来设计：节点是场景、边是选择，陷阱与真结局都是图结构的一部分。图鉴系统让「看到全部结局」成为可量化的收集目标；回归测试则把叙事结构从「手写的剧本」升级为「可验证的图」。</p>
+  </div>
+  <div class="sec"><h3>复盘</h3>
+    <p>「内容 config 驱动 + 引擎零改动」的架构让创作与开发彻底解耦，也让我意识到：叙事复杂度的增长必须靠结构管理，而不是靠更多的手工分支代码。</p>
+  </div>
+</article>
+
+<!-- ===== 15 ===== -->
+<article class="work" id="w15">
+  <div class="head">
+    <span class="no">NO.15</span><h2>《生生不息》互动媒体艺术游戏</h2>
+  </div>
+  <div class="badges">
+    <span class="badge type">互动媒体</span><span class="badge status">原型</span>
+    <span class="badge">生成式音频</span><span class="badge">自动演化</span><span class="badge">互动媒体</span><span class="badge">HTML5</span>
+  </div>
+  <div class="sec overview"><h3>概述</h3>
+    <p>以「自动演化 + 生成式音频」为核心的互动媒体艺术游戏：屏幕中的生灵群落随时间自动演化，玩家通过移动与点击注入能量、引导生长方向，声音随生灵状态实时生成。</p>
+  </div>
+  <div class="sec"><h3>开发过程</h3>
+    <p><b>演化系统：</b>生灵群落按规则随时间自动演化——出生、生长、繁衍、消亡，构成一个自主运转的微型生态。</p>
+    <p><b>玩家介入：</b>玩家不是直接控制个体，而是通过移动与点击注入能量、引导生长方向——「弱控制，强引导」的交互模式。</p>
+    <p><b>生成式音频：</b>声音随生灵状态实时变化，群落越繁荣、声音越丰富，形成状态与听觉的直接映射。</p>
+    <p><b>模式：</b>支持多模式切换（1–4）、声音开关（M）与暂停（空格），让观者可以选择观看或参与。</p>
+  </div>
+  <div class="sec"><h3>设计思路</h3>
+    <p>探索的是「生命循环与演化」主题下玩家的另一种角色：不是全知全能的控制者，而是生态系统里的一个能量来源——玩家的存在会影响演化方向，但无法决定每个生命的细节。这比「玩家 = 主角」的常规设定更有艺术表达空间。</p>
+  </div>
+  <div class="sec"><h3>复盘</h3>
+    <p>这个作品是我在「交互艺术的玩家角色」上的一次实验：结论是「放手的控制」同样能带来强烈的参与感，也为后续互动媒体艺术项目提供了新的方向参考。</p>
+  </div>
+</article>
+
+<!-- ===== 16 ===== -->
+<article class="work" id="w16">
+  <div class="head">
+    <span class="no">NO.16</span><h2>Co-Desk 联机共创自习桌</h2>
+  </div>
+  <div class="badges">
+    <span class="badge type">系统工程</span><span class="badge status">已完成</span>
+    <span class="badge">Electron</span><span class="badge">React</span><span class="badge">FastAPI</span><span class="badge">WebSocket</span><span class="badge">SQLite</span>
+  </div>
+  <div class="sec overview"><h3>概述</h3>
+    <p>人机交互课程项目的可运行版本（MVP）：Electron + React 桌面客户端连接 FastAPI 云端后端，SQLite 保存任务、房间与专注记录，把「和同伴一起自习」做成真正可互联网联机的产品。</p>
+  </div>
+  <div class="sec"><h3>开发过程</h3>
+    <p><b>观察与定义：</b>从「一个人自习太孤独」的观察出发，把远程自习做成联机陪伴场景——同伴座位、专注状态、鼓励卡实时同步，让隔着屏幕的学习也有在场感。</p>
+    <p><b>架构：</b>Electron + React 桌面端；FastAPI 后端服务；SQLite 数据库自动建表；后端设计为可部署云端的架构（HTTPS REST + WSS WebSocket），客户端填入云端地址即可跨设备同房间实时同步。</p>
+    <p><b>功能落地：</b>自习房间列表与自定义房间、账号注册登录（密码哈希存储）、番茄钟、任务便利贴与任务拆解、环境音模拟与座位方向试听、鼓励卡轻互动、专注记录统计与自习时间排行榜。</p>
+    <p><b>验证与分发：</b>用双客户端模拟脚本做 10 项联机断言（加入 / 同伴列表 / 状态同步 / 心跳 / 广播 / 退出回落）全部通过；打包 win-x64 分发版。</p>
+  </div>
+  <div class="sec"><h3>设计思路</h3>
+    <p>核心命题是「陪伴感」：联机不只是聊天，而是让「和同伴一起努力」变得可感知——座位、专注状态、实时进度本身就是社交信号。架构上把「后端可云端化」当作设计约束，MVP 阶段就避免本地单机的架构陷阱，因此从第一天起就是客户端—服务端分离。</p>
+  </div>
+  <div class="sec"><h3>复盘</h3>
+    <p>全栈一次成型，走完了 HCI 课程「需求观察 → 原型 → 可运行产品」的完整方法；后续方向：真实麦克风环境音（WebRTC 信令 + 空间音频）、正式产品迁移 PostgreSQL。</p>
+  </div>
+</article>
+
+<!-- ===== 17 ===== -->
+<article class="work" id="w17">
+  <div class="head">
+    <span class="no">NO.17</span><h2>对话归档台 · AI 对话总结 MVP</h2>
+  </div>
+  <div class="badges">
+    <span class="badge type">系统工程</span><span class="badge status">原型</span>
+    <span class="badge">HTML5</span><span class="badge">Ollama</span><span class="badge">本地大模型</span><span class="badge">JSON 协议</span><span class="badge">localStorage</span>
+  </div>
+  <div class="sec overview"><h3>概述</h3>
+    <p>AI 产品「历史对话自动总结」功能的可交互 MVP：把一段长会话整理成结构化要点，每条要点可点击定位原文、可删除与重新生成；内置隐私开关与本地模型引擎，模型不可用时自动降级为浏览器规则摘要，内容全程不出本机；P2 追加归档库，跨会话搜索全部摘要要点、按会话聚合管理，形成单机全局记忆。</p>
+  </div>
+  <div class="sec"><h3>开发过程</h3>
+    <p><b>从评估到立项：</b>先按用户痛点、使用频率、开发成本、解决效果、潜在副作用五个维度评估「自动总结」值不值得做，结论是「应该做，但以手动触发的轻量 MVP 起步」——自动总结会改变用户行为、可能丢失细节，手动触发把选择权还给用户。</p>
+    <p><b>P0 落地：</b>手动触发单会话摘要，输出结构化要点（核心结论 / 细节补充 / 待办行动三档），每条要点带原文锚点可定位核对；支持单条删除与重新生成；隐私开关默认手动触发、单会话关闭；固定标注「AI 生成，可能存在误差」。</p>
+    <p><b>引擎双降级：</b>优先调用本机 Ollama（qwen3:8b）做真实摘要，模型输出约束为严格 JSON（标题 + 要点 + 锚点 + 等级）；模型不可用或隐私模式开启时，自动降级为浏览器本地规则摘要（关键词 + 句长打分提取重点句），演示永不中断。</p>
+    <p><b>P1 追加：</b>自动归档（切换会话时后台为离开的会话生成摘要并缓存，localStorage 持久化，重新打开即见）与智能命名（模型顺带产出 ≤12 字会话标题，自动应用到自定义会话）。</p><p><b>P2 追加：</b>归档库视图（顶栏一键进入）——统计全部会话归档情况，跨会话搜索每条要点（标题 + 内容，命中关键词高亮），按会话聚合主题标签，点击条目直接跳回对应会话。多端同步需要后端服务，本地单机版明确不做，作为边界记录在案。</p>
+  </div>
+  <div class="sec"><h3>设计思路</h3>
+    <p>准确性与隐私是这类功能的两条生命线：锚点定位让「模型可能出错」变得可核实，隐私开关把「对话内容进模型」的合规风险交给用户决定。实现上坚持「降级链」——真实模型 → 规则引擎 → 演示数据，任何一层失败都能继续演示完整流程，这本身就是产品评审时的信心来源。</p>
+  </div>
+  <div class="sec"><h3>复盘</h3>
+    <p>验证充分：解析器 17 项单测、真实模型链路输出 6 条要点（锚点全部落在消息范围内）、页面自检零 console 错误（归档库视图另跑桌面/移动自检同样零错误）。结论：把「AI 功能」做成「可演示、可降级、可离线」的工具，比一次到位更接近真实产品的落地节奏。</p>
+  </div>
+</article>
+</div>
+
+<footer>
+  <p>洪昺森 · 互动媒体艺术 / 游戏设计作品集附册 · <a href="index.html">返回主作品集 →</a></p>
+  <p style="margin-top:6px;font-size:12px;letter-spacing:.14em;font-family:var(--font-display);">DEV NOTES · © 2026 HONG BINGSEN · M.U.S.T.</p>
+</footer>
+</body>
+</html>
+

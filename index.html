@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>洪昺森 · 互动媒体艺术 / 游戏设计作品集</title>
+<meta name="description" content="洪昺森，澳门科技大学互动媒体艺术（游戏设计方向）研究生，个人作品集：游戏开发、互动媒体与视觉研究项目。">
+<meta name="theme-color" content="#070D14">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+<link rel="shortcut icon" href="favicon.ico">
+<!-- 社交分享卡片：og:image / twitter:image 使用部署域名绝对 URL（2026-09-16 修复，避免平台回退为默认应用图标） -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="洪昺森 · 互动媒体艺术 / 游戏设计作品集">
+<meta property="og:description" content="游戏开发、互动媒体与视觉研究项目精选：Chrono Loop 时间循环解谜、AI 横版肉鸽、Blender 3D 创作、Co-Desk 联机自习桌、对话归档台 AI 对话总结 MVP 等 17 个作品。">
+<meta property="og:image" content="https://4m1405d04e4rc.aiforce.cloud/app/app_17dzfrpfs2x/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="洪昺森 · 互动媒体艺术 / 游戏设计作品集">
+<meta name="twitter:description" content="游戏开发、互动媒体、视觉研究与系统工程项目精选 16 个作品。">
+<meta name="twitter:image" content="https://4m1405d04e4rc.aiforce.cloud/app/app_17dzfrpfs2x/og-cover.png">
+<link rel="preconnect" href="https://miaoda.feishu.cn">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Chakra+Petch:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap">
+<style>
+/* ============================================================
+   设计系统：关卡终端 PORTFOLIO.TERMINAL v2
+   题材：游戏设计 / 互动媒体 作品集
+   色板（oklch 派生）：深蓝黑底 / 亮青绿主强调 / 暖橙点缀
+   ============================================================ */
+:root{
+  --bg:#0B0907;
+  --bg-2:#100D09;
+  --surface:#16120D;
+  --surface-2:#1D1710;
+  --surface-3:#2A2117;
+  --border:rgba(243,236,225,.12);
+  --border-strong:rgba(243,236,225,.26);
+  --text:#F4EDE1;
+  --muted:#B6AB99;
+  --faint:rgba(243,236,225,.55);
+  --accent:#F0B24B;
+  --accent-dim:#D18F2E;
+  --accent-2:#FF8A5C;
+  --accent-2-dim:#E0693C;
+  --accent-soft:rgba(240,178,75,.10);
+  --accent-2-soft:rgba(255,138,92,.10);
+  --font-display:'Chakra Petch','Noto Sans SC',system-ui,sans-serif;
+  --font-body:'Noto Sans SC','Microsoft YaHei',system-ui,-apple-system,sans-serif;
+  --maxw:1140px;
+  --radius:14px;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto;}
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;}
+}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  font-size:16px;
+  line-height:1.75;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+/* 材质层：极淡点阵 + 噪点颗粒 */
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:radial-gradient(rgba(243,236,225,.05) 1px,transparent 1px);
+  background-size:30px 30px;
+}
+body::after{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='160'%20height='160'%3E%3Cfilter%20id='n'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='0.9'%20numOctaves='2'/%3E%3C/filter%3E%3Crect%20width='160'%20height='160'%20filter='url(%23n)'%20opacity='0.55'/%3E%3C/svg%3E");
+  background-size:160px 160px;
+}
+img{display:block;max-width:100%;}
+a{color:var(--accent);text-decoration:none;}
+a:hover{color:var(--accent-2);}
+::selection{background:var(--accent);color:#1A1208;}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:3px;}
+/* 自定义滚动条 */
+::-webkit-scrollbar{width:10px;height:10px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--surface-3);border-radius:5px;border:2px solid var(--bg);}
+::-webkit-scrollbar-thumb:hover{background:var(--accent-dim);}
+html{scrollbar-color:var(--surface-3) var(--bg);scrollbar-width:thin;}
+.container{max-width:var(--maxw);margin:0 auto;padding:0 24px;position:relative;z-index:1;}
+
+/* ---------- 顶部滚动进度条 ---------- */
+#progress{position:fixed;top:0;left:0;height:2px;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));z-index:100;}
+
+/* ---------- 顶部导航 ---------- */
+.site-header{
+  position:fixed;top:0;left:0;right:0;z-index:50;
+  background:rgba(11,9,7,.85);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+  transition:border-color .3s var(--ease);
+}
+.site-header.scrolled{border-color:var(--border-strong);box-shadow:0 4px 24px rgba(0,0,0,.35);}
+.nav{max-width:var(--maxw);margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.brand{
+  font-family:var(--font-display);font-weight:700;font-size:15px;letter-spacing:.1em;
+  color:var(--text);display:inline-flex;align-items:center;gap:10px;white-space:nowrap;
+  padding:10px 6px;margin-left:-6px;
+}
+.brand .cursor{width:9px;height:15px;background:var(--accent);display:inline-block;animation:blink 1.1s steps(2) infinite;}
+@keyframes blink{50%{opacity:0;}}
+.nav-links{display:flex;gap:4px;list-style:none;align-items:center;}
+.nav-links a{
+  display:block;padding:9px 14px;font-family:var(--font-display);font-size:13px;
+  letter-spacing:.08em;color:var(--muted);border-radius:8px;transition:color .2s,background .2s;
+}
+.nav-links a:hover{color:var(--text);background:var(--surface-2);}
+.nav-links a.active{color:var(--accent);background:var(--accent-soft);}
+.nav-cta{
+  padding:9px 18px !important;background:var(--accent);color:#1A1208 !important;border-radius:8px;
+  font-weight:600;
+}
+.nav-cta:hover{background:var(--accent-2);color:#2B1A0E !important;}
+/* 移动端汉堡 */
+.nav-toggle{
+  display:none;width:44px;height:44px;border:1px solid var(--border);border-radius:10px;
+  background:var(--surface);cursor:pointer;position:relative;
+}
+.nav-toggle span,.nav-toggle span::before,.nav-toggle span::after{
+  content:"";position:absolute;left:12px;right:12px;height:2px;background:var(--text);transition:transform .25s var(--ease),opacity .2s;border-radius:1px;
+}
+.nav-toggle span{top:21px;}
+.nav-toggle span::before{top:-7px;}
+.nav-toggle span::after{top:7px;}
+.nav-toggle.open span{background:transparent;}
+.nav-toggle.open span::before{transform:translateY(7px) rotate(45deg);}
+.nav-toggle.open span::after{transform:translateY(-7px) rotate(-45deg);}
+
+/* ---------- Hero ---------- */
+.hero{min-height:100vh;display:flex;align-items:center;position:relative;padding:130px 0 100px;overflow:hidden;}
+#wave{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:0;}
+.hero::after{
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(120% 100% at 55% 40%,transparent 42%,rgba(11,9,7,.62) 100%);
+}
+.hero-grid{position:relative;z-index:2;display:grid;grid-template-columns:1.12fr .88fr;gap:72px;align-items:center;}
+.hero-tag{
+  font-family:var(--font-display);font-size:13px;letter-spacing:.24em;color:var(--accent);
+  display:inline-flex;align-items:center;gap:12px;margin-bottom:28px;
+}
+.hero-tag::before{content:"";width:36px;height:1px;background:linear-gradient(90deg,var(--accent),transparent);}
+.hero-name{
+  font-family:var(--font-display);font-weight:700;font-size:clamp(44px,7vw,84px);
+  line-height:1.05;letter-spacing:.015em;margin-bottom:18px;text-wrap:balance;
+  background:linear-gradient(100deg,#F4EDE1 0%,#F0B24B 40%,#FFD28A 55%,#F4EDE1 90%);
+  background-size:220% 100%;
+  -webkit-background-clip:text;background-clip:text;
+  color:transparent;
+  animation:nameFlow 20s ease-in-out infinite;
+}
+@keyframes nameFlow{0%,100%{background-position:0% 50%;}50%{background-position:100% 50%;}}
+@media (prefers-reduced-motion: reduce){.hero-name{animation:none;}}
+.hero-name .dot{color:transparent;}
+.hero-name:hover{filter:drop-shadow(0 0 24px rgba(240,178,75,.35));}
+.hero-title{
+  font-size:clamp(17px,2.1vw,21px);font-weight:300;color:var(--muted);margin-bottom:36px;letter-spacing:.02em;
+}
+.hero-title strong{color:var(--text);font-weight:600;}
+.hero-sub{
+  max-width:540px;color:var(--muted);font-size:15.5px;margin-bottom:44px;
+  border-left:2px solid var(--accent-dim);padding-left:20px;
+}
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap;}
+.btn{
+  display:inline-flex;align-items:center;gap:9px;padding:14px 28px;border-radius:9px;
+  font-family:var(--font-display);font-size:14.5px;font-weight:600;letter-spacing:.05em;
+  cursor:pointer;border:1px solid transparent;transition:all .22s var(--ease);
+}
+.btn-primary{background:var(--accent);color:#1A1208;}
+.btn-primary:hover{background:var(--accent-2);color:#2B1A0E;transform:translateY(-2px);box-shadow:0 10px 30px rgba(240,178,75,.22);}
+.btn-primary:active{transform:translateY(0);box-shadow:0 4px 14px rgba(240,178,75,.18);}
+.btn-ghost{border-color:var(--border-strong);color:var(--text);background:rgba(22,18,13,.5);}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px);background:var(--accent-soft);}
+.btn-ghost:active{transform:translateY(0);}
+
+/* 终端身份面板 */
+.term-panel{
+  position:relative;z-index:2;border:1px solid var(--border-strong);border-radius:12px;
+  background:linear-gradient(180deg,var(--surface-2),var(--surface));
+  box-shadow:0 30px 80px rgba(0,0,0,.45);
+  overflow:hidden;
+  transition:border-color .3s var(--ease);
+}
+.term-panel:hover{border-color:var(--accent);}
+.term-panel::before{content:"";position:absolute;inset:0 0 auto 0;height:1px;background:linear-gradient(90deg,var(--accent),transparent 70%);z-index:2;animation:termGlow 4s ease-in-out infinite;}
+@keyframes termGlow{0%,100%{opacity:.6;}50%{opacity:1;}}
+@media (prefers-reduced-motion: reduce){.term-panel::before{animation:none;}}
+.term-bar{display:flex;align-items:center;gap:8px;padding:13px 16px;border-bottom:1px solid var(--border);background:rgba(11,9,7,.4);}
+.term-bar i{width:10px;height:10px;border-radius:50%;background:var(--surface-3);display:block;flex:none;}
+.term-bar i:nth-child(1){background:rgba(255,138,92,.85);}
+.term-bar i:nth-child(2){background:rgba(250,200,120,.85);}
+.term-bar i:nth-child(3){background:var(--accent);}
+.term-bar em{font-style:normal;font-family:var(--font-display);font-size:12px;letter-spacing:.1em;color:var(--faint);margin-left:8px;}
+.term-body{padding:22px 22px 20px;font-family:var(--font-display);font-size:13.5px;line-height:1.9;}
+.term-body .k{color:var(--accent);font-weight:600;margin-right:10px;}
+.term-body .cmd{color:var(--text);}
+.term-body .cmd-line{margin-top:14px;}
+.term-body .cmd-line:first-child{margin-top:0;}
+.term-body .v{color:var(--muted);padding-left:22px;margin-bottom:6px;}
+.term-body .v b{color:var(--text);font-weight:600;}
+.term-body .v2{color:var(--faint);padding-left:22px;margin-bottom:3px;font-size:12.5px;}
+.term-body .ok{color:var(--accent);}
+.term-body .ok::before{content:"●";font-size:9px;vertical-align:2px;margin-right:8px;color:var(--accent);}
+.term-cursor-line{margin-top:16px;color:var(--text);}
+.term-cursor-line .blk{display:inline-block;width:9px;height:16px;background:var(--accent);vertical-align:-2px;animation:blink 1.1s steps(2) infinite;}
+
+/* 鼠标跟随金色光点（hero 内，中央可互动反馈） */
+.hero-cursor{
+  position:absolute;left:0;top:0;width:10px;height:10px;border-radius:50%;
+  background:#FFD28A;
+  box-shadow:0 0 12px 3px rgba(240,178,75,.65),0 0 44px 12px rgba(240,178,75,.28);
+  transform:translate(-50%,-50%);
+  pointer-events:none;z-index:6;
+  opacity:0;transition:opacity .3s;
+}
+.hero-cursor.on{opacity:1;}
+
+/* Hero 底部信息行 */
+.hero-meta{position:absolute;left:0;right:0;bottom:0;z-index:3;pointer-events:none;}
+.hero-meta-inner{max-width:var(--maxw);margin:0 auto;padding:0 24px 30px;}
+.hero-loc{font-family:var(--font-display);font-size:12.5px;letter-spacing:.14em;color:var(--faint);display:inline-block;}
+.hud-coords{
+  position:absolute;right:24px;bottom:30px;font-family:var(--font-display);font-size:12px;
+  letter-spacing:.14em;color:var(--faint);z-index:3;background:rgba(11,9,7,.5);
+  padding:7px 12px;border:1px solid var(--border);border-radius:6px;
+}
+.hud-coords b{color:var(--accent);font-weight:600;}
+.scroll-hint{
+  position:absolute;left:50%;bottom:26px;transform:translateX(-50%);
+  font-family:var(--font-display);font-size:11px;letter-spacing:.3em;color:var(--muted);
+  display:flex;flex-direction:column;align-items:center;gap:8px;z-index:3;
+}
+.scroll-hint::after{content:"";width:1px;height:34px;background:linear-gradient(var(--muted),transparent);animation:drop 1.8s var(--ease) infinite;}
+@keyframes drop{0%{transform:scaleY(0);transform-origin:top;}55%{transform:scaleY(1);transform-origin:top;}56%{transform-origin:bottom;}100%{transform:scaleY(0);transform-origin:bottom;}}
+
+/* ---------- 通用 section ---------- */
+.section{padding:110px 0;position:relative;border-top:1px solid var(--border);}
+.section.alt{background:linear-gradient(180deg,var(--bg-2),var(--bg));}
+.section-head{display:flex;align-items:center;gap:22px;margin-bottom:56px;flex-wrap:wrap;position:relative;}
+.section-head::after{
+  content:attr(data-bg);position:absolute;right:0;top:-30px;font-family:var(--font-display);
+  font-size:120px;font-weight:700;color:rgba(240,178,75,.04);line-height:1;pointer-events:none;letter-spacing:-.02em;
+}
+.section-no{
+  font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.2em;color:var(--accent);
+  display:inline-flex;align-items:center;gap:10px;
+}
+.section-no::before{content:"[";color:var(--faint);}
+.section-no::after{content:"]";color:var(--faint);}
+.section-title{font-size:clamp(30px,4.2vw,46px);font-weight:900;letter-spacing:.01em;line-height:1.16;}
+.section-title em{
+  font-style:normal;
+  background:linear-gradient(92deg,var(--accent) 10%,var(--accent-2) 90%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.section-desc{margin-left:auto;color:var(--muted);font-size:14px;max-width:360px;border-left:2px solid var(--accent-dim);padding-left:18px;}
+.section-desc code{font-family:var(--font-display);color:var(--accent-2);font-size:12.5px;}
+
+/* 滚动揭示（克制：仅标题与卡片，非全站铺） */
+.rv{opacity:0;transform:translateY(18px);transition:opacity .6s var(--ease),transform .6s var(--ease);}
+.rv.in{opacity:1;transform:none;}
+@media (prefers-reduced-motion: reduce){.rv{opacity:1;transform:none;}}
+
+/* ---------- 作品区 ---------- */
+.filter-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:44px;}
+.filter-btn{
+  font-family:var(--font-display);font-size:13px;letter-spacing:.08em;color:var(--muted);
+  padding:12px 20px;border:1px solid var(--border);border-radius:999px;background:transparent;
+  cursor:pointer;transition:all .2s var(--ease);min-height:44px;position:relative;
+}
+.filter-btn:hover{color:var(--text);border-color:var(--accent-dim);background:var(--accent-soft);}
+.filter-btn.active{
+  background:var(--accent);color:#1A1208;border-color:var(--accent);font-weight:600;
+  box-shadow:0 6px 20px rgba(240,178,75,.25);
+}
+.filter-btn .count{
+  display:inline-block;margin-left:6px;font-size:11px;opacity:.7;
+  background:rgba(0,0,0,.15);padding:1px 7px;border-radius:10px;
+}
+.filter-btn.active .count{background:rgba(26,18,8,.25);}
+.works-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:30px;}
+.work-card{
+  background:linear-gradient(180deg,var(--surface),var(--bg-2));
+  border:1px solid var(--border);border-radius:var(--radius);
+  overflow:hidden;cursor:pointer;position:relative;text-align:left;
+  transition:transform .28s var(--ease),border-color .28s var(--ease),box-shadow .28s var(--ease);
+}
+.work-card::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:2px;z-index:4;
+  background:linear-gradient(90deg,var(--accent),var(--accent-2),transparent 80%);opacity:0;transition:opacity .3s;
+}
+.work-card:hover{transform:translateY(-5px);border-color:var(--accent-dim);box-shadow:0 26px 60px rgba(0,0,0,.5),0 0 0 1px rgba(240,178,75,.15);}
+.work-card:hover::before{opacity:1;}
+.work-card:focus-visible{border-color:var(--accent);box-shadow:0 0 0 3px rgba(240,178,75,.2);}
+.work-cover{position:relative;aspect-ratio:16/9;overflow:hidden;background:var(--surface-2);}
+.work-cover img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease),filter .4s var(--ease);filter:saturate(.92) contrast(1.02) brightness(.92);}
+.work-card:hover .work-cover img{transform:scale(1.06);filter:saturate(1.05) contrast(1.05) brightness(1);}
+.work-cover::after{
+  content:"";position:absolute;inset:0;z-index:1;
+  background:linear-gradient(180deg,rgba(11,9,7,0) 38%,rgba(11,9,7,.68) 100%);
+}
+/* 可试玩作品播放按钮覆盖层 */
+.work-play-overlay{
+  position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .3s var(--ease);background:rgba(11,9,7,.28);backdrop-filter:blur(1px);
+}
+.work-card:hover .work-play-overlay{opacity:1;}
+.work-play-btn{
+  width:58px;height:58px;border-radius:50%;background:var(--accent);color:#1A1208;
+  display:flex;align-items:center;justify-content:center;font-size:20px;
+  box-shadow:0 8px 28px rgba(240,178,75,.45);transform:scale(.85);transition:transform .3s var(--ease);
+}
+.work-card:hover .work-play-btn{transform:scale(1);}
+.work-play-btn::before{content:"▶";margin-left:3px;}
+.work-no{
+  position:absolute;top:14px;left:14px;z-index:3;font-family:var(--font-display);font-weight:700;
+  font-size:12px;letter-spacing:.14em;color:#1A1208;background:var(--accent);
+  padding:4px 10px;border-radius:5px;box-shadow:0 4px 14px rgba(0,0,0,.3);
+}
+.work-status{
+  position:absolute;top:14px;right:14px;z-index:3;font-family:var(--font-display);font-size:12px;
+  letter-spacing:.1em;padding:5px 10px;border-radius:5px;background:rgba(11,9,7,.7);
+  color:var(--muted);border:1px solid var(--border);backdrop-filter:blur(4px);
+}
+.work-status.playable{color:var(--accent);border-color:rgba(240,178,75,.5);background:rgba(240,178,75,.12);}
+.work-watermark{
+  position:absolute;right:14px;bottom:-12px;z-index:2;font-family:var(--font-display);font-weight:700;
+  font-size:72px;line-height:1;color:transparent;-webkit-text-stroke:1px rgba(243,236,225,.22);
+  user-select:none;pointer-events:none;transition:color .3s,-webkit-text-stroke-color .3s;
+}
+.work-card:hover .work-watermark{color:rgba(240,178,75,.08);-webkit-text-stroke-color:rgba(240,178,75,.4);}
+.work-body{padding:22px 24px 24px;position:relative;}
+.work-body::before{content:"";position:absolute;top:0;left:24px;right:24px;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+.work-type{
+  font-family:var(--font-display);font-size:12px;letter-spacing:.22em;color:var(--accent);
+  margin-bottom:8px;display:flex;align-items:center;gap:10px;margin-top:4px;
+}
+.work-type::before{content:"";width:18px;height:1px;background:var(--accent-dim);}
+.work-title{font-size:20px;font-weight:800;margin-bottom:8px;color:var(--text);letter-spacing:.01em;transition:color .2s;}
+.work-card:hover .work-title{color:var(--accent);}
+.work-desc{font-size:14px;color:var(--muted);margin-bottom:16px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.75;}
+.work-tags{display:flex;gap:8px;flex-wrap:wrap;}
+.tag{
+  font-family:var(--font-display);font-size:12px;letter-spacing:.06em;color:var(--muted);
+  border:1px solid var(--border);border-radius:6px;padding:4px 10px;background:rgba(11,9,7,.25);
+  transition:border-color .2s,color .2s,background .2s;
+}
+.tag:hover{border-color:var(--accent-dim);color:var(--accent);background:var(--accent-soft);}
+.tag.hot{color:var(--accent-2);border-color:rgba(255,138,92,.45);}
+.tag.hot:hover{background:rgba(255,138,92,.08);}
+.works-empty{display:none;padding:60px 0;text-align:center;color:var(--muted);font-size:15px;}
+.works-empty.show{display:block;}
+.works-empty::before{content:"∅";display:block;font-family:var(--font-display);font-size:48px;color:var(--accent-dim);margin-bottom:12px;opacity:.6;}
+
+/* ---------- 能力区 ---------- */
+.skills-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;}
+.skill-card{
+  background:linear-gradient(180deg,var(--surface),var(--bg-2));
+  border:1px solid var(--border);border-radius:var(--radius);padding:28px 28px 26px;
+  position:relative;overflow:hidden;transition:border-color .25s var(--ease),transform .25s var(--ease),box-shadow .25s var(--ease);
+}
+.skill-card::before{
+  content:attr(data-num);position:absolute;top:18px;right:22px;font-family:var(--font-display);
+  font-size:42px;font-weight:700;color:rgba(240,178,75,.08);line-height:1;pointer-events:none;
+}
+.skill-card::after{
+  content:"";position:absolute;right:-30px;top:-30px;width:90px;height:90px;
+  background:radial-gradient(circle,rgba(240,178,75,.10),transparent 70%);pointer-events:none;transition:opacity .3s;
+}
+.skill-card:hover{border-color:var(--accent-dim);transform:translateY(-3px);box-shadow:0 18px 44px rgba(0,0,0,.35);}
+.skill-card:hover::after{opacity:.6;}
+.skill-card h3{
+  font-family:var(--font-display);font-size:15px;font-weight:600;letter-spacing:.12em;
+  color:var(--accent);margin-bottom:18px;display:flex;align-items:center;gap:12px;
+}
+.skill-card h3::before{content:"";width:8px;height:8px;background:var(--accent);transform:rotate(45deg);flex:none;box-shadow:0 0 12px rgba(240,178,75,.5);}
+.skill-card ul{list-style:none;display:flex;flex-wrap:wrap;gap:9px;}
+.skill-card li{
+  font-size:13.5px;color:var(--text);border:1px solid var(--border);
+  padding:6px 13px;border-radius:7px;background:rgba(11,9,7,.3);transition:border-color .2s,color .2s,background .2s,transform .2s;
+}
+.skill-card li:hover{border-color:var(--accent-dim);color:var(--accent);background:var(--accent-soft);transform:translateY(-1px);}
+
+/* ---------- 经历时间轴（grid 三列：时间/轴/内容） ---------- */
+.timeline{display:grid;grid-template-columns:120px 44px 1fr;row-gap:0;border-top:1px solid var(--border);}
+.tl-item{display:contents;}
+.tl-time{
+  padding:28px 0;font-family:var(--font-display);font-size:13px;letter-spacing:.08em;
+  color:var(--accent-2);text-align:right;
+}
+.tl-axis{position:relative;}
+.tl-axis::before{
+  content:"";position:absolute;top:0;bottom:0;left:50%;width:1px;
+  background:linear-gradient(180deg,var(--border),var(--accent-dim) 50%,var(--border));
+  transform:translateX(-50%);
+}
+.tl-item:first-child .tl-axis::before{top:36px;}
+.tl-item:last-child .tl-axis::before{bottom:calc(100% - 36px);}
+.tl-dot{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:12px;height:12px;background:var(--bg);border:2px solid var(--accent);border-radius:3px;
+  z-index:1;box-shadow:0 0 0 4px rgba(240,178,75,.10);
+}
+.tl-item.current .tl-dot{border-color:var(--accent-2);box-shadow:0 0 0 5px rgba(255,138,92,.16),0 0 18px rgba(255,138,92,.35);animation:dotPulse 2.4s ease-in-out infinite;}
+@keyframes dotPulse{0%,100%{box-shadow:0 0 0 5px rgba(255,138,92,.16),0 0 18px rgba(255,138,92,.35);}50%{box-shadow:0 0 0 8px rgba(255,138,92,.08),0 0 24px rgba(255,138,92,.5);}}
+@media (prefers-reduced-motion: reduce){.tl-item.current .tl-dot{animation:none;}}
+.tl-content{padding:24px 0 28px 8px;max-width:660px;transition:transform .25s var(--ease);}
+.tl-item:hover .tl-content{transform:translateX(4px);}
+.tl-item:hover .tl-dot{border-color:var(--accent);box-shadow:0 0 0 4px rgba(240,178,75,.15);}
+.tl-content h3{font-size:18px;font-weight:800;margin-bottom:6px;letter-spacing:.01em;transition:color .2s;}
+.tl-item:hover .tl-content h3{color:var(--accent);}
+.tl-content .org{font-family:var(--font-display);font-size:12.5px;letter-spacing:.12em;color:var(--accent);margin-bottom:8px;}
+.tl-content p{font-size:14px;color:var(--muted);}
+
+/* ---------- 联系区 ---------- */
+.contact{text-align:center;padding:130px 0 100px;}
+.contact .section-head{justify-content:center;margin-bottom:22px;}
+.contact-lead{color:var(--muted);max-width:540px;margin:0 auto 36px;font-size:15.5px;line-height:2;}
+.contact-mail{
+  font-family:var(--font-display);font-size:clamp(20px,3vw,28px);font-weight:600;
+  color:var(--accent);letter-spacing:.02em;margin-bottom:36px;word-break:break-all;
+  padding:14px 28px;border:1px solid var(--border);border-radius:12px;display:inline-block;
+  background:var(--accent-soft);transition:border-color .3s,box-shadow .3s;
+}
+.contact-mail:hover{border-color:var(--accent-dim);box-shadow:0 0 30px rgba(240,178,75,.12);}
+.contact-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+.btn-copy{background:var(--surface-2);border:1px solid var(--border);color:var(--text);}
+.btn-copy:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);}
+.btn-copy:active{transform:translateY(0);}
+.contact-links{display:flex;gap:12px;justify-content:center;margin-top:38px;flex-wrap:wrap;}
+.contact-links a{
+  font-family:var(--font-display);font-size:13px;letter-spacing:.1em;color:var(--muted);
+  border:1px solid var(--border);border-radius:999px;padding:12px 22px;min-height:44px;
+  display:inline-flex;align-items:center;gap:8px;transition:all .22s var(--ease);background:rgba(11,9,7,.3);
+}
+.contact-links a:hover{color:var(--accent);border-color:var(--accent-dim);transform:translateY(-2px);background:var(--accent-soft);}
+
+/* ---------- 页脚 ---------- */
+.site-footer{border-top:1px solid var(--border);padding:36px 0;color:var(--muted);font-size:13px;background:var(--bg-2);}
+.site-footer .container{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;}
+.footer-note{font-family:var(--font-display);font-size:12px;letter-spacing:.12em;color:var(--faint);}
+.footer-brand{font-family:var(--font-display);font-weight:600;color:var(--text);letter-spacing:.08em;display:inline-flex;align-items:center;gap:8px;}
+.footer-brand .cursor{width:7px;height:12px;background:var(--accent);display:inline-block;animation:blink 1.1s steps(2) infinite;}
+
+/* ---------- 作品详情模态框 ---------- */
+.modal-overlay{
+  position:fixed;inset:0;z-index:80;background:rgba(8,6,4,.85);
+  display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);
+}
+.modal-overlay.open{display:flex;}
+.modal-overlay.open .modal{animation:modalIn .35s var(--ease);}
+@keyframes modalIn{from{opacity:0;transform:translateY(20px) scale(.97);}to{opacity:1;transform:none;}}
+@media (prefers-reduced-motion: reduce){.modal-overlay.open .modal{animation:none;}}
+.modal{
+  background:var(--surface);border:1px solid var(--border-strong);border-radius:16px;
+  max-width:760px;width:100%;max-height:88vh;overflow:auto;position:relative;
+  box-shadow:0 40px 100px rgba(0,0,0,.6);
+}
+.modal::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:2px;z-index:3;
+  background:linear-gradient(90deg,var(--accent),var(--accent-2));border-radius:16px 16px 0 0;
+}
+.modal-cover{aspect-ratio:16/8;overflow:hidden;position:relative;}
+.modal-cover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(22,18,13,.85) 100%);}
+.modal-cover img{width:100%;height:100%;object-fit:cover;}
+.modal-close{
+  position:absolute;top:16px;right:16px;width:40px;height:40px;border-radius:50%;
+  background:rgba(11,9,7,.85);border:1px solid var(--border-strong);color:var(--text);
+  font-family:var(--font-display);font-size:20px;cursor:pointer;transition:all .25s var(--ease);z-index:4;
+  display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);
+}
+.modal-close:hover{color:var(--accent);border-color:var(--accent);transform:rotate(90deg) scale(1.08);background:rgba(240,178,75,.12);}
+.modal-body{padding:30px 32px 34px;}
+.modal-body .work-type{margin-bottom:8px;}
+.modal-title{font-size:26px;font-weight:800;margin-bottom:12px;letter-spacing:.01em;}
+.modal-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+.modal-desc{font-size:15px;color:var(--muted);line-height:1.95;}
+.modal-story{margin-top:22px;padding-top:18px;border-top:1px dashed rgba(240,178,75,.28);}
+.modal-story h4{
+  font-family:var(--font-display);font-size:12.5px;font-weight:700;letter-spacing:.2em;
+  color:var(--accent-2);margin-bottom:12px;display:flex;align-items:center;gap:9px;
+}
+.modal-story h4::before{content:"";width:20px;height:1px;background:var(--accent-2);opacity:.55;flex:none;}
+.modal-story p{font-size:14px;color:var(--muted);line-height:1.9;margin:0 0 10px;}
+.modal-story p:last-child{margin-bottom:0;}
+.modal-note{
+  margin-top:22px;font-size:13px;color:var(--accent-2);border:1px dashed rgba(255,138,92,.4);
+  border-radius:8px;padding:12px 14px;background:rgba(255,138,92,.06);
+}
+.modal-play{margin-top:18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.modal-play .play-btn{
+  display:inline-flex;align-items:center;gap:9px;
+  background:var(--accent);color:#1A1208;font-family:var(--font-display);
+  font-size:14px;font-weight:600;letter-spacing:.06em;padding:13px 26px;border-radius:9px;
+  transition:all .2s var(--ease);box-shadow:0 6px 20px rgba(240,178,75,.25);
+}
+.modal-play .play-btn:hover{background:var(--accent-2);color:#2B1A0E;transform:translateY(-2px);box-shadow:0 10px 28px rgba(240,178,75,.35);}
+.modal-play .play-btn:active{transform:translateY(0);}
+.modal-play .play-hint{font-size:12.5px;color:var(--muted);letter-spacing:.04em;}
+.modal-play .gh-btn{
+  display:inline-flex;align-items:center;gap:9px;
+  background:transparent;color:var(--text);font-family:var(--font-display);
+  font-size:14px;font-weight:600;letter-spacing:.06em;padding:13px 26px;border-radius:9px;
+  border:1px solid var(--border-strong);transition:all .2s var(--ease);
+}
+.modal-play .gh-btn:hover{border-color:var(--accent-2);color:var(--accent-2);transform:translateY(-2px);background:var(--accent-2-soft);}
+.modal-play .gh-btn:active{transform:translateY(0);}
+
+/* ---------- Toast ---------- */
+#toast{
+  position:fixed;left:50%;bottom:34px;transform:translate(-50%,16px);z-index:120;
+  background:var(--surface-2);border:1px solid var(--accent-dim);color:var(--text);
+  font-size:14px;padding:14px 26px;border-radius:12px;opacity:0;pointer-events:none;
+  transition:opacity .3s var(--ease),transform .3s var(--ease);
+  font-family:var(--font-display);letter-spacing:.04em;box-shadow:0 16px 40px rgba(0,0,0,.45);
+  display:flex;align-items:center;gap:10px;backdrop-filter:blur(8px);
+}
+#toast::before{content:"✓";color:var(--accent);font-weight:700;}
+#toast.show{opacity:1;transform:translate(-50%,0);}
+
+/* ---------- 返回顶部 ---------- */
+#backTop{
+  position:fixed;right:24px;bottom:24px;z-index:60;width:46px;height:46px;border-radius:50%;
+  background:var(--surface-2);border:1px solid var(--border);color:var(--accent);
+  font-family:var(--font-display);font-size:18px;cursor:pointer;opacity:0;pointer-events:none;transition:all .3s var(--ease);
+  display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);
+}
+#backTop.show{opacity:1;pointer-events:auto;}
+#backTop:hover{border-color:var(--accent);transform:translateY(-3px);background:var(--accent-soft);box-shadow:0 8px 24px rgba(240,178,75,.2);}
+
+/* ---------- 响应式 ---------- */
+@media (max-width:960px){
+  .hero-grid{grid-template-columns:1fr;gap:40px;}
+  .term-panel{max-width:520px;}
+  .section{padding:84px 0;}
+  .section-desc{margin-left:0;max-width:100%;}
+}
+@media (max-width:900px){
+  .nav-toggle{display:block;}
+  .nav-links{
+    position:absolute;top:64px;left:0;right:0;flex-direction:column;align-items:stretch;
+    background:rgba(11,9,7,.98);border-bottom:1px solid var(--border);padding:10px 24px 18px;
+    display:none;
+  }
+  .nav-links.open{display:flex;}
+  .nav-links a{padding:13px 10px;border-bottom:1px solid var(--border);}
+  .nav-links a:last-child{border-bottom:none;}
+  .nav-cta{margin-top:8px;text-align:center;}
+  .works-grid{grid-template-columns:1fr;}
+  .skills-grid{grid-template-columns:1fr;}
+  .timeline{grid-template-columns:84px 32px 1fr;}
+  .hud-coords{display:none;}
+  .scroll-hint{display:none;}
+  .hero{padding:120px 0 110px;}
+  .contact{padding:96px 0 70px;}
+}
+@media (max-width:480px){
+  .container{padding:0 18px;}
+  .timeline{grid-template-columns:70px 28px 1fr;}
+  .modal-body{padding:24px 20px 26px;}
+  .term-body{padding:18px;}
+  .hero-name{font-size:clamp(38px,10vw,52px);}
+}
+
+</style>
+</head>
+<body>
+
+<!-- ===== 进度条 / 导航 ===== -->
+<div id="progress"></div>
+<header class="site-header" id="siteHeader">
+  <nav class="nav" aria-label="主导航">
+    <a class="brand" href="#top">PORTFOLIO<span class="cursor"></span><span style="color:var(--muted);font-weight:400;">TERMINAL</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="打开菜单" aria-expanded="false"><span></span></button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#works">作品</a></li>
+      <li><a href="#skills">能力</a></li>
+      <li><a href="#experience">经历</a></li>
+      <li><a href="#contact" class="nav-cta">联系我</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="top">
+
+  <!-- ===== Hero ===== -->
+  <section class="hero" id="hero">
+    <canvas id="wave" aria-hidden="true"></canvas>
+    <div class="hero-cursor" id="heroCursor" aria-hidden="true"></div>
+    <div class="container">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="hero-tag">GAME DESIGN · INTERACTIVE MEDIA</p>
+          <h1 class="hero-name">洪昺森<span class="dot">.</span></h1>
+          <p class="hero-title">互动媒体艺术 · 游戏设计方向 <strong>研究生</strong><br>澳门科技大学</p>
+          <p class="hero-sub">计算机科学本科出身，正攻读互动媒体艺术（游戏设计方向）硕士。擅长把编程能力转化为可玩的创意表达——用 Unity、Python 独立完成从玩法原型到可玩版本的全流程开发，也持续探索 3D 创作、交互与视觉研究。</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#works">查看作品</a>
+            <a class="btn btn-ghost" href="#contact">与我联系</a>
+          </div>
+        </div>
+        <aside class="term-panel rv" aria-label="身份信息">
+          <div class="term-bar"><i></i><i></i><i></i><em>whoami · 洪昺森</em></div>
+          <div class="term-body">
+            <p class="cmd-line"><span class="k">$</span><span class="cmd">whoami</span></p>
+            <p class="v"><b>洪昺森</b> · Bingsen Hong</p>
+            <p class="cmd-line"><span class="k">$</span><span class="cmd">edu</span></p>
+            <p class="v"><b>M.U.S.T.</b> 澳门科技大学</p>
+            <p class="v2">本科 计算机科学（2022–2026）</p>
+            <p class="v2">硕士 互动媒体艺术 · 游戏设计（在读）</p>
+            <p class="cmd-line"><span class="k">$</span><span class="cmd">focus</span></p>
+            <p class="v">Game Design · Interactive Media</p>
+            <p class="cmd-line"><span class="k">$</span><span class="cmd">status</span></p>
+            <p class="v ok">研究生在读 · 珠海 ↔ 澳门</p>
+            <p class="term-cursor-line"><span class="k">$</span><span class="blk"></span></p>
+          </div>
+        </aside>
+      </div>
+    </div>
+    <div class="hud-coords" id="hudCoords" aria-hidden="true">X:<b>000</b> / Y:<b>000</b></div>
+    <div class="hero-meta"><div class="hero-meta-inner"><p class="hero-loc">M.U.S.T. · GRADUATE STUDENT · 珠海 ↔ 澳门</p></div></div>
+    <div class="scroll-hint" aria-hidden="true">SCROLL</div>
+  </section>
+
+  <!-- ===== 作品 ===== -->
+  <section class="section" id="works">
+    <div class="container">
+      <div class="section-head rv" data-bg="01">
+        <span class="section-no">01 / SELECTED WORKS</span>
+        <h2 class="section-title">精选<em>作品</em></h2>
+        <p class="section-desc">16 个真实项目：游戏开发、视觉研究、互动媒体与系统工程。<code>点击卡片</code>查看详情。</p>
+      </div>
+      <div class="filter-bar rv" role="group" aria-label="作品筛选">
+        <button class="filter-btn active" data-filter="all">全部<span class="count">12</span></button>
+        <button class="filter-btn" data-filter="游戏设计">游戏设计<span class="count"></span></button>
+        <button class="filter-btn" data-filter="互动媒体">互动媒体<span class="count"></span></button>
+        <button class="filter-btn" data-filter="视觉研究">视觉研究<span class="count"></span></button>
+        <button class="filter-btn" data-filter="系统工程">系统工程<span class="count"></span></button>
+      </div>
+      <div class="works-grid" id="worksGrid"></div>
+      <div class="works-empty" id="worksEmpty">该分类下暂无作品，可在 data 中补充。</div>
+    </div>
+  </section>
+
+  <!-- ===== 能力 ===== -->
+  <section class="section alt" id="skills">
+    <div class="container">
+      <div class="section-head rv" data-bg="02">
+        <span class="section-no">02 / SKILL SET</span>
+        <h2 class="section-title">能力<em>标签</em></h2>
+        <p class="section-desc">来自真实项目与实习实践，按类别整理。</p>
+      </div>
+      <div class="skills-grid">
+        <div class="skill-card rv" data-num="01"><h3>游戏开发</h3><ul>
+          <li>Unity · C#</li><li>Python · Pygame</li><li>Android Studio · Kotlin</li><li>玩法原型设计</li><li>难度曲线调优</li>
+        </ul></div>
+        <div class="skill-card rv" data-num="02"><h3>互动与编程</h3><ul>
+          <li>Python / Java / SQL</li><li>Socket · 多线程</li><li>RTSP / RTP</li><li>YOLOv8 · OpenCV</li><li>数据标注与质控</li>
+        </ul></div>
+        <div class="skill-card rv" data-num="03"><h3>美术与叙事</h3><ul>
+          <li>像素美术 · Aseprite</li><li>Blender 3D</li><li>Cycles 渲染</li><li>Python 场景自动化</li><li>Figma（基础）</li>
+        </ul></div>
+        <div class="skill-card rv" data-num="04"><h3>研究与协作</h3><ul>
+          <li>用户测试与埋点分析</li><li>游戏体验评估</li><li>Git / GitHub</li><li>Trello 项目管理</li><li>技术文档撰写</li>
+        </ul></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 经历 ===== -->
+  <section class="section" id="experience">
+    <div class="container">
+      <div class="section-head rv" data-bg="03">
+        <span class="section-no">03 / EXPERIENCE</span>
+        <h2 class="section-title">教育<em>与经历</em></h2>
+        <p class="section-desc">从计算机科学到游戏设计的成长路径，含一段音频算法研发实习。</p>
+      </div>
+      <div class="timeline">
+        <div class="tl-item current">
+          <div class="tl-time">2026.09 — 至今</div>
+          <div class="tl-axis"><span class="tl-dot"></span></div>
+          <div class="tl-content">
+            <h3>研究生 · 互动媒体艺术（游戏设计方向）</h3>
+            <div class="org">澳门科技大学</div>
+            <p>攻读硕士学位，研究方向聚焦游戏设计与互动媒体创作，结合计算机科学背景探索玩法、交互与叙事的交叉实践。</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">2022.09 — 2026.06</div>
+          <div class="tl-axis"><span class="tl-dot"></span></div>
+          <div class="tl-content">
+            <h3>本科 · 计算机科学</h3>
+            <div class="org">澳门科技大学 · 校级优秀奖学金</div>
+            <p>主修数据结构与算法、操作系统、计算机网络、数据库原理等；课余独立开发多款游戏与交互原型，实践「技术 × 创意」的创作路径。</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">2025.06 — 2025.07</div>
+          <div class="tl-axis"><span class="tl-dot"></span></div>
+          <div class="tl-content">
+            <h3>音频算法研发实习生</h3>
+            <div class="org">澳门数字动力科技有限公司</div>
+            <p>负责嵌入式音频增强系统的深度学习模型压缩与优化：通过 ONNX 转换 + TFLite 全整数量化将模型从 26.8MB 压缩至 6.9MB（压缩率 74%），使其可部署于资源受限的嵌入式设备；构建自动化测试框架衡量推理延迟、内存占用与音频质量；同时参与交互语料库标注质控，将标注一致性从 78% 提升至 94%。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 联系 ===== -->
+  <section class="section contact alt" id="contact">
+    <div class="container">
+      <div class="section-head rv" style="justify-content:center;" data-bg="04">
+        <span class="section-no">04 / CONTACT</span>
+        <h2 class="section-title">保持<em>联系</em></h2>
+      </div>
+      <p class="contact-lead rv">如果你想聊聊游戏、互动媒体或合作机会，欢迎通过邮箱、LinkedIn、GitHub 或 Itch.io 联系我。</p>
+      <div class="contact-mail rv" id="contactMail">1151374965@qq.com</div>
+      <div class="contact-actions rv">
+        <button class="btn btn-primary" id="copyMail">复制邮箱地址</button>
+        <a class="btn btn-ghost" href="mailto:1151374965@qq.com">发送邮件</a>
+      </div>
+      <div class="contact-links rv">
+        <a href="https://www.linkedin.com/in/bingsen-hong-must" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/duyv0826" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://duyv0826.itch.io" target="_blank" rel="noopener">Itch.io</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===== 页脚 ===== -->
+<footer class="site-footer">
+  <div class="container">
+    <span class="footer-brand">PORTFOLIO<span class="cursor"></span><span style="color:var(--muted);font-weight:400;">TERMINAL</span></span>
+    <span>© 2026 洪昺森 · 澳门科技大学</span>
+    <span class="footer-note">BUILT WITH HTML / CSS / JS — NO FRAMEWORK</span>
+  </div>
+</footer>
+
+<!-- ===== 作品详情模态框 ===== -->
+<div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-label="作品详情">
+  <div class="modal" id="modalBox">
+    <button class="modal-close" id="modalClose" aria-label="关闭详情">×</button>
+    <div class="modal-cover"><img id="modalCover" src="" alt=""></div>
+    <div class="modal-body">
+      <p class="work-type" id="modalType"></p>
+      <h3 class="modal-title" id="modalTitle"></h3>
+      <div class="modal-meta" id="modalMeta"></div>
+      <p class="modal-desc" id="modalDesc"></p>
+      <div class="modal-story" id="modalStory"></div>
+      <div class="modal-play" id="modalPlay"></div>
+      <p class="modal-note" id="modalNote"></p>
+    </div>
+  </div>
+</div>
+
+<button id="backTop" aria-label="返回顶部">↑</button>
+<div id="toast" role="status"></div>
+
+<script>
+/* ============================================================
+   数据：作品占位。请替换标题 / 描述 / 封面 / 标签 / 状态 / 详情。
+   图片放在同目录 assets/ 下，用相对路径引用。
+   ============================================================ */
+const WORKS = [
+  {
+    no: '01',
+    title: '《Chrono Loop》时间循环解谜',
+    type: '游戏设计',
+    status: '已完成',
+    tags: ['Unity', 'C#', 'Aseprite', '时间回溯'],
+    cover: 'assets/work-1.jpg',
+    desc: '独立开发的时间循环解谜游戏，实现时间回溯核心机制，从创意构思到可玩版本全流程主导。',
+    detail: '独立完成核心玩法设计、交互逻辑搭建与时间回溯功能开发；结合用户认知心理设计阶梯式关卡难度与即时反馈机制，优化玩家留存与游玩体验。使用 Aseprite 完成像素美术设计。',
+    story: ["独立开发的 Unity 解谜游戏，从创意构思、玩法设计到可玩版本全流程一人主导，同时承担程序实现与像素美术。", "核心机制是「时间回溯」：玩家可把角色倒回数秒前的位置重新规划路线。围绕它设计了阶梯式关卡——前期以单点回溯做教学，中后期叠加多段回溯与移动平台，难度按认知负荷渐进。", "全程用即时反馈（残影、音效、结算表现）降低试错挫败感，优化留存与游玩体验；美术用 Aseprite 绘制，保持统一的像素视觉语言。"]
+  },
+  {
+    no: '02',
+    title: 'AI 辅助横版肉鸽游戏',
+    type: '游戏设计',
+    status: '已完成',
+    tags: ['Python', 'Pygame', '行为树', '项目管理'],
+    cover: 'assets/work-6.jpg',
+    desc: '团队项目负责人：设计 AI 敌人行为树与动态难度系统，用 Trello 协调 4 人团队按时交付可玩版本。',
+    detail: '设计 AI 敌人行为树，实现基于玩家操作习惯的动态难度调整，游戏体验满意度提升 32%；担任项目负责人，使用 Trello 协调 4 人团队任务分配，按时交付完整可玩版本。',
+    story: ["4 人团队项目，担任负责人：用 Trello 拆分任务、跟进里程碑，协调美术与程序进度，按期交付可玩版本。", "负责 AI 系统：为敌人设计行为树（巡逻 / 追击 / 攻击 / 逃跑的状态迁移），并实现基于玩家操作习惯的动态难度——根据生命值、失误率等指标实时调整敌人密度与攻击频率。", "内测数据显示游戏体验满意度提升 32%，验证了「AI 难度自适应」对留存的正向作用。"]
+  },
+  {
+    no: '03',
+    title: 'Blender 3D 数字内容创作',
+    type: '视觉研究',
+    status: '已完成',
+    tags: ['Blender', 'Cycles', 'Python', '材质渲染'],
+    cover: 'assets/work-3.jpg',
+    desc: '负责核心模型建模、半透明材质调试与渲染优化，完成高还原度的 3D 数字艺术作品。',
+    detail: '负责桌面与杯具场景的 3D 建模、材质调试与渲染优化；通过 Python 脚本实现场景自动化搭建、路径动画与渲染控制，完成技术调试与视觉效果落地。',
+    story: ["以桌面静物为对象的 3D 数字创作，独立完成核心模型（桌面与杯具）建模、Cycles 材质调试与渲染优化。", "半透明材质（玻璃与液体）是主要难点：通过多层材质节点叠加透射与折射，配合布光反复调试才获得通透感。", "用 Python 脚本把场景自动化搭建、镜头路径动画与批量渲染脚本化，把重复劳动交给工具，专注视觉打磨。"]
+  },
+  {
+    no: '04',
+    title: 'Android 互动贪吃蛇',
+    type: '游戏设计',
+    status: '已完成',
+    tags: ['Android Studio', 'Kotlin', '触控交互'],
+    cover: 'assets/work-2.jpg',
+    desc: '独立完成移动端游戏全流程开发，实现屏幕触控操控、实时暂停、得分统计与音效交互。',
+    detail: '基于 Kotlin 搭建开发框架，整合游戏核心逻辑编码与多场景音效资源，实现触控操控、碰撞检测等功能，覆盖 Android 应用开发全流程，优化移动端用户交互体验。',
+    story: ["独立完成的移动端游戏，用 Kotlin + Android Studio 覆盖从界面到逻辑的完整开发流程。", "核心实现屏幕触控操控、碰撞检测（边界与自身）、实时暂停与得分统计，并整合多场景音效资源；针对移动端交互习惯优化操作手感与反馈。"]
+  },
+  {
+    no: '05',
+    title: 'YOLOv8 车型识别系统',
+    type: '视觉研究',
+    status: '已完成',
+    tags: ['Python', 'YOLOv8', 'OpenCV', '数据增强'],
+    cover: 'assets/work-5.jpg',
+    desc: '构建 1100 张 SU7 车型数据集，对比 YOLOv8n/s 训练，导出 ONNX 实现跨平台部署。',
+    detail: '采用"正反样本"策略构建 1100 张数据集（700 张 SU7 + 400 张相似车型），90/5/5 划分；对比 YOLOv8n（3M 参数）与 YOLOv8s（11M 参数），640×640 输入、300 轮训练，验证小数据集下 nano 模型已达最优性价比；导出 ONNX 解除框架依赖，支持边缘设备实时部署。',
+    story: ["目标是在资源受限的边缘设备上实时识别小米 SU7 车型。采用「正反样本」策略构建 1100 张数据集（700 张 SU7 + 400 张相似车型），按 90/5/5 划分训练 / 验证 / 测试。", "对比 YOLOv8n（3M 参数）与 YOLOv8s（11M 参数）两个模型：统一 640×640 输入、300 轮训练，验证小数据集下 nano 模型已达到最优性价比。", "导出 ONNX 解除框架依赖，支持跨平台边缘部署，为「小样本 + 轻量模型」的落地方案提供完整链路。"]
+  },
+  {
+    no: '06',
+    title: 'RTSP 流媒体服务器',
+    type: '互动媒体',
+    status: '已完成',
+    tags: ['Python', 'Socket', 'RTSP/RTP', '多线程'],
+    cover: 'assets/work-4.jpg',
+    desc: '从零构建支持多客户端连接的 RTSP 服务器，实现稳定视频流传输（延迟 <200ms）。',
+    detail: '独立从零构建支持多客户端连接的 RTSP 服务器，完整实现 OPTIONS、DESCRIBE、SETUP、PLAY、TEARDOWN 核心命令；设计会话管理机制，动态生成符合标准的 SDP 描述文件，通过 FFplay/VLC 验证，延迟 <200ms、帧率 30FPS。',
+    story: ["从零实现 RTSP 流媒体服务器（不依赖现成库），完整实现 OPTIONS、DESCRIBE、SETUP、PLAY、TEARDOWN 五个核心命令，支持多客户端并发连接。", "设计会话管理机制，为每个会话动态生成符合标准的 SDP 描述文件；基于 Socket + 多线程处理并发，用 FFplay / VLC 实测验证：延迟 <200ms、30FPS 稳定传输。"]
+  },
+  {
+    no: '07',
+    title: '《Chrono Loop Web》时间回溯原型',
+    type: '互动媒体',
+    status: '可试玩',
+    tags: ['HTML5', 'Canvas', 'JavaScript', '时间回溯'],
+    cover: 'assets/work-7.jpg',
+    desc: '浏览器可直接试玩的时间回溯平台跳跃原型：死亡自动倒带、残影拖尾与粒子回流，实时统计通关数据。',
+    detail: '将《Chrono Loop》的时间回溯核心机制移植为 Web 可玩原型：按帧记录角色状态（最多 5 秒），死亡后自动回溯或按 R 手动回溯 3 秒，倒带期间呈现残影拖尾与回流光点；含移动平台、尖刺陷阱与计时统计，完整展示「试错—倒带—重来」的核心玩法循环。',
+    story: ["把《Chrono Loop》的时间回溯核心机制移植为浏览器可玩原型，用 Web 端验证「试错—倒带—重来」玩法循环的可行性。", "实现按帧状态记录：角色位置写入 5 秒环形缓冲，死亡后自动回溯 2.5 秒（2 倍速倒带），R 键可手动回溯 3 秒，倒带期间呈现残影拖尾与回流光点粒子；关卡含移动平台、尖刺陷阱与 EXIT 终点。", "开发中修复了历史耗尽兜底、按键残留等边界问题，并补充移动端触控虚拟按键与画布自适应，让面试官在手机上也能直接试玩。"],
+    link: 'chrono-web.html'
+  },
+  {
+    no: '08',
+    title: 'XV6 MLFQ 调度器实现与可视化分析',
+    type: '系统工程',
+    status: '已完成',
+    tags: ['C', 'XV6', 'MLFQ', '内核开发', 'Python可视化'],
+    cover: 'assets/work-8.jpg',
+    desc: '在 XV6 教学 OS 中从零实现多级反馈队列调度器，替换默认 Round-Robin，支持动态时间片、优先级降级与防饥饿，并用 Python 可视化真实调度日志。',
+    detail: '本科毕业设计项目。直接修改 XV6 内核（proc.h / proc.c / trap.c），扩展进程控制块新增 queuelevel（0–2 优先级）、ticksinqueue、wait_ticks 三个字段；完全重写 scheduler() 实现 3 级优先级队列，新进程默认进入 Q0，CPU 密集型进程用完时间片后自动降级，I/O 密集型进程因频繁等待而保留高优先级；基于定时器的 anti-starvation 机制防止低优先级进程饥饿。构建 Python 可视化框架从系统日志生成甘特图（MLFQ 降级过程）与对比柱状图（CPU vs I/O 优先级保留），实验验证 MLFQ 对交互型进程的响应速度显著优于默认 Round-Robin。',
+    story: ["本科毕业设计：在 XV6 教学内核中从零实现多级反馈队列（MLFQ）调度器，替换默认 Round-Robin。", "扩展进程控制块新增 queuelevel（0–2 优先级）、ticksinqueue、wait_ticks 字段，完全重写 scheduler()：新进程默认进入 Q0，CPU 密集型进程用完时间片自动降级，I/O 密集型进程因频繁等待保留高优先级，并引入基于定时器的防饥饿机制。", "构建 Python 可视化框架，从真实调度日志生成 MLFQ 降级甘特图与 CPU / I/O 优先级对比图，实验验证 MLFQ 对交互型进程的响应速度显著优于 Round-Robin。"]
+  },
+  {
+    no: '09',
+    title: '《物语系列》设定深挖全景图',
+    type: '互动媒体',
+    status: '可试玩',
+    tags: ['HTML5', 'SVG', 'JavaScript', '数据可视化', '互动叙事'],
+    cover: 'assets/work-9.jpg',
+    desc: '互动式动画设定考据全景图：可拖拽关系网络图 + 角色旅程时间线 + 多视图导航，从斧乃木余接出发深挖贯穿 2012–2019 的设定母题。',
+    detail: '以「从斧乃木余接出发的一次长线考据」为叙事主线的三视图互动作品：①余接的旅程——角色出场时间线与关键事件串联；②制造者—被造者母题——可拖拽 SVG 关系网络图，节点自由拖动、连线展示角色关系，支持重置布局；③2012–2019 关键时间线——全系列作品发布与剧情节点对照。8 位主要角色头像快捷跳转对应板块，全部事实来自日文一手资料查证。单文件 HTML，内嵌角色立绘，离线可玩。',
+    story: ["以「从斧乃木余接出发的一次长线考据」为叙事主线的互动作品，三视图结构：角色旅程时间线、制造者—被造者关系网络图、2012–2019 全系列时间线。", "关系网络图用 SVG 实现节点自由拖拽与连线展示，支持重置布局；8 位主要角色头像可快捷跳转对应板块，全部事实来自日文一手资料查证。", "单文件 HTML、内嵌角色立绘，离线可玩，把「设定考据」做成可以浏览与探索的互动空间。"],
+    link: 'monogatari-map.html'
+  },
+  {
+    no: '10',
+    title: '全球游戏销量数据看板',
+    type: '互动媒体',
+    status: '可试玩',
+    tags: ['数据可视化', 'ECharts', '交互式看板', '游戏行业'],
+    cover: 'assets/work-10.jpg',
+    desc: '覆盖 1980–2020 年全球游戏销量的交互式分析看板：年份/地区/品类三维筛选联动，5 个 KPI 实时刷新，5 种图表交叉对比。',
+    detail: '基于 16,327 款销量 ≥10 万套的游戏数据构建的交互式数据看板：年份区间滑块 + 地区（北美/欧洲/日本/其他）+ 品类（Action/Adventure 等 12 类）三维筛选联动，所有 KPI 与图表实时刷新。包含年度销量趋势堆叠面积图（可切换分线对比）、地区销量占比环形图、品类销量对比条形图、平台销量排名等 5 种可视化，深色游戏风格视觉，响应式布局。数据口径透明标注于页面底部。',
+    story: ["基于 16,327 款销量 ≥10 万套的游戏数据构建的交互式分析看板，覆盖 1980–2020 年。", "年份区间滑块 + 地区（北美 / 欧洲 / 日本 / 其他）+ 品类（12 类）三维筛选联动，所有 KPI 与图表实时刷新；年度趋势堆叠面积图（可切换分线对比）、地区占比环形图、品类对比条形图、平台排名等 5 种可视化交叉验证。", "深色游戏风格视觉、响应式布局，数据口径透明标注于页面底部，保证结论可追溯。"],
+    link: 'https://4m1405d04e4rc.aiforce.cloud/app/app_17dwm333k54'
+  },
+  {
+    no: '11',
+    title: '《脉冲星场》交互式声景生成器',
+    type: '互动媒体',
+    status: '可试玩',
+    tags: ['Web Audio', 'Canvas 2D', '生成式艺术', '音画交互'],
+    cover: 'assets/work-11.jpg',
+    desc: '单文件交互式声景生成器：触碰夜空即点亮星尘并实时合成音符，左右定音高、上下定力度；四类合成音色与自走作曲模式。',
+    detail: '以「深空仪器」为概念的互动媒体作品。用户点击/拖动画布生成粒子星尘与实时合成音：横坐标映射 A 小调五声音阶音高，纵坐标映射力度，青/紫/品/金四相色随音符轮转；内置 92 BPM 巡航作曲器（i–VI–III–VII 和声进行），底鼓/踩镲/贝斯/旋律四轨以音频时钟 lookahead 调度，音画严格同步。原生 Web Audio 合成（零采样依赖）与 Canvas 2D 粒子系统实现，单文件零依赖；静音开关常驻、尊重 reduced-motion、移动端触控适配，支持 ?demo=1 无声预览模式。',
+    story: ["以「深空仪器」为概念的交互式声景生成器：点击 / 拖动夜空生成粒子星尘并实时合成音符，横坐标映射 A 小调五声音阶音高、纵坐标映射力度，四相色随音符轮转。", "内置 92BPM 巡航作曲器（i–VI–III–VII 和声进行），底鼓 / 踩镲 / 贝斯 / 旋律四轨以音频时钟 lookahead 调度，音画严格同步；全部声音由 Web Audio 原生合成，零采样依赖。", "单文件零依赖，静音开关常驻、尊重 reduced-motion、移动端触控适配，支持 ?demo=1 无声预览模式。"],
+    link: 'pulse-field.html',
+    hint: '单击/拖动演奏 · 左右定音高 · 上下定力度 · 1–4 切换音色 · 空格 巡航 · M 静音'
+  },
+  {
+    no: '12',
+    title: '《星尘捕手》交互式收集游戏',
+    type: '游戏设计',
+    status: '可试玩',
+    tags: ['HTML5', 'Canvas 2D', 'Web Audio', '粒子系统', '程序化音频'],
+    cover: 'assets/work-12.jpg',
+    desc: '单文件可玩的小型街机收集游戏：移动泡泡接住坠落星辰，连击越高单颗得分越高，粒子反馈、屏幕震动与程序化合成音效营造完整反馈闭环。',
+    detail: '以「接住坠落星辰」为核心循环的休闲街机游戏：鼠标/触屏控制泡泡接住金色星辰累计连击与得分，青色稀有星辰提供高额奖励，红色流星碰撞会损失生命；游玩时长越长，星辰生成越密、下落越快。接星伴随吸入动画、粒子爆裂与屏幕震动，连击每 5 次触发得分倍率提升；背景音乐与全部音效由 Web Audio 实时合成（零采样依赖），最高纪录持久化保存在本地。单文件零依赖，支持 ?demo=1 静置预览模式。',
+    story: ["以「接住坠落星辰」为核心循环的休闲街机游戏：控制泡泡接住金色星辰累计连击，青色稀有星辰提供高额奖励，红色流星碰撞损失生命；游玩越久生成越密、下落越快。", "接星伴随吸入动画、粒子爆裂与屏幕震动，连击每 5 次提升得分倍率；背景音乐与全部音效由 Web Audio 实时合成（零采样依赖），最高纪录持久化保存在本地。", "单文件零依赖，支持 ?demo=1 静置预览模式，无需操作即可直接展示画面与音效。"],
+    link: 'https://4m1405d04e4rc.aiforce.cloud/app/app_17e3gnzk49c',
+    hint: '移动泡泡接住星辰 · 避开流星 · 连击越多分越高 · M 静音 · P 暂停'
+  },
+  {
+    no: '13',
+    title: '《岔路 Branch Road》LLM 即时分支叙事游戏',
+    type: '游戏设计',
+    status: '原型',
+    tags: ['LLM', 'AI 叙事', '分支叙事', 'TTS', 'CogView'],
+    cover: 'assets/work-13.jpg',
+    desc: 'LLM 即时生成分支的叙事游戏竖切：末班地铁、一部不属于你的手机、23:47 发出的一条消息。8 回合现生成分支 + 平行结局回看 + 结局信卡 TTS 配音。',
+    detail: '基于 LLM（glm-4-flash）即时生成分支的叙事游戏竖切 0.1（好玩验证版）：框架固定、分支即生——末班地铁 / 林晚的手机 / 23:47 定时草稿 / 终点站四条线索渐次暗示，叙述者永不点破。每回合现生成行动选项，支持自由输入直接行动；8 回合抵达结局后可回看「如果你做了另一个选择」的平行结局；终点站弹出 23:47 那封信的信卡，edge-tts 女声朗读。内置探针埋点验证核心命题「你会不会想知道另一种选法？」，CogView 预生成 8 张场景图随剧情切换、游玩零等待。',
+    story: ["基于 LLM（glm-4-flash）即时生成分支的叙事游戏竖切 0.1（好玩验证版）：框架固定、分支即生，验证「AI 即时生成」能否撑起叙事沉浸感。", "末班地铁 / 林晚的手机 / 23:47 定时草稿 / 终点站四条线索渐次暗示，叙述者永不点破；每回合现生成行动选项、支持自由输入直接行动，8 回合抵达结局后可回看「如果你做了另一个选择」的平行结局。", "终点站弹出 23:47 那封信的信卡，由 edge-tts 女声朗读；内置探针埋点验证核心命题「你会不会想知道另一种选法？」，CogView 预生成 8 张场景图随剧情切换、游玩零等待。"],
+    github: 'https://github.com/duyv0826/branch-road',
+    hint: '回车开始 · 每回合选一个行动或直接输入你想做的事 · 结局后回看平行结局'
+  },
+  {
+    no: '14',
+    title: '《抉择的房间 Room of Choice》分支叙事游戏',
+    type: '游戏设计',
+    status: '可试玩',
+    tags: ['JavaScript', '分支叙事', '多结局', '零依赖'],
+    cover: 'assets/work-14.jpg',
+    desc: '关于选择与房间的叙事游戏：每一个选择都在重塑这个房间。4 章 18 结局 18 线索，内置线索/结局图鉴，内容 config 驱动、引擎零改动。',
+    detail: '纯前端分支叙事游戏，零依赖零构建、双击即玩。4 章 18 结局 18 线索，含第四章源头真结局（链式双线索）、真结局尾声（回访地基）、陷阱门控（假终结·双刃剑）、出口陷阱（伪出口·绕圈）、分歧点×陷阱合流等叙事结构；内置线索图鉴与结局图鉴（收集进度本地保存）、分歧点提示；「运行回归测试」按钮可随时自检剧情图完整性；全部内容 config 驱动，引擎零改动。',
+    story: ["纯前端分支叙事游戏，零依赖零构建、双击即玩；全部内容 config 驱动，引擎零改动即可扩展新剧情。", "4 章 18 结局 18 线索的叙事图，包含第四章源头真结局（链式双线索）、真结局尾声（回访地基）、陷阱门控（假终结·双刃剑）、出口陷阱（伪出口·绕圈）等结构设计；内置线索与结局图鉴，收集进度本地保存。", "提供「运行回归测试」按钮随时自检剧情图完整性，把叙事结构当作可测试的系统来维护，保证多结局逻辑不穿帮。"],
+    link: 'https://duyv0826.github.io/room-of-choice/',
+    github: 'https://github.com/duyv0826/room-of-choice',
+    hint: '每个场景选一个动作 · 走到结局不算失败 · 重新开始不会清空已记住的东西'
+  },
+  {
+    no: '15',
+    title: '《生生不息》互动媒体艺术游戏',
+    type: '互动媒体',
+    status: '原型',
+    tags: ['生成式音频', '自动演化', '互动媒体', 'HTML5'],
+    cover: 'assets/work-15.jpg',
+    desc: '自动演化 + 生成式音频的互动媒体艺术作品：生灵群落随时间演化，玩家注入能量引导生长，声音随状态实时生成。',
+    detail: '以「自动演化 + 生成式音频」为核心的互动媒体艺术游戏：屏幕中的生灵群落随时间自动演化，玩家通过移动与点击注入能量、引导其生长方向；生成式音频随生灵状态实时变化，提供沉浸式反馈。支持多模式切换、声音开关与暂停，探索生命循环与演化的主题。',
+    story: ["以「自动演化 + 生成式音频」为核心的互动媒体艺术游戏：屏幕中的生灵群落随时间自动演化，玩家通过移动与点击注入能量、引导生长方向。", "生成式音频随生灵状态实时变化，提供沉浸式反馈；支持多模式切换（1–4）、声音开关（M）与暂停（空格），围绕「生命循环与演化」主题探索交互与生成艺术的边界。"],
+    github: 'https://github.com/duyv0826/living-media-art',
+    hint: '移动·引导 · 点击·注入能量 · 空格·暂停 · M·声音 · 1–4·模式'
+  },
+  {
+    no: '16',
+    title: 'Co-Desk 联机共创自习桌',
+    type: '系统工程',
+    status: '已完成',
+    tags: ['Electron', 'React', 'FastAPI', 'WebSocket', 'SQLite'],
+    cover: 'assets/work-16.jpg',
+    desc: 'HCI 课程全栈项目：Electron 桌面端 + FastAPI 云端后端 + WebSocket 实时同步，把「和同伴一起自习」做成真正可互联网联机的产品。',
+    detail: '人机交互课程项目的可运行版本（MVP）。Electron + React 桌面客户端连接 FastAPI 后端，SQLite 保存任务、房间与专注记录；WebSocket 实时同步房间在线人数、同伴座位、专注状态、当前任务、番茄钟剩余时间、环境音类型与鼓励卡广播。功能覆盖自习房间列表与自定义房间、账号注册登录（密码哈希）、番茄钟、任务便利贴与拆解、环境音模拟与座位方向试听、鼓励卡轻互动、专注记录统计与自习时间排行榜。后端可部署 Render 云端实现真正互联网联机，客户端填入云端地址即可跨设备同房间实时同步。',
+    story: ["人机交互课程项目，从「一个人自习太孤独」的观察出发：把自习做成联机陪伴场景——同伴座位、专注状态、鼓励卡实时同步，让远程学习也有在场感。全栈独立搭建：Electron + React 桌面端、FastAPI 后端、SQLite 存储。", "核心是 WebSocket 实时同步：房间在线人数、同伴座位、专注状态、番茄钟剩余时间、环境音类型与鼓励卡广播全部实时推送；账号密码哈希存储；后端设计为可部署云端的架构（HTTPS REST + WSS），客户端填入云端地址即可跨设备联机。", "用双客户端模拟脚本做 10 项联机断言（加入 / 同伴列表 / 状态同步 / 心跳 / 广播 / 退出回落）全部通过，并打包 win-x64 分发版。复盘结论：把「后端可云端化」当作设计约束，MVP 阶段就避免本地单机的架构陷阱。"],
+    github: 'https://github.com/duyv0826/co-desk'
+  },
+  {
+    no: '17',
+    title: '对话归档台 · AI 对话总结 MVP',
+    type: '系统工程',
+    status: '原型',
+    tags: ['HTML5', 'Ollama', '本地大模型', 'JSON 协议', 'localStorage'],
+    cover: 'assets/work-17.jpg',
+    desc: 'AI 产品「历史对话自动总结」功能 MVP：手动触发单会话摘要，结构化要点 + 每条定位原文 + 删除/重新生成 + 隐私开关 + 自动归档与智能命名 + 归档库全局搜索，本地 Ollama 真实模型 + 规则引擎双降级。',
+    detail: '可交互 MVP 原型：把一段长会话整理成结构化要点（核心结论 / 细节补充 / 待办行动三档），每条要点可点击定位回原文并高亮，支持单条删除与重新生成；隐私开关开启后内容不出本机；引擎优先调用本机 Ollama（qwen3:8b）输出严格 JSON，模型不可用时自动降级为浏览器本地规则摘要；P1 追加自动归档（切换会话后台生成并 localStorage 缓存）与智能命名（模型产出 ≤12 字会话标题）；支持粘贴自定义对话；P2 追加归档库：跨会话搜索全部已归档要点（关键词高亮）、按会话聚合主题标签与归档统计、点击直达对应会话，localStorage 单机持久化。解析器单测、真实模型链路与页面自检全部通过。',
+    story: ["从一次产品需求评估出发：为 AI 产品规划「历史对话自动总结」功能，按痛点、使用频率、开发成本、解决效果、副作用五维评估后，结论是「应该做，但以手动触发的轻量 MVP 起步」——自动总结会改变用户行为、可能丢失细节，手动触发把选择权还给用户。", "引擎设计为双层降级：优先调用本机 Ollama（qwen3:8b）做真实摘要，模型输出约束为严格 JSON（标题 + 要点 + 锚点 + 等级）；模型不可用或隐私模式开启时，自动降级为浏览器本地规则摘要（关键词 + 句长打分抽取重点句），内容全程不出本机，演示永不中断。", "P1 追加自动归档与智能命名：切换会话时后台为离开的会话生成摘要并缓存（localStorage 持久化）、重新打开即见；模型顺带产出 ≤12 字会话标题。验证：解析器 17 项单测、真实模型链路 6 条要点全过、页面自检零 console 错误。", "P2 追加归档库（全局记忆 + 摘要搜索）：顶栏一键进入归档库视图，统计全部会话归档情况，跨会话检索每条要点的标题与内容并高亮命中，按会话展示主题标签，点击任意条目直接跳回对应会话重新查看；localStorage 单机持久化，多端同步需后端服务、本地版明确不做。"]
+  }
+];
+
+/* ---------- 工具 ---------- */
+const $  = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function toast(msg){
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+/* ---------- 作品渲染 ---------- */
+let revealObs; // 滚动观察器（渲染前声明，避免 TDZ）
+const grid = $('#worksGrid');
+function renderWorks(filter = 'all'){
+  const list = filter === 'all' ? WORKS : WORKS.filter(w => w.type === filter);
+  grid.innerHTML = list.map(w => `
+    <article class="work-card rv" tabindex="0" role="button" aria-label="查看作品 ${w.title}"
+      data-index="${WORKS.indexOf(w)}" data-type="${w.type}">
+      <div class="work-cover">
+        <img src="${w.cover}" alt="${w.title} 封面" loading="lazy" width="1280" height="720">
+        <span class="work-no">${w.no}</span>
+        <span class="work-status${w.link ? ' playable' : ''}">${w.status}</span>
+        ${w.link ? '<div class="work-play-overlay"><span class="work-play-btn" aria-hidden="true"></span></div>' : ''}
+        <span class="work-watermark" aria-hidden="true">${w.no}</span>
+      </div>
+      <div class="work-body">
+        <p class="work-type">${w.type}</p>
+        <h3 class="work-title">${w.title}</h3>
+        <p class="work-desc">${w.desc}</p>
+        <div class="work-tags">${w.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+      </div>
+    </article>`).join('');
+  // 重新挂载滚动揭示
+  observeReveals();
+  // 卡片点击/键盘打开详情
+  $$('.work-card').forEach(card => {
+    const open = () => openModal(+card.dataset.index);
+    card.addEventListener('click', open);
+    card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+  });
+}
+renderWorks();
+
+/* ---------- 筛选 ---------- */
+$$('.filter-btn').forEach(btn => {
+  const f = btn.dataset.filter;
+  const cnt = f === 'all' ? WORKS.length : WORKS.filter(w => w.type === f).length;
+  const el = btn.querySelector('.count');
+  if (el) el.textContent = cnt;
+  btn.addEventListener('click', () => {
+    $$('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderWorks(btn.dataset.filter);
+    $('#worksEmpty').classList.toggle('show',
+      grid.children.length === 0);
+  });
+});
+
+/* ---------- 模态框 ---------- */
+const overlay = $('#modalOverlay'), box = $('#modalBox');
+function openModal(i){
+  const w = WORKS[i];
+  $('#modalCover').src = w.cover;
+  $('#modalCover').alt = w.title + ' 封面';
+  $('#modalType').textContent = w.type + ' · NO.' + w.no;
+  $('#modalTitle').textContent = w.title;
+  $('#modalMeta').innerHTML =
+    `<span class="tag hot">${w.status}</span>` +
+    w.tags.map(t => `<span class="tag">${t}</span>`).join('');
+  $('#modalDesc').textContent = w.desc;
+  const storyBox = $('#modalStory');
+  storyBox.innerHTML = (w.story && w.story.length)
+    ? '<h4>开发过程 · 设计思路</h4>' + w.story.map(p => '<p>' + p + '</p>').join('')
+    : '';
+  const playBox = $('#modalPlay');
+  let playHtml = '';
+  if (w.link){
+    playHtml += '<a class="play-btn" href="' + w.link + '" target="_blank" rel="noopener">▶ 在浏览器中试玩</a>';
+  }
+  if (w.github){
+    playHtml += '<a class="gh-btn" href="' + w.github + '" target="_blank" rel="noopener">GitHub 源码 ↗</a>';
+  }
+  if (w.link && w.hint){
+    playHtml += '<span class="play-hint">' + w.hint + '</span>';
+  }
+  playBox.innerHTML = playHtml;
+  $('#modalNote').textContent = (w.link && w.github)
+    ? '可在线试玩，源码已开源至 GitHub。封面图为实机截图。'
+    : w.link
+      ? '本作品为可运行网页原型，封面图为实机游戏画面。'
+      : w.github
+        ? '源码已开源至 GitHub，可在本地运行体验。封面图为项目实机截图。'
+        : (w.no === '06'
+          ? '封面图为真实 RTSP 运行环境截图：mediamtx 服务器实时推流 + FFplay 播放画面。'
+          : '封面图为项目实机截图。如需补充可玩链接（GitHub 仓库 / 作品视频）或在线演示，可在 WORKS 数据中追加。');
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(){
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+$('#modalClose').addEventListener('click', closeModal);
+overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+/* ---------- 移动端导航 ---------- */
+const navToggle = $('#navToggle'), navLinks = $('#navLinks');
+navToggle.addEventListener('click', () => {
+  const open = navLinks.classList.toggle('open');
+  navToggle.classList.toggle('open', open);
+  navToggle.setAttribute('aria-expanded', String(open));
+});
+navLinks.addEventListener('click', e => {
+  if (e.target.tagName === 'A') {
+    navLinks.classList.remove('open');
+    navToggle.classList.remove('open');
+    navToggle.setAttribute('aria-expanded', 'false');
+  }
+});
+
+/* ---------- 滚动：进度条 / 头部状态 / 导航高亮 / 返回顶部 ---------- */
+const header = $('#siteHeader'), progress = $('#progress'), backTop = $('#backTop');
+const sections = $$('main section[id], main section[id]');
+const navMap = {};
+$$('.nav-links a').forEach(a => {
+  const id = a.getAttribute('href').slice(1);
+  if (id) navMap[id] = a;
+});
+function onScroll(){
+  const y = window.scrollY;
+  const h = document.documentElement.scrollHeight - innerHeight;
+  progress.style.width = (h > 0 ? (y / h) * 100 : 0) + '%';
+  header.classList.toggle('scrolled', y > 10);
+  backTop.classList.toggle('show', y > 600);
+  // 导航高亮
+  let cur = '';
+  sections.forEach(s => { if (y >= s.offsetTop - 160) cur = s.id; });
+  Object.values(navMap).forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+}
+addEventListener('scroll', onScroll, { passive: true });
+onScroll();
+backTop.addEventListener('click', () => scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' }));
+
+/* ---------- 滚动揭示（仅 .rv 元素，克制） ---------- */
+function observeReveals(){
+  if (reducedMotion) return;
+  if (!revealObs) {
+    revealObs = new IntersectionObserver(entries => {
+      entries.forEach(en => {
+        if (en.isIntersecting) { en.target.classList.add('in'); revealObs.unobserve(en.target); }
+      });
+    }, { threshold: 0.12 });
+  }
+  $$('.rv:not(.in)').forEach(el => revealObs.observe(el));
+}
+observeReveals();
+
+/* ---------- Hero HUD 坐标（轻交互，非粒子） ---------- */
+const hud = $('#hudCoords');
+const hero = $('#hero');
+if (hud && !matchMedia('(pointer: coarse)').matches && !reducedMotion) {
+  hero.addEventListener('mousemove', e => {
+    const r = hero.getBoundingClientRect();
+    const x = Math.round(((e.clientX - r.left) / r.width) * 320);
+    const y = Math.round(((e.clientY - r.top) / r.height) * 180);
+    hud.innerHTML = 'X:<b>' + String(x).padStart(3, '0') + '</b> / Y:<b>' + String(y).padStart(3, '0') + '</b>';
+  });
+}
+
+/* ---------- Hero 内容 3D 视差倾斜（鼠标驱动：中央可互动） ---------- */
+(function(){
+  const grid = document.querySelector('.hero-grid');
+  const heroEl = document.getElementById('hero');
+  if (!grid || !heroEl) return;
+  if (matchMedia('(pointer: coarse)').matches) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  let raf = null, tx = 0, ty = 0, cx = 0, cy = 0;
+  grid.style.willChange = 'transform';
+  heroEl.addEventListener('mousemove', e => {
+    const r = heroEl.getBoundingClientRect();
+    tx = (e.clientX - r.left) / r.width - 0.5;
+    ty = (e.clientY - r.top) / r.height - 0.5;
+    if (!raf) raf = requestAnimationFrame(tick);
+  });
+  heroEl.addEventListener('mouseleave', () => {
+    tx = 0; ty = 0;
+    if (!raf) raf = requestAnimationFrame(tick);
+  });
+  function tick(){
+    cx += (tx - cx) * 0.07;
+    cy += (ty - cy) * 0.07;
+    grid.style.transform = 'perspective(1000px) rotateY(' + (cx * 2).toFixed(2) + 'deg) rotateX(' + (-cy * 1.5).toFixed(2) + 'deg)';
+    if (Math.abs(cx) < 0.002 && Math.abs(cy) < 0.002 && Math.abs(tx) < 0.002 && Math.abs(ty) < 0.002) raf = null;
+    else raf = requestAnimationFrame(tick);
+  }
+})();
+
+/* ---------- Hero 鼠标跟随金色光点（中央可互动反馈） ---------- */
+(function(){
+  const heroEl = document.getElementById('hero');
+  const cursor = document.getElementById('heroCursor');
+  if (!heroEl || !cursor) return;
+  if (matchMedia('(pointer: coarse)').matches) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  let raf = null, x = -100, y = -100, cx = -100, cy = -100, shown = false;
+  heroEl.addEventListener('mousemove', e => {
+    const r = heroEl.getBoundingClientRect();
+    x = e.clientX - r.left; y = e.clientY - r.top;
+    if (!shown) { shown = true; cursor.classList.add('on'); }
+    if (!raf) raf = requestAnimationFrame(tick);
+  });
+  heroEl.addEventListener('mouseleave', () => {
+    shown = false; cursor.classList.remove('on'); raf = null;
+  });
+  function tick(){
+    cx += (x - cx) * 0.22;
+    cy += (y - cy) * 0.22;
+    cursor.style.left = cx.toFixed(1) + 'px';
+    cursor.style.top = cy.toFixed(1) + 'px';
+    if (Math.abs(x - cx) < 0.5 && Math.abs(y - cy) < 0.5) raf = null;
+    else raf = requestAnimationFrame(tick);
+  }
+})();
+
+/* ---------- 复制邮箱 ---------- */
+$('#copyMail').addEventListener('click', () => {
+  const mail = '1151374965@qq.com';
+  const done = () => toast('邮箱地址已复制：' + mail);
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(mail).then(done).catch(() => fallbackCopy(mail, done));
+  } else fallbackCopy(mail, done);
+});
+function fallbackCopy(text, done){
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); done(); } catch (e) { toast('复制失败，请手动复制'); }
+  document.body.removeChild(ta);
+}
+
+/* ---------- Hero 交互波形（融入式签名背景：推/点，遵循 reduced-motion） ---------- */
+(function(){
+  var reduceMotion2 = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var canvas = document.getElementById('wave');
+  if (!canvas || !canvas.getContext) return;
+  var ctx = canvas.getContext('2d');
+  var W = 0, H = 0, DPR = 1, cols = 0, rows = 0, spacing = 26;
+  var pts = [], ripples = [];
+  var mouse = {x: -9999, y: -9999};
+  var t = 0, rafId = null;
+  var AMP = 34;
+
+  function resize(){
+    DPR = Math.min(window.devicePixelRatio || 1, 1.5);
+    W = canvas.clientWidth; H = canvas.clientHeight;
+    canvas.width = Math.round(W * DPR); canvas.height = Math.round(H * DPR);
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    spacing = Math.max(20, Math.round(W / 70));
+    cols = Math.ceil(W / spacing) + 1;
+    rows = Math.ceil(H / spacing) + 1;
+    pts = [];
+    for (var r = 0; r < rows; r++) {
+      for (var c = 0; c < cols; c++) {
+        pts.push({x: c * spacing, y: r * spacing, z: 0});
+      }
+    }
+  }
+
+  /* 峰值光晕精灵（预渲染） */
+  var glow = document.createElement('canvas');
+  glow.width = glow.height = 64;
+  var gc = glow.getContext('2d');
+  var grad = gc.createRadialGradient(32, 32, 0, 32, 32, 32);
+  grad.addColorStop(0, 'rgba(255,220,160,0.85)');
+  grad.addColorStop(0.45, 'rgba(240,178,75,0.32)');
+  grad.addColorStop(1, 'rgba(240,178,75,0)');
+  gc.fillStyle = grad; gc.fillRect(0, 0, 64, 64);
+
+  function makeRipple(x, y){
+    ripples.push({x: x, y: y, r: 0, amp: 44, speed: 2.6, w: 26});
+    if (ripples.length > 8) ripples.shift();
+  }
+
+  function frame(){
+    t += 0.016;
+    for (var i = ripples.length - 1; i >= 0; i--) {
+      var rp = ripples[i];
+      rp.r += rp.speed * 2; rp.amp *= 0.955;
+      if (rp.amp < 0.5) ripples.splice(i, 1);
+    }
+    var n = pts.length, k, r, c, p;
+    var cx = W * 0.5, cy = H * 0.42; /* 脉冲中心 */
+    for (i = 0; i < n; i++) {
+      p = pts[i];
+      var z = 0;
+      /* 中央脉冲：向四周扩散的环形波（中央持续在动，带相位偏移保证首帧即有起伏） */
+      var rx = p.x - cx, ry = p.y - cy, rd = Math.sqrt(rx * rx + ry * ry) || 1;
+      z += Math.sin(rd * 0.022 - t * 1.4 + 0.8) * AMP * 0.7 * Math.exp(-rd / (W * 0.30));
+      /* 鼠标扰动 */
+      var dxm = p.x - mouse.x, dym = p.y - mouse.y, d2m = dxm * dxm + dym * dym, R = 300;
+      if (d2m < R * R) {
+        var d = Math.sqrt(d2m) || 1, f = 1 - d / R;
+        z += Math.cos(f * Math.PI * 0.5) * f * 72;
+      }
+      /* 点击涟漪 */
+      for (k = 0; k < ripples.length; k++) {
+        var q = ripples[k];
+        var rxq = p.x - q.x, ryq = p.y - q.y, rdq = Math.sqrt(rxq * rxq + ryq * ryq) || 1, dd = rdq - q.r;
+        if (dd < q.w && dd > -q.w) z += q.amp * Math.exp(-(dd * dd) / (q.w * q.w * 0.5));
+      }
+      p.z = z;
+    }
+    ctx.clearRect(0, 0, W, H);
+    /* 中央琥珀光晕：随呼吸脉动，让中央始终有光源感 */
+    var glowR = W * 0.22, glowG = ctx.createRadialGradient(cx, cy, 0, cx, cy, glowR);
+    glowG.addColorStop(0, 'rgba(240,178,75,0.08)');
+    glowG.addColorStop(0.55, 'rgba(240,178,75,0.03)');
+    glowG.addColorStop(1, 'rgba(240,178,75,0)');
+    ctx.fillStyle = glowG;
+    ctx.fillRect(0, 0, W, H);
+    ctx.lineWidth = 1;
+    /* 横向层：琥珀金 */
+    ctx.strokeStyle = 'rgba(240,178,75,0.22)';
+    for (r = 0; r < rows; r++) {
+      ctx.beginPath();
+      for (c = 0; c < cols; c++) {
+        var p2 = pts[r * cols + c];
+        if (c === 0) ctx.moveTo(p2.x, p2.y - p2.z); else ctx.lineTo(p2.x, p2.y - p2.z);
+      }
+      ctx.stroke();
+    }
+    /* 纵向层 */
+    ctx.strokeStyle = 'rgba(240,178,75,0.14)';
+    for (c = 0; c < cols; c++) {
+      ctx.beginPath();
+      for (r = 0; r < rows; r++) {
+        var p3 = pts[r * cols + c];
+        if (r === 0) ctx.moveTo(p3.x + p3.z * 0.30, p3.y - p3.z);
+        else ctx.lineTo(p3.x + p3.z * 0.30, p3.y - p3.z);
+      }
+      ctx.stroke();
+    }
+    /* 波峰光晕 */
+    var thr = AMP * 0.50;
+    for (i = 0; i < n; i++) {
+      var p4 = pts[i];
+      if (p4.z > thr) {
+        ctx.globalAlpha = Math.min(0.45, (p4.z - thr) / (AMP * 0.4));
+        ctx.drawImage(glow, p4.x - 12, p4.y - p4.z - 12, 24, 24);
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  function loop(){
+    rafId = requestAnimationFrame(loop);
+    frame();
+  }
+
+  resize();
+  addEventListener('resize', resize);
+
+  canvas.addEventListener('pointermove', function(e){
+    var r = canvas.getBoundingClientRect();
+    mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top;
+  }, {passive: true});
+  canvas.addEventListener('pointerdown', function(e){
+    var r = canvas.getBoundingClientRect();
+    makeRipple(e.clientX - r.left, e.clientY - r.top);
+  });
+  canvas.addEventListener('pointerup', function(){ mouse.x = -9999; mouse.y = -9999; });
+  canvas.addEventListener('pointerleave', function(){ mouse.x = -9999; mouse.y = -9999; });
+
+  var visible = true;
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function(entries){
+      visible = entries[0].isIntersecting;
+      if (visible && !rafId && !reduceMotion2) loop();
+      else if (!visible && rafId) { cancelAnimationFrame(rafId); rafId = null; }
+    }, {threshold: 0}).observe(canvas);
+  } else if (!reduceMotion2) {
+    loop();
+  }
+  if (reduceMotion2) { t = 0.6; frame(); }
+})();
+</script>
+</body>
+</html>
