@@ -1,25 +1,31 @@
 # 洪昺森 · 互动媒体艺术 / 游戏设计作品集
 
-澳门科技大学互动媒体艺术（游戏设计方向）研究生洪昺森的个人作品集页面。
-纯 HTML + CSS + 原生 JavaScript，无框架、无构建步骤，双击即可运行。
+**在线访问：https://duyv0826.github.io/game-portfolio/**
 
-## 部署状态（2026-09-23 更新）
+澳门科技大学互动媒体艺术（游戏设计方向）在读硕士的个人作品集。纯 HTML + CSS + 原生 JavaScript，无框架、无构建步骤，双击即可运行。
 
-- 已部署至豆包妙搭：应用 ID `app_17dzfrpfs2x`，**当前线上 17 个作品与本地一致（编号连续 01–17）**
-- ✅ 2026-09-23 新增第 16 号作品：Co-Desk 联机共创自习桌（HCI 课程全栈项目：Electron + React / FastAPI / WebSocket / SQLite，系统工程类「已完成」，GitHub 源码 https://github.com/duyv0826/co-desk；封面为 2026-05-05 本机实机主界面截图 work-16.jpg；附册与模态框均已补齐 16 号文案）
-- ✅ 2026-09-23 新增第 17 号作品：对话归档台 · AI 对话总结 MVP（AI 产品「历史对话自动总结」功能原型：本地 Ollama qwen3:8b 真实模型 + 规则引擎双降级，结构化要点 / 原文锚点 / 隐私开关 / 自动归档 / 智能命名，系统工程类「原型」，封面为 ?demo=summarized 演示态实机截图 work-17.jpg；模态框与附册均已补齐 17 号文案）
-- ✅ 2026-09-23 已迁移至 GitHub Pages 主部署：**https://duyv0826.github.io/game-portfolio/**（仓库 duyv0826/game-portfolio，public，Pages 源 master 根目录；已实测 17 作品与附册在线、无平台水印。原豆包工作托管 https://4m1405d04e4rc.doubaoapps.com/app/app_17dzfrpfs2x 保留不动）
-- ✅ 2026-09-23 第 17 号 story/附册文案同步 P2：归档库（全局记忆 + 摘要搜索）写入模态框第 4 段 story、附册新增 P2 段落与复盘验证；release_id 7688592816813067465，线上主页与附册均实测通过（含「多端同步需后端服务，本地版不做」边界说明）
-- ✅ 2026-09-23 模态框新增「开发过程 · 设计思路」板块：15 个作品全部补齐（数据驱动渲染，精炼版 2–3 段）；附册《开发过程与设计思路.html》（每作品含 概述 / 开发过程 / 设计思路 / 复盘 四段）随整目录发布上线。release_id 7688512285896428500，线上 15 卡片与附册页均实测通过
-- **公开分享链接（互联网公开，无需登录）：https://4m1405d04e4rc.aiforce.cloud/app/app_17dzfrpfs2x/**
-- 《星尘捕手》独立可玩应用：https://4m1405d04e4rc.aiforce.cloud/app/app_17e3gnzk49c （应用 ID `app_17e3gnzk49c`）
-- ✅ 2026-09-21 详情弹窗按钮拆分：GitHub 仓库链接不再显示为"试玩"按钮；13《岔路》/15《生生不息》改为「GitHub 源码」按钮（github 字段），14《抉择的房间》补齐 github 字段（保留 Pages 试玩链接）；模态框说明文案按链接类型动态匹配。发布 release_id 7687709558362279177，已验证线上 gh-btn 样式、15 作品、work-4.jpg 均正常。
-- ✅ 2026-09-15 新增第 13/14/15 号作品（岔路 Branch Road / 抉择的房间 / 生生不息，均来自 GitHub 真实仓库 duyv0826），并修复一次误删（星尘捕手 v32 丢失 → v34 插回，现 15 个齐全）
-- ✅ 15 张封面全部为实机截图（含 9-14 已补齐的 RTSP 实机：mediamtx 服务器 + FFplay + 终端日志）
-- ✅ 2026-09-16 修复分享卡：妙搭平台发布时会强制用「应用图标」作为 `og:image`，原图标为默认手柄图导致微信/飞书分享卡片显示错误。已通过 API 将应用图标更新为分享卡 og-cover.png（上传至应用存储），重新发布后 `og:image` 与 `twitter:image` 均指向分享图（已验证可访问、15 个作品在线）
-- 管理页：`https://miaoda.feishu.cn/app/app_17dzfrpfs2x`（需飞书/豆包登录）
-- 部署版 `og:image` / `twitter:image` 已指向分享卡 og-cover.png（index.html 内写的是部署域名绝对 URL，平台会以应用图标覆盖 og:image，因此改图标才是有效解法）
-- **发布通道备忘**：`lark-cli apps +deploy` 当前报 `pre_release ... returned 2 value(s) but no artifact_url`（CLI 期待 `artifact_url`、服务端返回 `upload_url`，字段不匹配，CLI v1.0.94）。改用 `lark-cli apps +html-publish --app-id <app_id> --path .`（整目录打包发布）可正常发布；发布前在干净的临时目录执行（避免 `_backup/`、`_ai_backup/` 等备份文件上线）
+**当前研究：氛围探索游戏的弱目的性设计** —— 我放进游戏的引导，到底有没有被玩家接到。把设计端（系统里记录的设计意图）与玩家端（实际行走路径与行为数据）两端对起来看。
+
+## 学位作品
+
+| 编号 | 作品 | 说明 |
+| --- | --- | --- |
+| NO.00 | 《澳里·光景》Aoli | Unity 氛围探索游戏：没有任务清单的岛城，玩家靠光、声音与痕迹理解发生过的事；79 个自研脚本、204 个自动化测试（全部通过）、无头仿真 + 叙事导演 + 谜题状态机 |
+| NO.01 | 《微光原野》Glimmer Field | 弱目的性 HTML5 原型，点开即玩；与学位作品构成同一条自变量轴（目的性／控制权）上的两个极值 |
+
+## 入口
+
+| 入口 | 链接 |
+| --- | --- |
+| 作品集（19 个作品，多个可在线试玩） | https://duyv0826.github.io/game-portfolio/ |
+| 学位作品页《澳里·光景》+《微光原野》试玩 | https://game-design-portfolio-99765.app.workbuddy.host/ |
+| GitHub | https://github.com/duyv0826 |
+| Itch.io | https://duyv0826.itch.io |
+
+## 技术说明
+
+无框架、无构建步骤：`index.html` 内联全部样式与脚本，作品数据集中在 `WORKS` 数组，新增作品只需追加一条记录。
+
 
 ## 文件结构
 
@@ -54,7 +60,7 @@ game-portfolio/
 ├── monogatari-map.html # 第 9 个作品：物语系列设定深挖全景图（可试玩，2.3MB 内嵌立绘）
 ├── pulse-field.html    # 第 11 个作品：脉冲星场交互式声景生成器（单文件可玩）
 ├── 星尘捕手.html        # 第 12 个作品：星尘捕手交互式收集游戏（单文件可玩，已部署独立链接）
-├── 开发过程与设计思路.html # 附册：17 个作品完整开发过程与设计思路（与作品集同风格，线上可访问）
+├── 开发过程与设计思路.html # 附册：17 个广度作品完整开发过程与设计思路（与作品集同风格，线上可访问）
 └── README.md           # 本说明
 ```
 
@@ -70,9 +76,9 @@ game-portfolio/
 页面已填入真实信息（来自电脑中的简历与作品集资料）：
 
 - 姓名 / 简介 / 教育经历：洪昺森，澳门科技大学计算机科学本科（2022–2026）→ 互动媒体艺术游戏设计方向硕士在读（2026.09 起）
-- 作品：Chrono Loop、AI 横版肉鸽游戏、Blender 3D 创作、Android 贪吃蛇、YOLOv8 识别、RTSP 服务器、Chrono Loop Web 试玩原型、XV6 MLFQ 调度器、物语系列设定深挖全景图、全球游戏销量数据看板、脉冲星场交互式声景生成器、星尘捕手交互式收集游戏、岔路 Branch Road（LLM 分支叙事）、抉择的房间（分支叙事）、生生不息（互动媒体艺术）、Co-Desk 联机共创自习桌（HCI 全栈联机自习）、对话归档台 AI 对话总结 MVP（本地模型摘要工具）（共 17 个）
+- 作品共 **19 个**：NO.00《澳里·光景》（学位作品）与 NO.01《微光原野》（可试玩原型）置顶，其后为 Chrono Loop、AI 横版肉鸽游戏、Blender 3D 创作、Android 贪吃蛇、YOLOv8 识别、RTSP 服务器、Chrono Loop Web 试玩原型、XV6 MLFQ 调度器、物语系列设定深挖全景图、全球游戏销量数据看板、脉冲星场交互式声景生成器、星尘捕手交互式收集游戏、岔路 Branch Road（LLM 分支叙事）、抉择的房间（分支叙事）、生生不息（互动媒体艺术）、Co-Desk 联机共创自习桌（HCI 全栈联机自习）、对话归档台 AI 对话总结 MVP（本地模型摘要工具）
 - 实习：澳门数字动力科技有限公司 研发部实习生（2025.06–2025.08）
-- 联系方式：邮箱 1151374965@qq.com、LinkedIn
+- 联系方式：邮箱 2260030089@student.must.edu.mo、LinkedIn、GitHub、Itch.io
 
 ## 封面素材状态（2026-09-13 更新）
 
@@ -94,6 +100,8 @@ game-portfolio/
 | 14 抉择的房间 | ✅ 实机截图 | 分支叙事游戏在线版实拍（标题 + 图鉴按钮 + 任务规则） |
 | 15 生生不息 | ✅ 实机截图 | 互动媒体艺术游戏浏览器实拍（启动界面 + 第1日 HUD） |
 | 16 Co-Desk | ✅ 实机截图 | 本机应用实拍（2026-05-05 主界面：房间列表 + 番茄钟 + 同伴座位 + 环境音 + 版聊） |
+| NO.00 澳里·光景 | ✅ 作品主视觉 | 学位作品概念图：澳门老城青花瓷砖碎片 + 金色裂纹（img/fragment.jpg） |
+| NO.01 微光原野 | ✅ 实机截图 | 无头浏览器运行 40 秒后实拍：洋流光尘拖尾 + 紫色异光 + 航迹点 |
 
 - AI 原图已备份在 `assets/_ai_backup/`（含 work-1~6 及 work-4_orig_broken、work-4_demo_old，保留可回溯）
 - ✅ 2026-09-14 已补齐最后一张封面：work-4 用本机真实 RTSP 链路（mediamtx 服务器 + ffmpeg 推流 + FFplay 播放）实拍替换，11 张封面全部为实机截图
@@ -124,3 +132,27 @@ game-portfolio/
 - Chrono Loop Web 支持移动端触控（◀▶ 移动 / ⤒ 跳跃 / ⟲ 回溯虚拟按键，画布自适应小屏）
 - 星尘捕手支持鼠标/触屏控制、连击得分倍率、程序化 Web Audio 音效与 BGM、本地最高纪录、`?demo=1` 静置预览模式（M 静音 / P 暂停 / R 重开）
 - 自定义深色滚动条、全局 focus-visible 可访问性样式
+
+
+<details>
+<summary>部署与发布历史（开发备忘，2026-09-24 归档）</summary>
+
+## 部署状态（2026-09-23 更新）
+
+- 已部署至豆包妙搭：应用 ID `app_17dzfrpfs2x`，**当前线上 17 个作品与本地一致（编号连续 01–17）**
+- ✅ 2026-09-23 新增第 16 号作品：Co-Desk 联机共创自习桌（HCI 课程全栈项目：Electron + React / FastAPI / WebSocket / SQLite，系统工程类「已完成」，GitHub 源码 https://github.com/duyv0826/co-desk；封面为 2026-05-05 本机实机主界面截图 work-16.jpg；附册与模态框均已补齐 16 号文案）
+- ✅ 2026-09-23 新增第 17 号作品：对话归档台 · AI 对话总结 MVP（AI 产品「历史对话自动总结」功能原型：本地 Ollama qwen3:8b 真实模型 + 规则引擎双降级，结构化要点 / 原文锚点 / 隐私开关 / 自动归档 / 智能命名，系统工程类「原型」，封面为 ?demo=summarized 演示态实机截图 work-17.jpg；模态框与附册均已补齐 17 号文案）
+- ✅ 2026-09-23 已迁移至 GitHub Pages 主部署：**https://duyv0826.github.io/game-portfolio/**（仓库 duyv0826/game-portfolio，public，Pages 源 master 根目录；已实测 17 作品与附册在线、无平台水印。原豆包工作托管 https://4m1405d04e4rc.doubaoapps.com/app/app_17dzfrpfs2x 保留不动）
+- ✅ 2026-09-23 第 17 号 story/附册文案同步 P2：归档库（全局记忆 + 摘要搜索）写入模态框第 4 段 story、附册新增 P2 段落与复盘验证；release_id 7688592816813067465，线上主页与附册均实测通过（含「多端同步需后端服务，本地版不做」边界说明）
+- ✅ 2026-09-23 模态框新增「开发过程 · 设计思路」板块：15 个作品全部补齐（数据驱动渲染，精炼版 2–3 段）；附册《开发过程与设计思路.html》（每作品含 概述 / 开发过程 / 设计思路 / 复盘 四段）随整目录发布上线。release_id 7688512285896428500，线上 15 卡片与附册页均实测通过
+- **公开分享链接（互联网公开，无需登录）：https://4m1405d04e4rc.aiforce.cloud/app/app_17dzfrpfs2x/**
+- 《星尘捕手》独立可玩应用：https://4m1405d04e4rc.aiforce.cloud/app/app_17e3gnzk49c （应用 ID `app_17e3gnzk49c`）
+- ✅ 2026-09-21 详情弹窗按钮拆分：GitHub 仓库链接不再显示为"试玩"按钮；13《岔路》/15《生生不息》改为「GitHub 源码」按钮（github 字段），14《抉择的房间》补齐 github 字段（保留 Pages 试玩链接）；模态框说明文案按链接类型动态匹配。发布 release_id 7687709558362279177，已验证线上 gh-btn 样式、15 作品、work-4.jpg 均正常。
+- ✅ 2026-09-15 新增第 13/14/15 号作品（岔路 Branch Road / 抉择的房间 / 生生不息，均来自 GitHub 真实仓库 duyv0826），并修复一次误删（星尘捕手 v32 丢失 → v34 插回，现 15 个齐全）
+- ✅ 15 张封面全部为实机截图（含 9-14 已补齐的 RTSP 实机：mediamtx 服务器 + FFplay + 终端日志）
+- ✅ 2026-09-16 修复分享卡：妙搭平台发布时会强制用「应用图标」作为 `og:image`，原图标为默认手柄图导致微信/飞书分享卡片显示错误。已通过 API 将应用图标更新为分享卡 og-cover.png（上传至应用存储），重新发布后 `og:image` 与 `twitter:image` 均指向分享图（已验证可访问、15 个作品在线）
+- 管理页：`https://miaoda.feishu.cn/app/app_17dzfrpfs2x`（需飞书/豆包登录）
+- 部署版 `og:image` / `twitter:image` 已指向分享卡 og-cover.png（index.html 内写的是部署域名绝对 URL，平台会以应用图标覆盖 og:image，因此改图标才是有效解法）
+- **发布通道备忘**：`lark-cli apps +deploy` 当前报 `pre_release ... returned 2 value(s) but no artifact_url`（CLI 期待 `artifact_url`、服务端返回 `upload_url`，字段不匹配，CLI v1.0.94）。改用 `lark-cli apps +html-publish --app-id <app_id> --path .`（整目录打包发布）可正常发布；发布前在干净的临时目录执行（避免 `_backup/`、`_ai_backup/` 等备份文件上线）
+
+</details>
