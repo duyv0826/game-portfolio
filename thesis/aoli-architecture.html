@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>《澳里光景》架构一页图 · 洪昺森</title>
+<style>
+  :root{
+    --bg:#0f1419; --panel:#161c24; --line:#2a333f;
+    --fg:#e6edf3; --muted:#9aa7b4;
+    --indigo:#4f8cff; --amber:#f5b042; --teal:#3fb8a0; --slate:#8a97a5;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);
+    font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    line-height:1.6;padding:24px}
+  .head{max-width:1120px;margin:0 auto 14px}
+  h1{margin:0;font-size:22px;letter-spacing:.5px}
+  .sub{color:var(--muted);font-size:13px;margin-top:4px}
+  .wrap{max-width:1120px;margin:0 auto}
+  svg{width:100%;height:auto;display:block;background:var(--panel);border:1px solid var(--line);border-radius:12px}
+  /* SVG element classes */
+  .layer-bg{fill:rgba(255,255,255,.03);stroke:rgba(255,255,255,.09);stroke-width:1}
+  .layer-lbl{fill:var(--amber);font-size:14px;font-weight:700}
+  .box-int{fill:rgba(79,140,255,.12);stroke:var(--indigo);stroke-width:1.6}
+  .box-core{fill:rgba(245,176,66,.12);stroke:var(--amber);stroke-width:1.6}
+  .box-infra{fill:rgba(63,184,160,.12);stroke:var(--teal);stroke-width:1.6}
+  .box-build{fill:rgba(138,151,165,.12);stroke:var(--slate);stroke-width:1.6}
+  .t-title{fill:var(--fg);font-size:15px;font-weight:700;text-anchor:middle}
+  .t-sub{fill:var(--muted);font-size:11px;text-anchor:middle}
+  .t-en{fill:var(--muted);font-size:10px;text-anchor:middle;letter-spacing:.3px}
+  .arrow{stroke:#9aa7b4;stroke-width:1.5;fill:none}
+  .arrow-int{stroke:var(--indigo);stroke-width:1.5;fill:none}
+  .arrow-core{stroke:var(--amber);stroke-width:1.5;fill:none}
+  .arrow-dash{stroke:var(--teal);stroke-width:1.5;fill:none;stroke-dasharray:6 4}
+  .edge-lbl{fill:var(--muted);font-size:11px;text-anchor:middle}
+  .legend-bg{fill:rgba(255,255,255,.03);stroke:rgba(255,255,255,.09);stroke-width:1}
+  .t-legend{fill:var(--muted);font-size:12px}
+  .t-legend b{fill:var(--fg)}
+  @media print{
+    body{background:#fff;color:#111;padding:0}
+    svg{background:#fff;border:none}
+    .layer-bg{fill:#f1f5f9;stroke:#cbd5e1}
+    .layer-lbl{fill:#b45309}
+    .box-int{fill:#eaf1ff;stroke:#2563eb}
+    .box-core{fill:#fef6e7;stroke:#d97706}
+    .box-infra{fill:#e9f7f3;stroke:#0d9488}
+    .box-build{fill:#f1f5f9;stroke:#64748b}
+    .t-title{fill:#0f172a}.t-sub{fill:#475569}.t-en{fill:#64748b}
+    .arrow{stroke:#475569}.arrow-int{stroke:#2563eb}.arrow-core{stroke:#d97706}.arrow-dash{stroke:#0d9488}
+    .edge-lbl{fill:#475569}
+    .legend-bg{fill:#fff;stroke:#cbd5e1}.t-legend{fill:#475569}.t-legend b{fill:#0f172a}
+    @page{size:A4;margin:8mm}
+  }
+</style>
+</head>
+<body>
+<div class="head">
+  <h1>《澳里光景》系统架构一页图</h1>
+  <div class="sub">洪昺森 · MUST IMD 游戏设计 2026 级 · 氛围探索游戏 · 导师见面会物证　|　可在不启动 Unity 的情况下用 HeadlessSimRunner 验证玩法逻辑</div>
+</div>
+<div class="wrap">
+<svg viewBox="0 0 1120 820" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="ah" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,3 L0,6 Z" fill="#9aa7b4"/></marker>
+    <marker id="ahi" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,3 L0,6 Z" fill="#4f8cff"/></marker>
+    <marker id="ahc" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,3 L0,6 Z" fill="#f5b042"/></marker>
+    <marker id="ahd" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,3 L0,6 Z" fill="#3fb8a0"/></marker>
+  </defs>
+
+  <!-- Layer backgrounds -->
+  <rect class="layer-bg" x="30" y="70" width="1060" height="120" rx="10"/>
+  <rect class="layer-bg" x="30" y="220" width="1060" height="150" rx="10"/>
+  <rect class="layer-bg" x="30" y="400" width="1060" height="140" rx="10"/>
+  <rect class="layer-bg" x="30" y="560" width="1060" height="110" rx="10"/>
+
+  <!-- Layer labels -->
+  <text class="layer-lbl" x="34" y="64">① 玩家交互层　Player Interaction</text>
+  <text class="layer-lbl" x="34" y="214">② 核心系统层　Core Systems</text>
+  <text class="layer-lbl" x="34" y="394">③ 共享基建　Shared Infrastructure</text>
+  <text class="layer-lbl" x="34" y="554">④ 编辑器 / 构建　Editor &amp; Build</text>
+
+  <!-- ① Interaction boxes -->
+  <g>
+    <rect class="box-int" x="55" y="95" width="190" height="70" rx="8"/>
+    <text class="t-title" x="150" y="124">轻触 Tap</text>
+    <text class="t-sub" x="150" y="142">基础交互输入</text>
+
+    <rect class="box-int" x="273" y="95" width="190" height="70" rx="8"/>
+    <text class="t-title" x="368" y="124">共鸣 Hum</text>
+    <text class="t-sub" x="368" y="142">声/反馈共鸣</text>
+
+    <rect class="box-int" x="491" y="95" width="190" height="70" rx="8"/>
+    <text class="t-title" x="586" y="124">同伴 AI</text>
+    <text class="t-sub" x="586" y="142">Companion AI</text>
+
+    <rect class="box-int" x="709" y="95" width="190" height="70" rx="8"/>
+    <text class="t-title" x="804" y="124">水晶信标</text>
+    <text class="t-sub" x="804" y="142">Beacon</text>
+
+    <rect class="box-int" x="927" y="95" width="190" height="70" rx="8"/>
+    <text class="t-title" x="1022" y="124">LineRenderer</text>
+    <text class="t-sub" x="1022" y="142">视觉/空间引导</text>
+  </g>
+
+  <!-- ② Core system boxes -->
+  <g>
+    <rect class="box-core" x="50" y="250" width="225" height="90" rx="8"/>
+    <text class="t-title" x="162" y="282">无头仿真</text>
+    <text class="t-en" x="162" y="300">HeadlessSimRunner</text>
+    <text class="t-en" x="162" y="315">MemoryWorldSimulation</text>
+
+    <rect class="box-core" x="313" y="250" width="225" height="90" rx="8"/>
+    <text class="t-title" x="425" y="282">叙事导演</text>
+    <text class="t-en" x="425" y="300">NarrativeDirector</text>
+    <text class="t-en" x="425" y="315">SpaceNarrativePlayer</text>
+
+    <rect class="box-core" x="576" y="250" width="225" height="90" rx="8"/>
+    <text class="t-title" x="688" y="282">谜题状态机</text>
+    <text class="t-en" x="688" y="300">Drag / Light / Sort</text>
+    <text class="t-en" x="688" y="315">Puzzle</text>
+
+    <rect class="box-core" x="839" y="250" width="225" height="90" rx="8"/>
+    <text class="t-title" x="951" y="282">氛围反馈引擎</text>
+    <text class="t-en" x="951" y="300">Ambient Feedback</text>
+    <text class="t-en" x="951" y="315">(核心)</text>
+  </g>
+
+  <!-- ③ Shared infra -->
+  <g>
+    <rect class="box-infra" x="50" y="410" width="700" height="50" rx="8"/>
+    <text class="t-title" x="400" y="432" style="font-size:14px">事件总线　EventBus（全局解耦通信）</text>
+    <text class="t-en" x="400" y="455" style="font-size:9px">各核心系统经此广播 / 订阅，互不直接耦合</text>
+
+    <rect class="box-infra" x="790" y="410" width="300" height="50" rx="8"/>
+    <text class="t-title" x="940" y="432" style="font-size:14px">确定性随机　DeterministicRng</text>
+    <text class="t-en" x="940" y="455" style="font-size:9px">可复现 / 可测试的种子化随机</text>
+  </g>
+
+  <!-- ④ Build -->
+  <g>
+    <rect class="box-build" x="50" y="575" width="500" height="70" rx="8"/>
+    <text class="t-title" x="300" y="605">一键构建可玩包</text>
+    <text class="t-en" x="300" y="625">BuildAoLiPlayer</text>
+
+    <rect class="box-build" x="570" y="575" width="500" height="70" rx="8"/>
+    <text class="t-title" x="820" y="605">场景引导 / 装配</text>
+    <text class="t-en" x="820" y="625">BootstrapSceneSetup</text>
+  </g>
+
+  <!-- Arrows: interaction -> connector -> core -->
+  <line class="arrow-int" x1="150" y1="165" x2="150" y2="205" marker-end="url(#ahi)"/>
+  <line class="arrow-int" x1="368" y1="165" x2="368" y2="205" marker-end="url(#ahi)"/>
+  <line class="arrow-int" x1="586" y1="165" x2="586" y2="205" marker-end="url(#ahi)"/>
+  <line class="arrow-int" x1="804" y1="165" x2="804" y2="205" marker-end="url(#ahi)"/>
+  <line class="arrow-int" x1="1022" y1="165" x2="1022" y2="205" marker-end="url(#ahi)"/>
+  <line class="arrow" x1="150" y1="205" x2="1022" y2="205" marker-end="url(#ah)"/>
+  <line class="arrow-int" x1="162" y1="205" x2="162" y2="250" marker-end="url(#ahi)"/>
+  <line class="arrow-int" x1="425" y1="205" x2="425" y2="250" marker-end="url(#ahi)"/>
+  <line class="arrow-int" x1="688" y1="205" x2="688" y2="250" marker-end="url(#ahi)"/>
+  <line class="arrow-int" x1="951" y1="205" x2="951" y2="250" marker-end="url(#ahi)"/>
+
+  <!-- Arrows: core -> EventBus (1-3) -->
+  <line class="arrow-core" x1="162" y1="340" x2="162" y2="410" marker-end="url(#ahc)"/>
+  <line class="arrow-core" x1="425" y1="340" x2="425" y2="410" marker-end="url(#ahc)"/>
+  <line class="arrow-core" x1="688" y1="340" x2="688" y2="410" marker-end="url(#ahc)"/>
+  <text class="edge-lbl" x="300" y="380">经事件总线广播 / 订阅</text>
+
+  <!-- Core4 -> DeterministicRng (dashed dependency) -->
+  <line class="arrow-dash" x1="951" y1="340" x2="940" y2="410" marker-end="url(#ahd)"/>
+  <text class="edge-lbl" x="1010" y="380" style="text-anchor:start">依赖</text>
+
+  <!-- DeterministicRng -> EventBus (shared rng available) -->
+  <line class="arrow-dash" x1="790" y1="435" x2="752" y2="435" marker-end="url(#ahd)"/>
+
+  <!-- Build -> Core (one labeled arrow) -->
+  <line class="arrow" x1="560" y1="575" x2="560" y2="372" marker-end="url(#ah)"/>
+  <text class="edge-lbl" x="600" y="475" style="text-anchor:start">编辑器一键构建</text>
+  <text class="edge-lbl" x="600" y="492" style="text-anchor:start">→ 可玩包（含全部系统）</text>
+
+  <!-- Legend -->
+  <rect class="legend-bg" x="30" y="690" width="1060" height="118" rx="10"/>
+  <text class="t-legend" x="50" y="716"><b>图例：</b>实线 = 调用 / 数据流　·　虚线 = 依赖（确定性随机源）</text>
+  <text class="t-legend" x="50" y="740"><b>配色：</b><tspan fill="#4f8cff">靛蓝＝玩家交互</tspan>　<tspan fill="#f5b042">琥珀＝核心系统</tspan>　<tspan fill="#3fb8a0">青绿＝共享基建</tspan>　<tspan fill="#8a97a5">灰＝构建</tspan></text>
+  <text class="t-legend" x="50" y="764"><b>关键点：</b>《澳里光景》把游戏当作"可验证的系统"——HeadlessSimRunner 可在不启动 Unity 时跑玩法逻辑，配合 DeterministicRng 实现可复现测试。</text>
+  <text class="t-legend" x="50" y="788"><b>设计观：</b>氛围反馈是核心，任务清单退居其次；交互（Tap / 共鸣 / 同伴 AI / 信标 / 视觉）驱动系统，系统经事件总线解耦协作。</text>
+</svg>
+</div>
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>洪昺森 · 作品集 — 互动媒体艺术（游戏设计）2026 级</title>
+<meta name="description" content="洪昺森，澳门科技大学互动媒体艺术（游戏设计方向）2026 级硕士。学位作品《澳里·光景》：Unity 氛围探索游戏，研究弱目的性设计下「引导是否抵达玩家」；《微光原野》可直接在线试玩。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="洪昺森 ·《澳里·光景》学位作品 — 互动媒体艺术（游戏设计）">
+<meta property="og:description" content="Unity 氛围探索游戏：没有任务清单的岛城，玩家靠光、声音与痕迹理解发生过的事。核心研究问题：我放进游戏的引导，到底有没有被玩家接到。含可直接试玩的原型《微光原野》。">
+<meta property="og:url" content="https://duyv0826.github.io/game-portfolio/thesis/">
+<meta property="og:image" content="https://duyv0826.github.io/game-portfolio/thesis/img/fragment.jpg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<style>
+  :root{
+    --bg:#0a0c14; --card:#12151f; --card2:#181c28; --line:#252a38;
+    --tx:#e8e2d0; --tx2:#a49e8e; --tx3:#6f6a5e;
+    --acc:#8ecfff; --acc2:#d8b48a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--tx);
+    font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",
+      "Source Han Sans SC","Noto Sans CJK SC",sans-serif;line-height:1.7;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 18px 80px}
+
+  header{padding:64px 0 40px;text-align:center;position:relative;overflow:hidden}
+  header .bg{position:absolute;inset:0;background:url(img/background_lighthouse.jpg) center/cover;
+    opacity:.22;filter:saturate(.7)}
+  header .fade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,12,20,.55),var(--bg))}
+  header .in{position:relative}
+  h1{font-size:26px;letter-spacing:.22em;font-weight:500;margin-bottom:10px}
+  .lead{color:var(--tx2);font-size:13.5px;letter-spacing:.1em}
+  .meta{color:var(--tx3);font-size:12px;margin-top:6px;letter-spacing:.08em}
+
+  section{margin-top:52px}
+  h2{font-size:17px;letter-spacing:.14em;font-weight:500;
+    padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:6px}
+  h2 .no{color:var(--acc);font-family:ui-monospace,Consolas,monospace;font-size:13px;margin-right:8px}
+  .plane{color:var(--tx2);font-size:13.5px;margin:12px 0 20px;line-height:1.85}
+
+  .tags{display:flex;flex-wrap:wrap;gap:7px;margin:14px 0 18px}
+  .tag{background:var(--card2);border:1px solid var(--line);border-radius:5px;
+    padding:3px 10px;font-size:12px;color:var(--tx2);letter-spacing:.06em}
+  .tag b{color:var(--acc);font-weight:600}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+  .shot{background:var(--card);border:1px solid var(--line);border-radius:9px;overflow:hidden;
+    cursor:zoom-in;transition:.18s}
+  .shot:hover{border-color:var(--acc);transform:translateY(-2px)}
+  .shot img{width:100%;display:block}
+  .shot .cap{padding:7px 10px;font-size:11.5px;color:var(--tx2);letter-spacing:.05em}
+
+  .play{border:1px solid var(--acc);border-radius:11px;overflow:hidden;background:#05070d}
+  .play iframe{width:100%;height:min(70vh,560px);border:0;display:block}
+  .playbar{display:flex;justify-content:space-between;align-items:center;
+    padding:9px 14px;background:var(--card2);border-bottom:1px solid var(--line);font-size:12.5px}
+  .playbar a{color:var(--acc);text-decoration:none;letter-spacing:.06em}
+  .playbar a:hover{text-decoration:underline}
+  .playbar span{color:var(--tx3);font-size:11.5px}
+
+  .note{background:var(--card);border-left:2px solid var(--acc2);border-radius:0 8px 8px 0;
+    padding:12px 16px;margin:16px 0;font-size:13px;color:var(--tx2);line-height:1.85}
+  .note b{color:var(--acc2)}
+
+  ul{margin:8px 0 0 20px;font-size:13.5px;color:var(--tx2)}
+  li{margin-bottom:5px}
+  li b{color:var(--tx)}
+
+  .ev {display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:16px 0}
+  .ev div{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
+  .ev .n{font-family:ui-monospace,Consolas,monospace;font-size:19px;color:var(--acc)}
+  .ev .l{font-size:11.5px;color:var(--tx3);margin-top:3px}
+
+  footer{margin-top:60px;padding-top:22px;border-top:1px solid var(--line);
+    text-align:center;color:var(--tx3);font-size:12.5px;line-height:2}
+  footer a{color:var(--acc);text-decoration:none}
+
+  #lb{position:fixed;inset:0;background:rgba(4,6,12,.94);z-index:99;display:none;
+    align-items:center;justify-content:center;padding:24px;cursor:zoom-out}
+  #lb.show{display:flex}
+  #lb img{max-width:96vw;max-height:92vh;border-radius:8px;box-shadow:0 0 50px rgba(0,0,0,.7)}
+  #lb .x{position:absolute;top:18px;right:24px;color:var(--tx2);font-size:30px;line-height:1}
+
+  @media(max-width:600px){
+    header{padding:44px 0 30px}
+    h1{font-size:20px;letter-spacing:.16em}
+    .wrap{padding:0 13px 50px}
+    .grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:9px}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<header>
+  <div class="bg"></div><div class="fade"></div>
+  <div class="in">
+    <h1>洪 昺 森</h1>
+    <div class="lead">互动媒体艺术硕士 · 游戏设计方向</div>
+    <div class="meta">澳门科技大学 人文艺术学院 · 2026 级 · 学号 2260030089</div>
+  </div>
+</header>
+
+<section>
+  <h2><span class="no">01</span>《澳里·光景》Aoli — 学位作品方向</h2>
+  <p class="plane">
+    Unity 开发的氛围探索类游戏。核心不是解谜难度，而是<b>玩家如何在一个没有任务清单的岛城里，靠光、声音与痕迹去理解发生过的事</b>。
+    已搭建无头仿真、叙事导演与谜题状态机，把游戏当作「可验证的系统」来做——设计决策可以用数据检验，而不是凭感觉。
+  </p>
+  <div class="tags">
+    <span class="tag"><b>Tap</b> 点击回应</span>
+    <span class="tag"><b>Hum</b> 哼鸣互动</span>
+    <span class="tag"><b>Companion AI</b> 同伴</span>
+    <span class="tag"><b>水晶信标</b></span>
+    <span class="tag">LineRenderer 光轨</span>
+    <span class="tag">记忆墙</span>
+    <span class="tag">叙事导演</span>
+    <span class="tag">谜题状态机</span>
+    <span class="tag">无头仿真</span>
+  </div>
+
+  <div class="grid">
+    <figure class="shot"><img src="img/aoli-title.jpg" loading="lazy" alt="标题界面"><figcaption class="cap">标题界面</figcaption></figure>
+    <figure class="shot"><img src="img/aoli-mainmenu.jpg" loading="lazy" alt="主菜单"><figcaption class="cap">主菜单</figcaption></figure>
+    <figure class="shot"><img src="img/aoli-memorywall.jpg" loading="lazy" alt="记忆墙"><figcaption class="cap">记忆墙（叙事核心）</figcaption></figure>
+    <figure class="shot"><img src="img/aoli-hud.jpg" loading="lazy" alt="游戏内 HUD"><figcaption class="cap">游戏内 HUD</figcaption></figure>
+    <figure class="shot"><img src="img/aoli-tokens.jpg" loading="lazy" alt="设计令牌规范"><figcaption class="cap">设计令牌规范</figcaption></figure>
+    <figure class="shot"><img src="img/aoli-mobile-memory.jpg" loading="lazy" alt="移动端 记忆"><figcaption class="cap">移动端 · 记忆</figcaption></figure>
+    <figure class="shot"><img src="img/aoli-mobile-title.png" loading="lazy" alt="移动端 标题"><figcaption class="cap">移动端 · 标题</figcaption></figure>
+    <figure class="shot"><img src="img/aoli-mobile-mainmenu.png" loading="lazy" alt="移动端 主菜单"><figcaption class="cap">移动端 · 主菜单</figcaption></figure>
+    <figure class="shot"><img src="img/aoli-mobile-memorywall.png" loading="lazy" alt="移动端 记忆墙"><figcaption class="cap">移动端 · 记忆墙</figcaption></figure>
+    <figure class="shot"><img src="img/aoli-transition1.png" loading="lazy" alt="转场 1"><figcaption class="cap">转场 · 标题 → 主菜单</figcaption></figure>
+    <figure class="shot"><img src="img/aoli-transition2.png" loading="lazy" alt="转场 2"><figcaption class="cap">转场 · 主菜单 → 记忆墙</figcaption></figure>
+    <figure class="shot"><img src="img/aoli-transition3.png" loading="lazy" alt="转场 3"><figcaption class="cap">转场 · 记忆墙 → 暂停</figcaption></figure>
+  </div>
+
+  <p style="margin-top:18px;font-size:13.5px">
+    → <a href="aoli-architecture.html" style="color:var(--acc)">《澳里·光景》系统架构一页图</a>
+    <span style="color:var(--tx3);font-size:12px">（无头仿真 / 叙事导演 / 谜题状态机三层）</span>
+  </p>
+</section>
+
+<section>
+  <h2><span class="no">02</span>《微光原野》Glimmer Field — 可直接试玩</h2>
+  <p class="plane">
+    HTML5 canvas 写的弱目的性氛围原型，是对《澳里·光景》的<b>反向设计</b>：把任务清单、目标箭头、进度条全部拿掉，
+    玩家只是「随便走的人」。下面这个框<b>可以直接玩</b>——鼠标移动即可，无需安装。
+  </p>
+
+  <div class="play">
+    <div class="playbar">
+      <a href="glimmer-field.html" target="_blank">在新标签页打开 ↗</a>
+      <span>键盘 D 可唤出实时调试数据</span>
+    </div>
+    <iframe src="glimmer-field.html" loading="lazy" title="微光原野 可玩原型"></iframe>
+  </div>
+
+  <div class="note">
+    <b>为什么要做这个：</b>它不是一个「对照组」——Canvas 2D 与 Unity 3D 第一人称在媒介、输入、美术上全不同，变量不干净，归因不到「目的性」。
+    它的正解身份是<b>设计对照案例（design contrast case）</b>：同一作者、同一条自变量轴（目的性／控制权）上的两个极值。
+  </div>
+
+  <div class="ev">
+    <div><div class="n">3.91</div><div class="l">异光 / 100s（读流取道策略）</div></div>
+    <div><div class="n">2.7×</div><div class="l">压过「狂推」策略</div></div>
+    <div><div class="n">220 局</div><div class="l">5 档策略 bot × 120s</div></div>
+    <div><div class="n">0 被试</div><div class="l">无需伦理审查与设备排队</div></div>
+  </div>
+
+  <p class="plane" style="margin-top:4px">
+    这套策略仿真把「这样设计到底成不成立」变成了<b>可以跑出来看的数</b>：同样一件作品，有的策略会赢、有的会输，
+    而赢的那个恰好验证了设计意图。相比依赖眼动仪等生理设备，这条路径<b>不需要被试、不需要实验室排期、成本差一个数量级</b>。
+  </p>
+</section>
+
+<section>
+  <h2><span class="no">03</span>核心研究问题</h2>
+  <p class="plane">
+    一句话：<b>我放进游戏的引导，到底有没有被玩家接到。</b>把两端对起来看——
+    设计端（我在系统里记录的设计意图与引导布置）× 玩家端（实际行走路径与行为数据）。
+  </p>
+  <ul>
+    <li><b>弱目的性设计</b>——当游戏不告诉玩家「该干什么」，什么在替它引导注意力：光、声音与痕迹</li>
+    <li><b>验证路径</b>——优先用行为数据与策略仿真（无需被试、无设备依赖）；眼动等生理测量作为后续可选升级项</li>
+    <li><b>输入侧探索（工程侧项目）</b>——正在自制 FPC 柔性双 IMU 手势控制器，验证单手非语言输入的可行性</li>
+  </ul>
+  <div class="note" style="margin-top:18px">
+    <b>更多作品：</b>17 个游戏开发 / 互动媒体 / 系统工程项目（多个可在线试玩）见
+    <a href="https://duyv0826.github.io/game-portfolio/" target="_blank" rel="noopener" style="color:var(--acc)">广度作品集</a> ·
+    代码与提交历史在 <a href="https://github.com/duyv0826" target="_blank" rel="noopener" style="color:var(--acc)">GitHub</a>
+  </div>
+</section>
+
+<footer>
+  洪昺森 · IMD 游戏设计 2026 级 · 学号 2260030089<br>
+  <a href="mailto:2260030089@student.must.edu.mo">2260030089@student.must.edu.mo</a> ·
+  <a href="https://duyv0826.github.io/game-portfolio/" target="_blank" rel="noopener">广度作品集（17+ 作品）</a> ·
+  <a href="https://github.com/duyv0826" target="_blank" rel="noopener">GitHub</a>
+</footer>
+
+</div>
+
+<div id="lb"><span class="x">×</span><img id="lbimg" src="" alt=""></div>
+
+<script>
+(function(){
+  var lb=document.getElementById('lb'), lbimg=document.getElementById('lbimg');
+  document.querySelectorAll('.shot img').forEach(function(im){
+    im.addEventListener('click',function(){
+      lbimg.src=this.src; lb.classList.add('show'); document.body.style.overflow='hidden';
+    });
+  });
+  function close(){lb.classList.remove('show'); document.body.style.overflow='';}
+  lb.addEventListener('click',close);
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1582 @@
+<!doctype html>
+<!-- 编码：本文件以 UTF-8 无 BOM 保存；charset 声明必须位于 head 第一行（见下） -->
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>微光原野 · 洋流版｜氛围探索小品</title>
+<style>
+  /* 字体栈补齐 Linux / Android 中文回退，缺字体时中文会显示成方框（常被当成"乱码"） */
+  html,body{margin:0;height:100%;background:#0a0c14;overflow:hidden;
+    font-family:-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",
+      "Source Han Sans SC","Noto Sans CJK SC","WenQuanYi Micro Hei",sans-serif;}
+  #c{display:block;width:100vw;height:100vh;cursor:crosshair;touch-action:none;}
+  .fade{position:fixed;left:50%;transform:translateX(-50%);color:#e8e2d0;
+    text-align:center;pointer-events:none;opacity:0;transition:opacity 2.4s;
+    text-shadow:0 0 14px rgba(0,0,0,.65);letter-spacing:.16em;}
+  #hint{top:38%;font-size:15px;line-height:2.0;}
+  #title{bottom:8%;font-size:12px;letter-spacing:.34em;color:#cfc8b4;}
+  #ctrl{bottom:4%;font-size:11px;letter-spacing:.18em;color:#9a948a;}
+  .show{opacity:.72 !important;}
+  #dev{position:fixed;left:12px;top:12px;color:#9fe8ff;font:12px/1.7 ui-monospace,Consolas,monospace;
+    background:rgba(0,0,0,.45);padding:8px 10px;border-radius:6px;display:none;white-space:pre;
+    pointer-events:none;}
+  /* ── 开场说明层：说清"这是什么 / 怎么玩 / 核心规则"，可随时唤回 ── */
+  #intro{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+    background:rgba(6,8,14,.84);z-index:20;color:#e8e2d0;}
+  #intro.hidden{display:none;}
+  #intro .box{max-width:min(600px,90vw);max-height:88vh;overflow:auto;padding:26px 30px;
+    border:1px solid rgba(232,226,208,.18);border-radius:14px;background:rgba(12,15,24,.78);
+    line-height:1.9;}
+  #intro h1{margin:0 0 4px;font-size:20px;letter-spacing:.16em;font-weight:600;}
+  #intro .sub{color:#9a948a;font-size:12px;letter-spacing:.2em;margin-bottom:14px;}
+  #intro p{margin:0 0 10px;font-size:13.5px;color:#d8d2c2;}
+  #intro .rule{border-left:2px solid #6c8cff;padding-left:12px;color:#cfe0ff;
+    font-size:13.5px;margin:12px 0;}
+  #intro table{border-collapse:collapse;font-size:13px;margin:10px 0 2px;}
+  #intro td{padding:3px 14px 3px 0;color:#cfc8b4;vertical-align:top;}
+  #intro td.k{color:#9fe8ff;white-space:nowrap;font-family:ui-monospace,Consolas,monospace;}
+  #intro .go{margin-top:14px;font-size:12px;color:#8e887e;letter-spacing:.18em;}
+  #help{position:fixed;right:12px;bottom:12px;z-index:21;padding:7px 13px;border-radius:999px;
+    border:1px solid rgba(232,226,208,.22);background:rgba(10,12,20,.62);color:#cfc8b4;
+    font-size:12px;letter-spacing:.12em;cursor:pointer;font-family:inherit;}
+  #help:hover{color:#fff;border-color:rgba(232,226,208,.55);}
+  /* ── 航迹图覆盖层（⑩）──
+     主出口是页内 <img src="data:image/png;...">，不是 <a download>。
+     原因见脚本里 ⑩ 段落的注释：宿主预览的 iframe sandbox 故意不给 allow-downloads。 */
+  #gallery{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+    background:rgba(6,8,14,.86);z-index:22;color:#e8e2d0;}
+  #gallery.hidden{display:none;}
+  #gallery .box{max-width:min(680px,92vw);max-height:92vh;overflow:auto;padding:20px 24px;
+    border:1px solid rgba(232,226,208,.18);border-radius:14px;background:rgba(12,15,24,.82);}
+  #gallery h2{margin:0 0 4px;font-size:17px;letter-spacing:.16em;font-weight:600;}
+  #gallery .sub{color:#9a948a;font-size:12px;letter-spacing:.14em;margin-bottom:12px;}
+  #gallery img{display:block;width:100%;height:auto;border-radius:8px;
+    border:1px solid rgba(232,226,208,.14);background:#080a12;}
+  #gallery .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px;}
+  #gallery button{padding:7px 13px;border-radius:999px;border:1px solid rgba(232,226,208,.22);
+    background:rgba(10,12,20,.62);color:#cfc8b4;font-size:12px;letter-spacing:.12em;
+    cursor:pointer;font-family:inherit;}
+  #gallery button:hover{color:#fff;border-color:rgba(232,226,208,.55);}
+  #gallery .note{margin-top:10px;font-size:11.5px;color:#8e887e;line-height:1.8;}
+  #gallery .note b{color:#cfc8b4;}
+</style>
+</head>
+<body data-page-node-id="HmPs1LtfCl9DFZ7XPXMSqX">
+<!-- tabindex：让画布可编程获焦，嵌入 iframe 时点击即可把键盘焦点收回本页 -->
+<canvas id="c" tabindex="0"></canvas>
+
+<div id="intro">
+  <div class="box">
+    <h1>微光原野 · 洋流版</h1>
+    <div class="sub">低目的性氛围探索小品 · 无失败 · 无计时 · 无敌人</div>
+    <p>你是一粒漂在洋流里的光。场上有 <b>3 盏异光</b>，靠近它们、<b>带着速度</b>穿过去，把它们点亮——这就是全部目标。没有死亡，没有倒计时，慢慢漂也完全合法。</p>
+    <div class="rule">核心规则：异光靠<b>速度</b>点亮，<b>不是</b>靠停在原地 —— 你身上那圈弧就是当前速度，<b>弧满</b>才点得着。<br>推进会消耗「光」，松开手自动回光。</div>
+    <table>
+      <tr><td class="k">W A S D / ↑ ↓ ← →</td><td>推进（支持长按连续移动）</td></tr>
+      <tr><td class="k">触屏 / 鼠标拖拽</td><td>浮动摇杆，拖多远＝出多大力</td></tr>
+      <tr><td class="k">手柄左摇杆</td><td>同上，带死区</td></tr>
+      <tr><td class="k">空格 / 轻点</td><td>呼吸（照亮周围流场 · 唤醒回响）</td></tr>
+      <tr><td class="k">Shift / 手柄 LT·RT</td><td><b>凝滞</b>：急刹、抗流。同样花光（便宜些）但<b>不回光</b>——精确入弯、别冲过头、从急流里夺回方向盘</td></tr>
+      <tr><td class="k">第二根手指 / 鼠标右键</td><td>触屏 / 鼠标的凝滞（可与拖拽同时按住）</td></tr>
+      <tr><td class="k">H</td><td>数值面板：速度 · 充能率 · 航迹分</td></tr>
+      <tr><td class="k">P</td><td>航迹图：本轮走过的路（可另存 / 复制到剪贴板 / 翻看前几轮）</td></tr>
+      <tr><td class="k">C</td><td>复制本地图码（6 位，如 <b>K3F9QZ</b>）——发给别人就能复现同一张地图</td></tr>
+      <tr><td class="k">V</td><td>载入地图码：粘贴一串码，重建同一张地图（分区 / 异光 / 光尘全部一致）</td></tr>
+      <tr><td class="k">/ 或 ?</td><td>随时唤回 / 关闭本说明</td></tr>
+    </table>
+    <p style="color:#9a948a;font-size:12.5px;margin-top:10px;">读图线索：光尘拖出的<b>线条越长越亮＝流越急</b>。急流快但身不由己，静水（线短）才能自己控速——异光就藏在静水区。屏幕边缘那颗极淡的小点，指向最近的未点亮异光。<br>偶尔会刮起<b>潜流风暴</b>：全场光尘被吹往同一个方向，读流的线索会被打乱——顺着它走，或者等它过去。<br>上一轮你走过的路，会留下一颗<b>暗淡的冷色余光</b>在原地重演——它只是痕迹，不是对手。<br><b>地脉（⑧）</b>：地图被分成 6 个扇面，按<b>开图时实测的静水条件</b>分成 3 档、同档同色——<b>绿＝静水带</b>（最容易控速、回光，共 2 个方向）、<b>黄＝中流带</b>、<b>品红＝急流带</b>（最乱）。<br>⚠️ 颜色只描述<b>扇面整体的静水档位</b>，<b>不承诺异光密度</b>（实测 3 盏灯在 6 个扇面上接近均匀分布）；也<b>不说明异光所在点</b>的流况——异光总坐在自己的局部静水凹点里（实测瞬时 |F| ≈ 0.05）。具体读数看 <b>H</b> 面板。</p>
+    <div class="go">点击任意处 / 按任意键 开始　·　之后按 <b>/</b> 或 <b>?</b>，或点右下角「? 操作说明」随时唤回</div>
+  </div>
+</div>
+<button id="help" title="唤回操作说明（快捷键 / 或 ?）">? 操作说明</button>
+
+<!-- ── 航迹图覆盖层（⑩）── 一轮结束自动抓图并缓存，按 P 才打开（不打断氛围） -->
+<div id="gallery" class="hidden">
+  <div class="box">
+    <h2>航迹图</h2>
+    <div class="sub" id="galMeta">—</div>
+    <img id="galImg" alt="本轮航迹图">
+    <div class="row">
+      <button id="galDl">下载 PNG</button>
+      <button id="galCopy">复制图片</button>
+      <button id="galPrev">上一轮</button>
+      <button id="galNext">下一轮</button>
+      <button id="galClose">关闭（P）</button>
+    </div>
+    <div class="note">若「下载 PNG」没反应，是预览面板拦了下载（宿主为安全**故意不给** iframe 下载权限）——
+      直接 <b>右键 / 长按图片「另存为」</b>即可。图片本身已经画在页面里了，不依赖下载。</div>
+  </div>
+</div>
+
+<div id="hint" class="fade">光尘在流。<br>骑上急流，<b>带着速度</b>穿过异光。</div>
+<div id="title" class="fade">微光原野 · 洋流</div>
+<div id="ctrl" class="fade">WASD / 方向键 推进　·　拖拽（触屏·鼠标）　·　手柄左摇杆　·　Shift / LT·RT 凝滞　·　空格 / 轻点 呼吸　·　H 数值　·　P 航迹图　·　C 复制地图码　·　V 载入地图码　·　/ 说明</div>
+<div id="dev" data-page-node-id="3k7ujz0zxvhzf1EeuZCDW2"></div>
+<script>
+/*
+  ============================================================
+  《微光原野 · 洋流版》v3（结构重写，全部结论经 node 数值验证）
+  ------------------------------------------------------------
+  【v3 改了什么 —— 以及为什么】
+    v2 建了一个「航迹分」来评价每次抵达，但实测证明它是个反向指标：
+      · 顺流效率项（eff 低通）只要松手 2 秒就收敛到 1，躺平和老手同分
+      · 「剩余光」项奖励从不推进的人 → 躺平党拿全场最高分
+      · 实测 v1 排序：休闲随缘(0.525) > 赶路(0.514) > 读流(0.502) > 狂推(0.441)
+    v3 不是调数值，是改结构。三条轴线全部换成「0 地板、无白送、不反向」：
+      时效 fresh  = max(0, 1 - 距上次点亮秒数 / PAR_TIME)
+      省光 thrift = max(0, 1 - 本段耗光量 / SPEND_PAR)      ← 用「花了多少」不是「剩多少」
+      充能质 cq   = clamp((CHARGE_PAR - 圈内秒数) / (CHARGE_PAR - 1), 0, 1)
+  【核心结构改动：异光从「停留点亮」改为「速度点亮」】
+    旧规则：在半径内待满 1.5 秒 → 逼玩家必须推进进静水停住
+           → 洋流永远送不到终点 → 每次抵达都强制推进 → 顺流沦为装饰
+    新规则：充能速率 = clamp((速度 - V_MIN) / V_SPAN, 0, 1)，充满 1.0 点亮
+           → 骑急流高速穿过 = 瞬间点亮；烧光冲到门口 = 干等回光（看得见的失败态）
+    FLOW_FORCE 420→520，使速度序变成 急流 578 > 推进 389 > 慢漂 300：
+           「流比你快，但它不按你想的去」——这才是取舍该有的形状。
+  【实测（node，5 档策略 × 220 局 × 120 秒，非估算）】
+    吞吐（异光/100秒）随缘 2.50 | 狂推 2.86 | 读流 3.91  → 读流/狂推 = 1.37（原 0.76）
+    v3 分            随缘 0.225 | 狂推 0.234 | 读流 0.454  → 最小优势 0.219
+    单位时间得分     随缘 0.0056 | 狂推 0.0067 | 读流 0.0177 → 2.7 倍领先
+    充能耗时         读流 3.95s | 狂推 9.66s（人到了没力气点燃）
+    v1 分            随缘 0.525 > 读流 0.502  ← 旧公式把随缘排第一，已废弃
+    鲁棒性：三档不同阈值的高手 bot（0.8/0.35、1.0/0.5、1.3/0.65）
+            在全部 4 组参数下均压过狂推与随缘 → 非过拟合
+    注：完全不按键的纯漂流者点亮数为 0（会漂进静水卡在 50px/s，够不到 V_MIN）
+        —— 这是可教学的失败态：门就在眼前，但你没有「抵达」，只是「在那儿」。
+  【⑬ 连击门槛校准（2026-09-12 · _验证_连击门槛仿真.js，7 策略 × 220 局）】
+    ⚠️ 下面这几个数**推不出来，只能跑出来**：原以为漏洞是"省光 0.30 地板被吃到"，
+       实测被证伪两次 —— 纯地板分 0.300 确实低于门槛，但海底洋流会免费把船推到
+       ~900px/s（终端速度 = FLOW_FORCE·|F|/DAMP_K），所以"不推进"根本不等于"没速度"。
+       真正的问题是**没有区分度**：被动滑行 74% ≈ 主动读流 73%（0.99×）。
+    门槛扫描（同一批分布）: 0.40→0.90×  0.45→0.93×  0.47→1.08×  0.50→1.68×  0.55→1.94×
+       ↑ 0.45 比 0.40 更差，是直方图边界造成的假象破除；0.47 之后才是单调真梯度。
+    结构解全部失效：充能需主动推进 ×0.35 → 1.13×（读流自身塌到 33%）；
+       扣掉洋流漂移 → 0.94×；洋流增益 ×0.25/0.60/1.00 → 0.95/1.04/1.10×（等于没用）。
+       → 结论：这一项只能靠门槛校准，不存在"更聪明的结构修法"。门槛定为 0.50。
+  【输出 · 视觉】
+    光尘流向线条 = 洋流场（线越长越亮＝流越急；读图依据）
+    玩家光晕大小 = 剩余「光」；玩家外圈细弧 = 本段航迹分（随时间收缩，看得见的倒计时）
+    异光外圈弧   = 充能进度（速度不够时变暗停住 → 玩家自己会学会「要带着速度进去」）
+    异光永久亮度 = 该次航迹分的等级（0.2 随缘 → 0.7 以上老手）
+  【v3.1 输入扩展（2026-09-06 · 触屏 / 鼠标 / 手柄）】
+    原版只认键盘。作为学位作品展示，不可在手机/平板/电视上跑 = 不可展示。
+    改动：抽出统一输入层 readDesiredMove()，键盘→指针(触屏·鼠标浮动摇杆)→手柄左摇杆
+          三级归一成「期望推力向量」；物理对模拟输入按拖拽/摇杆幅度给 0~1 推力。
+    不变量：键盘恒满推力(mag=1)，v3 物理与评分数值零改动 → 策略仿真结论仍成立。
+    额外：触屏/鼠标轻点(短按·几乎不动)=呼吸；触屏拖拽幅度=推力强度(半程拖=半推力，
+          静水异光仍可被点亮，验证见 _验证_无头冒烟.js 的「触屏」两种打法)。
+  ============================================================
+  【v3.2 ⑩ 可带走产出物：航迹图（2026-09-11）】
+    一轮结束自动抓一张 1200×1200 的航迹图（本轮尾迹 + 该轮洋流场 + 异光的等级亮度），
+    按 P 打开。**主出口是页内 <img src="data:...">，不是 <a download>** ——
+    实测宿主预览的 iframe sandbox 是
+      "allow-scripts allow-popups allow-popups-to-escape-sandbox allow-forms allow-modals"
+    源码注释逐条写明了故意不给的权限，其中就有「allow-downloads（避免下发木马）」。
+    所以下载只是 best-effort 的第三出口，另两个出口是页内看图与复制到剪贴板。
+    ⚠️ 当时没做「种子码」：随机源仍是 Math.random()，种子码复现不出地图 = 假动词。
+       → 已于 v3.4 兑现（见下方 ⑧′ 段）：世界生成换成 mulberry32 种子流，种子码是真的了。
+  ============================================================
+  【v3.3 ⑫ 幽灵回放（2026-09-11）】
+    复用 ⑩ 的 rounds[] 记录层：把上一轮走过的路线重放成一颗暗淡的冷色余光，
+    按累计弧长定位播放头、到头回绕、拖尾取「更早的位置」形成渐隐的线。
+    ⚠️ **这不是公平竞速**：每轮结算 flowPhase 会大改道，两轮的速度条件不同，
+       写"击败上一轮的你"就是假动词。定位是「痕迹与陪伴」。
+       （判例更新：真竞速已于 v3.5 兑现 —— ⑧″ 事件子流 + 真实节奏时间轴，见下方 v3.5 条目。）
+  ============================================================
+  【v3.4 ⑧ 结构化分区 + ⑧′ 种子化 PRNG（2026-09-12 · 实测见 _验证_种子与分区.js）】
+    ▸ ⑧′ 先做，因为它是 ⑧ 和 ⑩ 种子码共同的前提：世界生成必须可复现。
+      · 世界流 wrng()/wrand()（mulberry32 种子流）↔ 表现流 rand()/Math.random()（粒子·音高·风声）
+        两条流**必须分开**：共用一条时，点亮一盏灯产生的粒子会消耗随机数，
+        把后续异光/光尘的取点整体平移 → "点了几次灯"会改变地图，种子码当场失效。
+      · 定种时机：useSeed() 必须在任何 wrng() 消费点之前（buildWorld 与 stormNext 都在其后）。
+        ⚠️ 不能写 `seedFromEnv() || rand`：种子码 000000 是合法值，会被 || 吞掉。
+      · 出口 C 复制 / 入口 V 载入（进程内重建，不改 hash 不 reload —— 见 ⑩ 段理由）。
+    ▸ ⑧ 的**设计被自己的探针推翻了五次**，所以最终形态和最初设想完全不同：
+      ① 硬把异光取点限制在 1/6 扇面 → 有的扇面最低 |F| 高到让漂移 431px/s > 推进 389px/s，
+         那盏灯物理上点不亮；扇面最低 vs 整环最低最差比 152×。→ 不可行。
+      ② 改成"按区密度抽签落点" → 落点分布从 2.81× 被**抹平到 1.62×**：洋流几何本身
+         早就把静水聚到少数扇面了，再叠权重等于把已存在的结构平均掉。→ 有害。
+      ③ 想按"灯最密的区叫密光林"命名 → 累计 60 张图的落点计数 32/30/24/30/33/31 基本均匀，
+         **灯密度这个说法根本没被测过**，已从名字里删掉。→ 名字在撒谎（唯一一次身份危机）
+      ④ 给 6 个名次各配一个名字（静水湾/缓流带/微流滩/中流带/急流口/漩涡区）
+         → 换一套同密度、只改起始偏移的相位网格重测："6 区档位完全一致"仅 40%、平均翻档 1.71 区。
+         且"首名"一致率只有 40% → **"本图静水排名 1/6"这句话不可复核**。
+         改成按名次三等分（1-2/3-4/5-6）后 **96 次比较 100% 一致、零翻档**。
+         按绝对阈值分档反而更差（6 区全同 6%）。→ 6 个名次降为 3 档，名次不再对外展示。
+      ⑤ 标定相位从 4 个加密到 12 个：4 相位下档位对网格偏移不够稳；12 相位使 rank3 达到 100%。
+         单相位绝不可用（漂移最高 0.41，且 0/12 能与多相位给出同一首名）。
+      最终：测量每张图自己的扇面静水条件 → 按名次三等分**定档命名与上色**，落点算法一个字不改。
+        名字只声称"本区属于哪一档"（这正是测量结果）、|F| 分布不变（⑬ 基线不用重跑）、
+        zoneShift 由种子决定（每图排布不同）。HUD 给「档位名 + 该区实测 |F|（12 相位×3 环平均）」，
+        把"读数偏保守"直接摊在玩家眼前，而不是藏起来。
+     用处（别把它想大）：静水是全场唯一能自己维持速度的地方，而带速度点亮是核心机制
+        → "哪个方向更静"是可操作信息：去静水区控速/回光，再借流去撞灯。
+  ============================================================
+  【v3.5 ⑧″ 改道确定性子流 + ⑫′ 幽灵真竞速（2026-09-13 · 实测见 _验证_改道确定性.js / _验证_真竞速.js）】
+    ▸ ⑧″：重布落点 = f(mapSeed, 改道计数, 灯序号) —— 事件子流（hash32 + subrand），
+      与主世界流互不消费；已点亮灯在子流里按序号**空转占位**，确定性不被点亮集合破坏。
+      种子码承诺升级：不只是"起点同图"，是"同种子 + 同样次数的改道 → 全程同图"。
+    ▸ ⑫′：幽灵从「恒速重演」升级为「真实节奏竞速」——
+      · 尾迹pts 带 t（录制时间），rec 带 dur（本轮用时）；
+      · 播放头由 roundT 驱动：幽灵 = 上一轮的你此刻的真实位置；
+      · 竞速差 RACE = roundT − 幽灵在同弧长处的时间（HUD 常驻 + 轮末战报）；
+      · 风暴时序/风向改为轮内子流 f(seed, 轮内第几场)，每轮同表 —— 竞速不含天气变量。
+    ▸ 诚实代价：每轮的风暴时间表相同（"改道随机感"让位给可比性，写进分析文档）。
+      旧记录（无 t/dur）自动降级为恒速重演，不崩。
+  ============================================================
+*/
+(() => {
+  const MOTE_N=260;
+  const ECHO_N=14, BEACON_N=3;
+  const BASE=220;
+  const penta=[0,2,4,7,9,12,14,16];
+  /* 异光的色相按**索引固定**（身份色），刻意**不**跟随它所在的分区档位。
+     为什么（这条我一开始想反了，是被探针纠正的）：
+       直觉是"把灯染成它所在分区的颜色，玩家就能一眼看出这盏灯在什么流场里"。
+       但异光的落点是**整环取 min|F|** —— 它总是坐在一个局部静水凹点里（实测瞬时 |F| ≈ 0.05），
+       哪怕它落在外围的"急流带"扇面上。用档位色去染它，等于宣称"这盏灯在乱流里"，
+       而那是假的。分区档位描述的是**扇面整体**的静水条件，不是异光所在点位的条件。
+     所以：分区颜色 = 流场地形（画在地面扇形与边框弧上）；异光颜色 = 它自己是谁（身份）。
+     两套颜色各说各的，不互相暗示。 */
+  const beaconHue=[288,45,165];
+  const beaconRad=[600,980,1320];
+
+  const FLOW_S=0.0016;
+  const FLOW_VIS=90;
+  const FLOW_FORCE=520;        // v3：均值 300 / 急流 578 px/s（原 420 → 均值 243）
+  const FLOW_SHIFT=1.30;       // 点亮异光后的改道幅度
+  const ROUND_SHIFT=3.1;       // 轮末大改道幅度（⑫′：flowPhase 全程为「计数」的纯函数，无历史依赖）
+  const VORTEX={x:900,y:-500};
+  const VORTEX_R=520, VORTEX_R2=VORTEX_R*VORTEX_R, VORTEX_SPIN=1.15;
+
+  const ACCEL=700, DAMP_K=1.8, GRIP=3.0, INPUT_SMOOTH=0.08;
+  const THRUST_COST=0.28;      // 满光续航 3.58s
+  /* ── 凝滞（⑪ 第二动词）──
+     按住 → 叠加一份强阻尼，速度被主动"浇熄"。它解决的是本作唯一的失控来源：
+     洋流推着你走、你只能身不由己（急流终速 572，静水外根本停不下来）。
+     K_total = DAMP_K+BRAKE_K = 7.0 → 急流(|F|≈2.0)里凝滞终速 ≈ 2.0*520/7.0 ≈ 149 px/s，
+     仍高于 V_MIN=110 → 凝滞不能当"静止挂机"，但足以夺回方向盘。
+     成本：同样花光（BRAKE_COST），且**不回光** —— 否则高速凝滞会"刹着车还在回光"，倒挂。
+     所以同一罐光要在「走」与「停」之间抢，这才是第二动词该有的取舍。 */
+  const BRAKE_K=5.2;           // 凝滞附加阻尼
+  const BRAKE_COST=0.10;       // 凝滞每秒耗光（推进的 0.36 倍：便宜，但绝不是白嫖）
+  const RIDE_BASE=0.10, RIDE_SPEED=0.30;
+  const EXHAUST_EXIT=0.15;
+  // ── 异光速度充能（v3 核心规则）──
+  const V_MIN=110, V_SPAN=210; // 低于 110px/s 完全不充能；320px/s 满速充能
+  const CHARGE_DECAY=0.35;     // 离开半径后充能流失 /s
+  const CT_DECAY=0.5;          // 离开半径后圈内计时回退 /s
+  // ── 航迹分 v3（三条轴均为 0 地板，无白送分、无反向项）──
+  const PAR_TIME=22;           // 时效基准：22 秒内抵达拿满时效分
+  const SPEND_PAR=1.5;         // 省光基准：本段耗光 1.5 以上则省光分归零
+  const CHARGE_PAR=5.0;        // 充能质基准：圈内待 5 秒以上则充能分归零
+  const W_FRESH=0.40, W_THRIFT=0.30, W_CHARGE=0.30;
+  /* ── 连击门槛（⑬，2026-09-12 由 _验证_连击门槛仿真.js 扫出来，别凭感觉改）──
+     0.35 时「被动自由滑行」的连击合格率 74%，竟然略高于「主动读流」73%（比值 0.99×）：
+     连击完全看不出技巧差异，玩家会学到"别乱动"。这是会误导行为的漏洞。
+     在同一批分布上扫门槛：0.45 反而更差（0.93×，滑行的分数正好堆在 0.35~0.5），
+     0.47 才翻转，0.50 给出 1.68×。0.50 下：读流 48% / 滑行 29% / 半躺 12% / 直冲 11%
+     —— 梯度成立，且蛮力路线仍被压住。
+     ⚠️ 别降到 0.47 以下；改这个数必须先跑 _验证_连击门槛仿真.js 看「读流/滑行」倍数。 */
+  const COMBO_GATE=0.50;
+  const GRADE_REF=0.70;        // 视觉分级基准：v3 分 0.70 ≈ 老手水平
+  const REFUND_MIN=0.06, REFUND_MAX=0.55;
+  const RS_R=34;               // 玩家航迹环半径
+  const CHARGE_R=78;           // 异光充能环半径
+
+  const SPEED_REF=300, STILL_FULL=4, ENERGY_K=1.5;
+  const INFLUENCE_R=150, INFL2=INFLUENCE_R*INFLUENCE_R;
+  const PUSH=42, SWIRL=24;
+  const SAMPLE_DIST=22, TRAIL_CAP=700;
+  const ECHO_NEAR=120, ECHO_NEAR2=ECHO_NEAR*ECHO_NEAR;
+  const BEACON_NEAR=210, BEACON_NEAR2=BEACON_NEAR*BEACON_NEAR;
+  const BOOST_DECAY=0.92, BOOST_RATE=60;
+  const FB_HUE=60, FB_PUSH=0.9;
+  const ECHO_PULL_R=260, ECHO_PULL_R2=ECHO_PULL_R*ECHO_PULL_R;
+  const ECHO_PULL=18, ECHO_SWIRL=26;
+  const SPARK_N=16, BEACON_SPARK_N=34;
+  const SONAR_R=520;           // 呼吸（声纳）半径：照亮流场 + 唤醒回响
+  // ── ⑩ 航迹图导出 ──
+  const MAP_SIZE=1200;         // 输出 PNG 边长
+  const MAP_EXTENT=1900;       // 世界半径：固定值（不用自适应包围盒）→ 各轮的图可以直接对比
+  const MAP_GRID=22;           // 流场采样网格 22×22：把「这一轮的洋流长什么样」冻结进图里
+  const MAP_KEEP=12;           // 最多保留最近 12 轮的记录（⑫ 幽灵回放将来直接复用这个数组）
+  // ── ⑫ 幽灵回放 ──
+  const GHOST_SPEED=300;       // 仅旧记录的恒速回放兜底（新记录带时长 → 真实节奏，⑫′）
+  const GHOST_TAIL=6;          // 拖尾段数
+  const GHOST_GAP=22;          // 相邻拖尾段的世界距离 px
+
+  const cv=document.getElementById('c');
+  const ctx=cv.getContext('2d');
+  const dev=document.getElementById('dev');
+  let DPR=Math.min(window.devicePixelRatio||1,2);
+  function resize(){ cv.width=innerWidth*DPR; cv.height=innerHeight*DPR;
+    ctx.setTransform(DPR,0,0,DPR,0,0); }
+  addEventListener('resize',resize); resize();
+
+  const cam={x:0,y:0};
+  const player={x:0,y:0,vx:0,vy:0,r:14};
+  let light=1, exhausted=false, eff=1, noThrust=0, devOn=false,
+      round=0, lastRoundScore=0, roundEnding=false;
+  let flowPhase=0, localF=0, sinceBeacon=0, lastScore=0, spent=0, playerSpeed=0;
+  /* ⑫′ 竞速计时：roundT=本轮已进行秒数（幽灵重演的时间轴基准）；
+     raceArc=本轮累计弧长（与幽灵对齐后算竞速差）。 */
+  let roundT=0, raceArc=0;
+  const keys={};
+  /* ── 统一输入层（键盘 / 指针=触屏·鼠标 / 手柄）──
+     三种输入最终都汇成 {x,y,mag} 的「期望推力向量」喂给物理。
+     物理对键盘恒为满推力(mag=1)；对指针/手柄按拖拽/摇杆幅度给 0~1 的模拟推力。
+     键盘优先：一旦按了键，指针/手柄让位，避免多设备信号打架。 */
+  const input={ padX:0, padY:0, padMag:0, padBrake:false,
+    kbBrake:false, ptr2:false, ptr2Id:-1,
+    ptr:false, ptrId:-1, ptrOX:0, ptrOY:0, ptrX:0, ptrY:0,
+    ptrDownT:0, ptrMoved:0 };
+  const STICK_MAX=90;     // 指针拖拽满程像素：超过即满推力
+  const GP_DEAD=0.18;     // 手柄左摇杆死区，滤掉漂移
+  /* ── 键位归一：优先用物理键位 e.code（不受输入法/键盘布局/大小写影响），
+        再回退 e.key，兼容没有 code 的老环境。输出统一为 up/down/left/right。 ── */
+  const MOVE_CODES=new Set(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',
+    'KeyW','KeyA','KeyS','KeyD','Space']);
+  function keyName(e){
+    const c=e.code||'';
+    if(c==='ArrowUp'   || c==='KeyW') return 'up';
+    if(c==='ArrowDown' || c==='KeyS') return 'down';
+    if(c==='ArrowLeft' || c==='KeyA') return 'left';
+    if(c==='ArrowRight'|| c==='KeyD') return 'right';
+    const k=(e.key||'').toLowerCase();
+    if(k==='arrowup'   || k==='w') return 'up';
+    if(k==='arrowdown' || k==='s') return 'down';
+    if(k==='arrowleft' || k==='a') return 'left';
+    if(k==='arrowright'|| k==='d') return 'right';
+    return '';
+  }
+  /* 长按会持续触发 keydown，这里只置位不重复计数 → 天然支持长按连续移动 */
+  addEventListener('keydown',e=>{
+    const n=keyName(e); if(n) keys[n]=true;
+    /* 凝滞（⑪）：Shift（左右同一处理，只认物理键位）。 */
+    if(e.code==='ShiftLeft'||e.code==='ShiftRight') input.kbBrake=true;
+    if(e.code==='Space'){ e.preventDefault(); if(!started) startAudio(); breathe(); }
+    // 阻止方向键/空格去滚动宿主页（否则页面滚动会抢走焦点，表现为"按了没反应"）
+    if(MOVE_CODES.has(e.code) && e.cancelable) e.preventDefault();
+    if((e.key||'').toLowerCase()==='h'){ devOn=!devOn; dev.style.display=devOn?'block':'none'; }
+    // ⑩ 航迹图：P 开关；Esc 只负责关掉这一层（不抢说明层的开关）
+    if((e.key||'').toLowerCase()==='p'){ e.preventDefault(); toggleMap(); }
+    if(e.key==='Escape'){ hideMap(); }
+    /* "/" 与 "?" 是同一个物理键(Slash)，带 Shift 即为 ? —— 切换说明层。
+       必须走 else 分支：否则按 / 打开后，紧接着的 hideIntro() 会立刻把它关掉。 */
+    const kk=(e.key||'').toLowerCase();
+    if(e.code==='Slash' || kk==='/' || kk==='?'){ e.preventDefault(); toggleIntro(); }
+    else hideIntro();
+    /* ⑧′ 种子码：C 复制本局地图码（含可分享链接），V 粘贴码载入同一张地图。
+       两条都是真出口：复制走 clipboard（失败也会把码打在屏上让你抄），
+       载入走进程内重建。 */
+    if(kk==='c' && !e.ctrlKey && !e.metaKey && !e.altKey){ e.preventDefault(); copySeed(); }
+    if(kk==='v' && !e.ctrlKey && !e.metaKey && !e.altKey){ e.preventDefault(); loadSeedPrompt(); }
+  },{passive:false});
+  addEventListener('keyup',e=>{
+    const n=keyName(e); if(n) keys[n]=false;
+    if(e.code==='ShiftLeft'||e.code==='ShiftRight') input.kbBrake=false;
+  });
+  /* 失焦/切后台时释放全部按键：否则 Alt+Tab 期间收不到 keyup，
+     回来后会出现"手已经松了、人还在飘"的卡键。 */
+  function releaseAllKeys(){ for(const k in keys) keys[k]=false;
+    input.kbBrake=false; input.ptr2=false; input.ptr2Id=-1; }   // 凝滞同理，别让 Shift 卡住
+  addEventListener('blur',releaseAllKeys);
+  document.addEventListener('visibilitychange',()=>{ if(document.hidden) releaseAllKeys(); });
+  /* iframe 嵌入时键盘只发给持有焦点的文档：进入页面和每次点击都主动抢一次焦点 */
+  function grabFocus(){ try{ window.focus(); cv.focus(); }catch(_){} }
+  addEventListener('load',grabFocus); grabFocus();
+  addEventListener('pointerdown',grabFocus);
+  // 指针：触屏拖拽 / 鼠标拖拽 统一成浮动摇杆；轻点(短按·几乎不动)=呼吸
+  // 凝滞（⑪）的指针入口：鼠标右键，或「第二根手指按住」。不占摇杆——移动与凝滞是两个动词，要能同时按。
+  addEventListener('contextmenu',e=>e.preventDefault());   // 右键被凝滞征用了，别再弹浏览器菜单
+  addEventListener('pointerdown',e=>{
+    if(!started) startAudio();
+    if(e.button===2){ input.ptr2=true; input.ptr2Id=e.pointerId; return; }
+    if(input.ptr){ input.ptr2=true; input.ptr2Id=e.pointerId; return; }  // 已有摇杆 → 这一根是凝滞
+    input.ptr=true; input.ptrId=e.pointerId;
+    input.ptrOX=e.clientX; input.ptrOY=e.clientY;
+    input.ptrX=e.clientX; input.ptrY=e.clientY;
+    input.ptrDownT=performance.now(); input.ptrMoved=0;
+  });
+  addEventListener('pointermove',e=>{
+    if(input.ptr && e.pointerId===input.ptrId){
+      input.ptrMoved+=Math.hypot(e.clientX-input.ptrX, e.clientY-input.ptrY);
+      input.ptrX=e.clientX; input.ptrY=e.clientY;
+      if(e.cancelable) e.preventDefault();   // 阻止页面滚动/缩放
+    }
+  });
+  function endPointer(e){
+    if(e.pointerId===input.ptr2Id){ input.ptr2=false; input.ptr2Id=-1; return; }  // 凝滞手指抬起
+    if(e.pointerId!==input.ptrId) return;
+    if(started && performance.now()-input.ptrDownT<220 && input.ptrMoved<14) breathe();
+    input.ptr=false; input.ptrId=-1;
+  }
+  addEventListener('pointerup',endPointer);
+  addEventListener('pointercancel',endPointer);
+  /* 手柄：每帧轮询左摇杆；首个按键按下即启动音频（GPAPI 无自动手势） */
+  function pollGamepad(){
+    input.padX=0; input.padY=0; input.padMag=0; input.padBrake=false;
+    if(typeof navigator==='undefined' || !navigator.getGamepads) return;
+    const pads=navigator.getGamepads(); if(!pads) return;
+    for(const gp of pads){
+      if(!gp) continue;
+      /* 凝滞扳机：LT(6)/RT(7)。必须放在摇杆判断**之前**——
+         否则摇杆没动就提前 return，扳机永远读不到（假动词）。 */
+      const bs=gp.buttons;
+      if(bs && ((bs[6]&&bs[6].pressed)||(bs[7]&&bs[7].pressed))) input.padBrake=true;
+      const ax=gp.axes[0]||0, ay=gp.axes[1]||0, m=Math.hypot(ax,ay);
+      if(m>GP_DEAD){
+        input.padX=ax; input.padY=ay; input.padMag=Math.min(1,m);
+        if(!started && gp.buttons){ for(const b of gp.buttons){ if(b&&b.pressed){ startAudio(); break; } } }
+        return;
+      }
+    }
+  }
+  /* 把三种输入归一成「期望推力向量」。键盘数字输入恒为满推力(mag=1)。 */
+  function readDesiredMove(){
+    let mx=0,my=0;
+    // keys 由 keyName() 统一写入 up/down/left/right
+    if(keys.up)my-=1;
+    if(keys.down)my+=1;
+    if(keys.left)mx-=1;
+    if(keys.right)mx+=1;
+    if(mx||my) return {x:mx,y:my,mag:1,src:'keys'};
+    pollGamepad();
+    if(input.padMag>GP_DEAD) return {x:input.padX,y:input.padY,mag:input.padMag,src:'pad'};
+    if(input.ptr){
+      const tx=Math.max(-1,Math.min(1,(input.ptrX-input.ptrOX)/STICK_MAX));
+      const ty=Math.max(-1,Math.min(1,(input.ptrY-input.ptrOY)/STICK_MAX));
+      if(tx||ty) return {x:tx,y:ty,mag:Math.min(1,Math.hypot(tx,ty)),src:'ptr'};
+    }
+    return {x:0,y:0,mag:0,src:'none'};
+  }
+  /* 表现流专用（⑧′ 之后）：粒子爆散、装饰抖动这类**不决定世界结构**的随机。
+     ⚠️ 凡是影响异光/光尘/回响布点、风暴时序风向的，一律走 wrand()/wrng()，
+        否则它们会与粒子抢同一个序列，导致"点亮几次"改变地图。 */
+  const rand=(a,b)=>a+Math.random()*(b-a);
+
+  const F={x:0,y:0};
+  /* ph 可选：不传 = 用当前 flowPhase（线上路径）；传 = 在该相位上取样。
+     ⑧ 的分区标定要在多个相位上评估同一个扇面，所以必须能指定相位。 */
+  function flow(x,y,ph){
+    const s=FLOW_S, p=(ph===undefined?flowPhase:ph);
+    let fx=Math.sin(y*s*1.7+0.4+p)*0.9      + Math.sin((x+y)*s*0.9+1.9+p*0.7)*0.7;
+    let fy=Math.cos(x*s*1.5-0.8+p*0.8)*0.9  + Math.cos((x-y)*s*0.8+2.6+p*0.6)*0.7;
+    const dx=x-VORTEX.x, dy=y-VORTEX.y, d2=dx*dx+dy*dy;
+    if(d2<VORTEX_R2){
+      const d=Math.sqrt(d2)||1, w=1-d/VORTEX_R;
+      fx+=-dy/d*w*VORTEX_SPIN*1.6; fy+=dx/d*w*VORTEX_SPIN*1.6;
+    }
+    F.x=fx; F.y=fy;
+  }
+  function flowMag(x,y){ flow(x,y); return Math.sqrt(F.x*F.x+F.y*F.y); }
+  // 当前正在充能的那盏异光的「圈内已耗秒数」（HUD 与结算共用）
+  function activeChargeT(){
+    let ct=0;
+    for(const b of beacons) if(!b.lit && b.chargeT>ct) ct=b.chargeT;
+    return ct;
+  }
+  /* 航迹分 v3：时效 0.40 + 省光 0.30 + 充能质 0.30
+     三条轴全部「做得差 = 0 分」，不再有躺平白送的地板分，
+     也不再用「剩余光」这种反向项（剩得多只说明你没干事）。 */
+  function routeScore(chargeT){
+    const ct=(chargeT===undefined)? activeChargeT() : chargeT;
+    const fresh =Math.max(0, 1 - sinceBeacon/PAR_TIME);
+    const thrift=Math.max(0, 1 - spent/SPEND_PAR);
+    /* cq 只在「正在充能」时计入；闲站不充能 → cq=0，避免闲站挂着高分环
+       （注：spent=0 时 thrift=1 是 pro-skill 而非 anti-skill——
+        不花光只在点亮的那一下才兑现，纯闲站永远点不亮、永不兑现） */
+    const cq    = ct>0.01 ? Math.max(0, Math.min(1,(CHARGE_PAR-ct)/(CHARGE_PAR-1))) : 0;
+    return Math.max(0, Math.min(1, fresh*W_FRESH + thrift*W_THRIFT + cq*W_CHARGE));
+  }
+
+  /* ══════════ ⑧′ 确定性世界生成：分流的种子化 PRNG ══════════
+     【为什么必须分两条随机流 —— 这是本项最容易写错的地方】
+     原来 motes / echoes / placeBeacon / burst / stormNext 共用一个 `rand()`。
+     把 rand 整体换成种子化版本**不够**：burst() 是纯粒子表现，点亮一次就抽走几十个随机数，
+     会平移之后 placeBeacon() 的取点 —— 于是"你点亮了几次"改变了地图本身，
+     同一种子码复现不出同一局。所以按「是否决定世界结构」拆开：
+       · wrng()/wrand() = 世界流（种子化）：光尘初始分布、回响布点、异光布点与重布、
+                          风暴时序与风向。这些决定「这张地图长什么样」。
+       · Math.random()   = 表现流（不种子化）：粒子爆散、呼吸音高、风声白噪声。
+                          不参与任何判定，也不参与地图生成。
+     【种子码】31 位整数 → 6 位 36 进制（36^6 = 2.176e9 > 2^31-1，刚好放得下），形如 K3F9QZ。
+       分享方式：地址栏加 #s=K3F9QZ 即可复现同一张地图。 */
+  const SEED_MAX=0x7FFFFFFF;
+  let mapSeed=0>>>0, _seedState=0>>>0;
+  function mulberry32(){ _seedState=(_seedState+0x6D2B79F5)>>>0;
+    let x=_seedState;
+    x=Math.imul(x^(x>>>15), x|1);
+    x^=x+Math.imul(x^(x>>>7), x|61);
+    return ((x^(x>>>14))>>>0)/4294967296; }
+  const wrng =()=>mulberry32();
+  const wrand=(a,b)=>a+mulberry32()*(b-a);
+  /* ── ⑧″ 事件子流（2026-09-13 · 验证见 _验证_改道确定性.js）──
+     世界流是**顺序消费**的一条带：谁先点亮、点亮几次，都会平移后续取点。
+     但「第 k 次改道的重布」「第 k 场风暴的间隔风向」是**事件驱动**的取点，
+     必须与历史无关 —— 否则同一种子码，两个玩家的第 3 次改道落在不同位置
+     （"同图不同进程"，种子码的可复现承诺被改道悄悄破坏）。
+     子流：状态只由 (mapSeed, 事件计数) 决定 → 第 k 次事件的取点**逐位可复现**；
+     且与主世界流互不消费，buildWorld 的取点序列不受影响。 */
+  function hash32(a,b){
+    let h=((a>>>0)^0x9E3779B9)>>>0;
+    h=Math.imul(h^(b>>>0),0x85EBCA6B); h^=h>>>13;
+    h=Math.imul(h,0xC2B2AE35); h^=h>>>16;
+    return h>>>0;
+  }
+  let _subState=0>>>0;
+  function subrand(){ _subState=(_subState+0x6D2B79F5)>>>0;
+    let x=_subState;
+    x=Math.imul(x^(x>>>15), x|1);
+    x^=x+Math.imul(x^(x>>>7), x|61);
+    return ((x^(x>>>14))>>>0)/4294967296; }
+  function beginSub(n){ _subState=hash32(mapSeed,n); }
+  const seedToCode=s=>(s>>>0).toString(36).toUpperCase().padStart(6,'0');
+  function codeToSeed(c){
+    const t=String(c==null?'':c).trim().toUpperCase().replace(/[^0-9A-Z]/g,'');
+    if(!t) return null;
+    const v=parseInt(t,36);
+    return (Number.isFinite(v)&&v>=0&&v<=SEED_MAX)?(v>>>0):null;
+  }
+  /* 环境种子：① #s=CODE（可分享链接）② ?s=CODE ③ 都没有 → 真随机开一张新图。
+     ⚠️ 必须 `typeof location` 守卫：无头测试的沙箱里没有 location，直接引用会 ReferenceError。 */
+  function seedFromEnv(){
+    try{
+      if(typeof location==='undefined') return null;
+      const m=/[#?&]s=([0-9a-zA-Z]+)/.exec(String(location.hash||'')+String(location.search||''));
+      return m?codeToSeed(m[1]):null;
+    }catch(e){ return null; }
+  }
+  function useSeed(s){ mapSeed=(s>>>0); _seedState=mapSeed; }
+  /* 立刻定种：必须早于**任何** wrng()/wrand() 消费点（风暴时序在几百行之外就会用到）。
+     ⚠️ 不能写成 `seedFromEnv() || random`：种子码 000000 是合法值，会被 || 吞掉。 */
+  { const _es=seedFromEnv();
+    useSeed(_es===null ? ((Math.random()*SEED_MAX)|0) : _es); }
+
+  /* ══════════ ⑧ 结构化分区：给「已经存在的几何差异」命名与上色 ══════════
+     【先说原本打算怎么做，以及为什么被实测推翻 —— 三次，每次都有数据】
+     原设计是"低频噪声切 6 个性格区，异光按各区 density 加权落点"。探针否掉了它：
+       · 硬把取点限制在 1/6 扇面内 → 有的扇面最低 |F| 高达 1.5 → 漂移 431px/s，
+         超过玩家推进速度 389px/s，那盏灯"点不亮"（正是 v3 注释里警告过的中流布点失败态）。
+         扇面最低 vs 整环最低 的最差比高到 152×。
+       · 退一步改成"在合格静水集合里按 density 抽签" → 落点分布反而从 2.81× **被抹平到 1.62×**：
+         洋流几何本身早就把静水聚在少数扇面了，再叠一层权重等于把已存在的结构平均掉。
+       · 最后想按"灯最密的区叫密光林"来命名 → **被自己的累计测试证伪**：
+         60 张图 × 3 盏灯的落点计数是 32/30/24/30/33/31，基本均匀（第 4 名反而最多）。
+         原因：placeBeacon 在整环上取 min|F|，各扇面都有安静的凹点，所以灯位不挑扇面。
+         → 「灯密度」这个说法从没被测量过，是无凭据的承诺，已从名字里删掉。
+     【于是本项改为】只测量并命名**唯一真正测过的量**：每个扇面的静水条件。
+     测量方式 = 12 个标定相位 × 3 个环 × 每环 420 点，取每扇面最低 |F| 再对环与相位平均。
+     ⚠️ 这个读数**天然比瞬时值保守**（多相位平均、且是"最低点"而非"平均"）：
+        实测异光落点的瞬时 |F| ≈ 0.05，而分区读数在 0.28~0.75 —— 两者不是一回事，
+        所以 HUD 同时给「洋流 |F|（瞬时）」与「该区实测最低 |F|（12 相位平均）」，并标清口径。
+     【为什么是「3 档」而不是「6 个名次」—— 这是测出来的，不是想出来的】
+     我最初给 6 个名次各配一个名字（静水湾/缓流带/微流滩/中流带/急流口/漩涡区）。
+     探针否掉了它：换一套同样密的相位网格（只改起始偏移）重测，6 名次方案的
+     「6 区档位完全一致」只有 40%、平均翻档 1.71 个区 —— 名字的一半在噪声里。
+     换成**按名次三等分**（名次 1-2 / 3-4 / 5-6 各一档）后：96 次比较 **100% 一致、零翻档**。
+       为什么差别这么大：6 个 quiet 值彼此分得开 → 「最静的 2 个 / 最乱的 2 个」这个**分组**很稳，
+       即使组内顺序（谁是第 1、谁是第 2）在抖，档位标签也不变。
+       而按**绝对阈值**分档反而更差（6 区全同 6%）：数值贴着切点就会翻档。
+     ⚠️ 也因此必须删掉"本图静水排名 1/6"这种说法 —— 单相位/换网格下**首名一致率只有 40%**，
+        "第几名"本身不可复核。HUD 只给「档位名 + 实测 quiet」。
+     相位数从 4 提到 12 也是量出来的：4 相位下跨网格稳定性不足；12 相位使 rank3 达到 100%，
+        启动成本约 13~20ms（仅建图/换种子时一次）。
+     落点算法**一个字都不改**，因此：
+       · 名字永远为真（名字只声称本区属于哪一档，这正是测量结果）
+       · 落点 |F| 分布不变 → ⑬ 的数值仿真基线不用重跑（只多了一项 ZONE_N 常数比对）
+       · zoneShift 由种子决定 → 每张图分区排布不同（可复玩），同一张图内固定（可学）
+     【这个东西有什么用】静水是全场唯一玩家能自己维持速度的地方，而"带速度点亮"是核心机制
+       → 知道"哪个方向更静"是可操作的：去静水区控速/回光，再借流去撞灯。
+     ⚠️ 刻意不吹的地方：跨洋流**改道**时扇面条件会变（这是另一条轴，与"换网格"不同），
+        所以此处只当"开图时的方向倾向"，不当硬承诺 —— HUD 同时给出该扇面的实测静水值。 */
+  const ZONE_N=6, ZONE_W=6.283185307179586/ZONE_N;
+  /* 只有 3 档（每档 2 个扇面）。刻意**不含**任何灯密度措辞 —— 见上方第三次证伪。
+     色相从青绿（静）到品红（乱），与"线越长越亮＝流越急"的读图线索同向。 */
+  const ZONE_BAND=[
+    {name:'静水带', hue:165, tone:'最容易控速/回光'},
+    {name:'中流带', hue: 45, tone:'中间'},
+    {name:'急流带', hue:312, tone:'最乱·身不由己'},
+  ];
+  const ZONE_BANDS=ZONE_BAND.length;
+  /* 标定相位：12 个均匀铺一圈。为什么不是 4 个：4 相位下档位对"网格偏移"不够稳（实测）。 */
+  const ZONE_PROBE_PH=Array.from({length:12},(_,i)=>i*6.283185307179586/12);
+  /* ⚠️ 口径声明（HUD 与报告都照此写）：quiet = 每扇面最低 |F| 的**12 相位 × 3 环平均**。
+     它是"这个方向最坏情况下有多静"的保守下界，不是瞬时读数 —— 实测异光落点的瞬时 |F| ≈ 0.05，
+     而 quiet 落在 0.28~0.75。两者别混着比。 */
+  let zoneShift=0, ZONES=[], zoneAt=[];
+  function zoneOf(x,y){
+    let a=Math.atan2(y,x)+zoneShift*ZONE_W;
+    let k=Math.floor(a/ZONE_W)%ZONE_N; if(k<0) k+=ZONE_N;
+    return k;
+  }
+  /* 分区标定：走**独立子流**（不消耗世界流）——
+     否则将来调这里的采样次数就会平移异光的取点，地图随代码改动而变，种子码就失去意义。 */
+  function measureZones(){
+    let ms=((mapSeed^0x9E3779B9)>>>0)||1;
+    const mr=()=>{ ms=(ms+0x6D2B79F5)>>>0; let x=ms;
+      x=Math.imul(x^(x>>>15),x|1); x^=x+Math.imul(x^(x>>>7),x|61);
+      return ((x^(x>>>14))>>>0)/4294967296; };
+    const q=new Array(ZONE_N).fill(0);
+    for(const ph of ZONE_PROBE_PH){
+      for(const ring of [0,1,2]){
+        const best=new Array(ZONE_N).fill(1e9);
+        for(let k=0;k<420;k++){          // 与 placeBeacon 同源的撒点方式
+          const a=mr()*6.2832, r=beaconRad[ring]*(0.82+mr()*0.36);
+          const x=Math.cos(a)*r, y=Math.sin(a)*r*0.85;
+          flow(x,y,ph);                  // 在该标定相位上取 |F|
+          const m=Math.sqrt(F.x*F.x+F.y*F.y), zi=zoneOf(x,y);
+          if(m<best[zi]) best[zi]=m;
+        }
+        for(let i=0;i<ZONE_N;i++) q[i]+=best[i]/3;
+      }
+    }
+    const order=q.map((v,i)=>i).sort((a,b)=>q[a]-q[b]);   // 静水从好到差
+    /* 档位 = 名次三等分（名次 1-2 / 3-4 / 5-6 各一档）。
+       ⚠️ 保留 rank 字段仅供 HUD 显示与测试核对，**不要**把它当可复核的说法对外展示 ——
+          实测"首名"在换相位网格时只有 40% 一致（见上方说明）。档位才是稳的那个量。 */
+    const perBand=ZONE_N/ZONE_BANDS;
+    ZONES=order.map((sector,rank)=>{
+      const band=Math.min(ZONE_BANDS-1, Math.floor(rank/perBand));
+      return {...ZONE_BAND[band], sector, rank, band, quiet:q[sector]/ZONE_PROBE_PH.length};
+    });
+    zoneAt=new Array(ZONE_N);
+    ZONES.forEach((z,k)=>{ zoneAt[z.sector]=k; });
+  }
+  const zoneIdxAt=(x,y)=>zoneAt[zoneOf(x,y)];
+
+  const motes=[], echoes=[], beacons=[];
+  /* 异光：在候选点中取 |F| 最低者 → 落在静水区。
+     这是承重设计：静水是全场唯一玩家能自己维持速度的地方，
+     所以「带着速度充能」只有在静水才做得到（实测中流布点会让吞吐塌到 0.2~1.4）。
+     ⑧ 只给落点**贴分区标签**，不改这里的任何一步 —— 所以 |F| 分布不变。 */
+  /* 取点流注入：默认主世界流；重布时切到事件子流（⑧″）。
+     拆成 R1/R2 两个口，placeBeacon 本体一行不改 —— 采样逻辑只有一份。 */
+  let R1=()=>wrng(), R2=(a,b)=>wrand(a,b);
+  function placeBeacon(i){
+    let bx=0,by=0,bm=1e9;
+    for(let k=0;k<420;k++){
+      const a=R1()*6.28, r=beaconRad[i]*R2(0.82,1.18);
+      const x=Math.cos(a)*r, y=Math.sin(a)*r*0.85, m=flowMag(x,y);
+      if(m<bm){ bm=m; bx=x; by=y; }
+    }
+    return {x:bx,y:by,mag:bm};
+  }
+  /* 世界构建：把「这张地图长什么样」全部收进一个函数 ——
+     换种子要能整套重建（种子码"载入"才能真的生效，而不是只换个显示的数字）。
+     所有 wrng()/wrand() 都在这里消费世界流；表现层（粒子/音高）不在此列。 */
+  function buildWorld(){
+    zoneShift=(wrng()*ZONE_N)|0;      // 分区相位：每张地图不同
+    measureZones();                   // 走独立子流，不影响下面的取点
+    motes.length=0; echoes.length=0; beacons.length=0;
+    for(let i=0;i<MOTE_N;i++)
+      motes.push({x:wrand(-1700,1700),y:wrand(-1300,1300),z:wrng()*0.8+0.2,
+        a:wrng()*6.28,boost:0,fx:0,fy:0,fl:0});
+    for(let i=0;i<ECHO_N;i++){
+      const ang=i/ECHO_N*6.28*1.3, rad=wrand(380,1100);
+      echoes.push({x:Math.cos(ang)*rad+wrand(-120,120), y:Math.sin(ang)*rad*0.8+wrand(-120,120),
+        awake:false,bloom:0,phase:wrng()*6.28,note:i%penta.length,deep:i===0});
+    }
+    for(let i=0;i<BEACON_N;i++){
+      /* zone 字段只是**记录**异光落在哪个档位，供 HUD/调试看，不参与着色（见 beaconHue 说明）。 */
+      const p=placeBeacon(i), zi=zoneIdxAt(p.x,p.y);
+      beacons.push({x:p.x,y:p.y,mag:p.mag,phase:wrng()*6.28,bloom:0,lit:false,
+        charge:0,chargeT:0,score:0,hue:beaconHue[i],zone:ZONES[zi].band});
+    }
+  }
+  /* ══════════ ⑧′ 种子码：出口（C 复制）与入口（V 载入）══════════
+     【为什么入口是"进程内重建"而不是跳转 #s=CODE】
+     宿主把页面塞在 sandbox iframe 里，改 hash / reload 属于自我导航，可能被宿主拦掉；
+     一个"看起来能点、点了没反应"的按钮就是假动词（本项目已栽四次）。
+     所以载入 = useSeed + buildWorld + 清理与旧地图绑定的运行时状态，全程不离开本页。
+     地址栏 #s=CODE 仍然支持（首次加载时读取），那是给分享用的，不是给本页切换用的。 */
+  const seedShareText=()=>'微光原野 #s='+seedToCode(mapSeed);
+  function toast(msg,ms){
+    if(!hint) return;
+    hint.textContent=msg; hint.classList.add('show');
+    setTimeout(()=>hint.classList.remove('show'), ms||2600);
+  }
+  function copySeed(){
+    const txt=seedShareText();
+    let done=false;
+    try{
+      if(typeof navigator!=='undefined' && navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(txt); done=true;
+      }
+    }catch(_){}
+    toast(txt+(done?'　（已复制）':'　（本环境无剪贴板权限，请手动抄走）'));
+  }
+  function loadSeedPrompt(){
+    if(typeof prompt!=='function') return;
+    const c=prompt('粘贴种子码（6 位 0-9/A-Z）——将重建同一张地图：', seedToCode(mapSeed));
+    if(c===null) return;
+    const s=codeToSeed(c);
+    if(s===null){ toast('种子码无效（只接受 0-9 与 A-Z）',1600); return; }
+    restartMap(s);
+    toast('已载入地图 '+seedToCode(s),1600);
+  }
+  /* 重建整张地图：种子换掉之后，凡是"与旧地图绑定"的运行时状态都必须清干净，
+     否则会出现「新地图 + 旧尾迹/旧幽灵/旧连击」这种半新半旧的鬼状态。 */
+  function restartMap(seed){
+    useSeed(seed);
+    buildWorld();
+    flowPhase=0;
+    light=1; exhausted=false; sinceBeacon=0; spent=0; combo=0;
+    round=0; lastScore=0; lastRoundScore=0; roundEnding=false;
+    trailHead=0; trailCount=0; lastTx=0; lastTy=0;
+    ghost=null; ghostOn=false; ghostS=0;
+    sparks.length=0; ripples=[]; flash=0; awakeCount=0;
+    for(const e of echoes){ e.awake=false; e.bloom=0; }
+    player.x=0; player.y=0; player.vx=0; player.vy=0;
+    inX=0; inY=0; still=0; stillTotal=0; energy=0.4;
+    rounds.length=0; mapSel=-1; lastMap=null;
+    storm=0; stormT=0; stormN=0; stormRoll();   // ⑫′：轮内风暴表 = f(seed, stormN)
+    roundT=0; raceArc=0;                        // ⑫′：时间轴同样从零起跑
+    divertN=0;                                  // ⑧″：改道计数归零 —— 新局从"第 0 次改道"起跑，
+                                                //   同一种子码重进后第 k 次改道逐位复现同一张图
+    cam.x=0; cam.y=0;
+    if(hint) hint.classList.remove('show');
+  }
+
+  buildWorld();     // 立刻建世界：必须在任何 wrng() 消费点之前（风暴时序在几百行之外）
+  /* 洋流改道后：未点亮的异光重新落到新流场的静水区。
+     已点亮的留在原地——它们是成绩记录，不是目标。
+     （若不重布，改道后异光就不再位于静水，「速度充能」规则随之失效。）
+     ⑧：重布后同步更新 zone **记录**（灯会换到别的档位扇面），但**不动 hue** ——
+     异光颜色是身份色，不随它所在档位变（理由见 beaconHue 处）。 */
+  /* ⑧″：第 divertN 次重布的落点 = f(mapSeed, divertN, 灯序号) —— 与历史无关。
+     即使某盏已点亮不参与重布，也要在子流里按序号把它的取点**空转掉**——
+     否则"点亮了哪几盏"又会平移后面灯的取点，确定性破产。
+     divertN 全场累计、不随轮次清零：每次改道都是一张新面孔，
+     但"同一种子 + 同样次数的改道"总能逐位复现同一张图。 */
+  let divertN=0;
+  function repositionBeacons(){
+    R1=()=>subrand(); R2=(a,b)=>a+subrand()*(b-a);
+    beginSub(divertN);
+    for(let i=0;i<BEACON_N;i++){
+      const p=placeBeacon(i);
+      const b=beacons[i]; if(b.lit) continue;
+      const zi=zoneIdxAt(p.x,p.y);
+      b.x=p.x; b.y=p.y; b.mag=p.mag; b.zone=ZONES[zi].band;   // 只记档位，不改 hue
+      b.charge=0; b.chargeT=0; b.bloom=0;
+    }
+    R1=()=>wrng(); R2=(a,b)=>wrand(a,b);   // 还给主世界流
+    divertN++;
+  }
+
+  let actx=null,started=false,drones={};
+  function startAudio(){
+    if(actx) return; actx=new (window.AudioContext||window.webkitAudioContext)(); started=true;
+    const t=actx.currentTime;
+    const o=actx.createOscillator(),g=actx.createGain(),f=actx.createBiquadFilter();
+    f.type='lowpass'; f.frequency.value=300; o.type='triangle'; o.frequency.value=BASE/2;
+    g.gain.value=0.04; o.connect(f); f.connect(g); g.connect(actx.destination); o.start(t);
+    const s=actx.createOscillator(),sg=actx.createGain(),sf=actx.createBiquadFilter();
+    sf.type='lowpass'; sf.frequency.value=1200; s.type='sine'; s.frequency.value=BASE*3;
+    sg.gain.value=0; s.connect(sf); sf.connect(sg); sg.connect(actx.destination); s.start(t);
+    /* 风声：白噪声 → 带通 → gain 随速度。
+       原来"速度"在听觉上只体现为滤波器频率变化（300→1800Hz），玩家根本听不出差别，
+       等于速度没有声音。加一层随速度开合的风声，"快"这件事才被耳朵接收到。 */
+    const nb=actx.createBuffer(1, actx.sampleRate*2, actx.sampleRate);
+    const nd=nb.getChannelData(0);
+    for(let i=0;i<nd.length;i++) nd[i]=Math.random()*2-1;
+    const ns=actx.createBufferSource(); ns.buffer=nb; ns.loop=true;
+    const nf=actx.createBiquadFilter(); nf.type='bandpass'; nf.frequency.value=700; nf.Q.value=0.6;
+    const ng=actx.createGain(); ng.gain.value=0;
+    ns.connect(nf); nf.connect(ng); ng.connect(actx.destination); ns.start(t);
+    drones={filter:f,shimmer:sg,shimmerOsc:s,wind:ng,windF:nf};
+  }
+  function tone(semi,delay,vol){
+    if(!actx) return; const t=actx.currentTime+(delay||0), v=vol||0.18;
+    const o=actx.createOscillator(),g=actx.createGain();
+    o.type='sine'; o.frequency.value=BASE*Math.pow(2,semi/12);
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(v,t+0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+2.6);
+    o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t+2.7);
+  }
+  function chord(root,vol){ tone(root,0,vol); tone(root+7,0.06,vol*0.8); tone(root+12,0.12,vol*0.7); }
+  let ripples=[];
+  /* 呼吸 = 声纳：照亮周围流场 + 真的唤醒回响。
+     原来它只推一个涟漪 + 播一个单音（对世界零影响），而说明层却写着"唤醒回响"
+     —— 玩家按空格发现什么也没发生，信任当场崩。现在兑现承诺，并顺便当探路工具。 */
+  function breathe(){
+    ripples.push({x:player.x,y:player.y,r:0,life:1,sonar:true});
+    tone(penta[(Math.random()*penta.length)|0]+12,0,0.15);
+    for(const e of echoes){
+      if(e.awake) continue;
+      const d2=(e.x-player.x)**2+(e.y-player.y)**2;
+      if(d2>=SONAR_R*SONAR_R) continue;
+      const d=Math.sqrt(d2);
+      /* 近场直接唤醒，远场只「预热」。
+         最初写的是 bloom +=0.55 且需 >1 才唤醒 —— 但 bloom 每帧衰减 0.98，
+         两次呼吸之间已掉回 0.16，凑不满阈值，表现就是「按了没反应」（又一个假动词）。
+         所以改成按距离判定：近场一次到位，远场预热，靠近或再呼吸即可唤醒。 */
+      if(d<SONAR_R*0.55){
+        e.awake=true; awakeCount++;
+        chord(penta[e.note]+(e.deep?-12:0),0.18);
+        burst(e.x,e.y,SPARK_N); flash=0.8;
+      } else if(e.bloom<0.75) e.bloom=0.75;
+    }
+    for(const m of motes){
+      const d2=(m.x-player.x)**2+(m.y-player.y)**2;
+      if(d2<SONAR_R*SONAR_R){
+        const w=1-Math.sqrt(d2)/SONAR_R;
+        if(w>m.boost) m.boost=Math.min(1,w*1.4);
+      }
+    }
+  }
+
+  let still=0, energy=0.4, stillTotal=0, t=0, awakeCount=0, flash=0;
+  let zoomCur=1;                                  // 相机缩放：越快视野越远（⑦）
+  let brakeOn=false;                              // 凝滞是否按住（⑪ 第二动词）
+  let combo=0;                                    // 连续高质量点亮数（⑥，仅表现层，不显示数字）
+  /* ⑫′：风暴时序走事件子流 —— 第 k 场风暴的间隔/风向 = f(mapSeed, k)。
+     stormN 每轮清零（轮内第几场）+ stormT 每轮清零 → 同一种子下，
+     每一轮面对的风暴时间表**逐位相同**，幽灵竞速才不含天气变量。 */
+  let stormN=0;
+  function stormRoll(){
+    beginSub(0x57A11 + stormN*7919);
+    stormNext=45+subrand()*25; stormAng=subrand()*6.2832;
+  }
+  let storm=0, stormT=0, stormNext=45, stormAng=0;   // 潜流风暴（⑨）
+  stormRoll();   // 直接启动也要立刻定表（mapSeed 已在上面定种）——与 restartMap 收敛到同一条 f(seed,0)，种子指纹才一致
+  let stX=0, stY=0, stormVis=0;                   // 风暴的风场向量 / 视觉强度
+  let inX=0, inY=0;
+  const sparks=[];
+  function burst(x,y,n){ for(let i=0;i<n;i++){ const a=Math.random()*6.28, s=rand(70,240);
+    sparks.push({x:x,y:y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:1}); } }
+  const trailX=new Float32Array(TRAIL_CAP), trailY=new Float32Array(TRAIL_CAP),
+        trailQ=new Float32Array(TRAIL_CAP), trailT=new Float64Array(TRAIL_CAP);
+  /* trailT 必须 Float64：坐标差 1e-3 量级无所谓（Float32 够），但时间要和 roundT
+     **逐位可比**（dur vs 末点 t），Float32 的 7 位精度会把 2.9999999999999942
+     舍成 3.0 —— 播放头提前一帧"到终点"（实测踩过）。 */
+  let trailHead=0, trailCount=0, lastTx=0, lastTy=0;
+  function addTrail(x,y,q,t){ trailX[trailHead]=x; trailY[trailHead]=y; trailQ[trailHead]=q;
+    trailT[trailHead]=t||0;
+    trailHead=(trailHead+1)%TRAIL_CAP; if(trailCount<TRAIL_CAP) trailCount++; }
+
+  /* ══════════ ⑩ 航迹图：把「这一轮我走了什么路」变成能带走的图 ══════════
+     【为什么主出口不是「下载 PNG」】
+     宿主预览面板把页面放进 iframe，sandbox 是
+       "allow-scripts allow-popups allow-popups-to-escape-sandbox allow-forms allow-modals"
+     宿主源码里逐条注释了**故意不给**的权限，其中就有：
+       allow-downloads —— "不允许 iframe 内自动触发下载，避免下发木马"
+     也就是说「一键下载」在这个宿主里是**可能点不动的按钮**，那就是个假动词。
+     所以两条真正可靠的出路都做了：
+       ① 页内 <img src="data:image/png;...">：宿主 CSP 的 img-src 明确允许 data:（实测响应头确认）
+       ② navigator.clipboard.write(ClipboardItem)：把图直接塞进剪贴板
+     <a download> 只当 best-effort 的第三出口；失败了有 ①② 兜底，且 UI 里直接写明改用右键另存为。
+     【种子码 —— 原计划砍掉，现已补回（⑧′）】
+     原计划：世界生成全走 Math.random()，没有种子 → 同一串码复现不出同一张地图，
+     那会是一个假动词（本项目已经栽过三次：声纳、bloom 预热、以及差点写错的连击配色）。
+     所以当时决定「要做必须先换 seeded PRNG，与 ⑧ 同批」——这一版就是那一批：
+     世界流（wrng/wrand）已换成 mulberry32 种子流，表现层（粒子/音高）仍走 Math.random() 不参与。
+     于是「地图码」现在是真的：相同码 → 相同光尘 / 相同异光 / 相同分区排布。
+     ⚠️ 仍未种子化的东西（诚实清单）：风暴来临的时刻序列已种子化，但**相机抖动**与
+        粒子/音效随机是表现层，故意不种子化 —— 否则"看过的表现"也会被钉死，反而怪。
+     【记录层】
+     rounds[] 存的是纯数据快照（本轮尾迹点序 + 流场网格 + 异光状态）。PNG 只是它的一个渲染；
+     ⑫ 幽灵回放将来直接吃同一个数组，不用重新埋点。 */
+  const rounds=[]; let mapSel=-1, lastMapURL=null, roundPtStart=0, lastMap=null;
+  function captureRound(){
+    /* 只取「本轮」的尾迹：roundPtStart 是上一轮结束时的样本总数。
+       尾迹是跨轮连续的环形缓冲，不切就每张图都带着上一轮的路（诚实起见必须切）。 */
+    const n=Math.min(Math.max(0,trailCount-roundPtStart), TRAIL_CAP), pts=[];
+    for(let i=0;i<n;i++){
+      const k=(trailHead-n+i+TRAIL_CAP)%TRAIL_CAP;
+      pts.push({x:trailX[k],y:trailY[k],q:trailQ[k],t:trailT[k]});
+    }
+    roundPtStart=trailCount;
+    /* 冻结此刻的洋流。flow() 会写全局临时量 F，但 update() 每帧开头都会重算 F，
+       在帧间读它不会污染物理 —— 下面的「无副作用」断言就是在钉这件事。 */
+    const grid=[], step=(MAP_EXTENT*2)/MAP_GRID;
+    for(let gy=0;gy<MAP_GRID;gy++) for(let gx=0;gx<MAP_GRID;gx++){
+      const x=-MAP_EXTENT+step*(gx+0.5), y=-MAP_EXTENT+step*(gy+0.5);
+      flow(x,y); grid.push({x:x,y:y,fx:F.x,fy:F.y});
+    }
+    const rec={
+      idx:round, at:new Date(), pts:pts, grid:grid,
+      dur:roundT,                       // ⑫′：本轮用时 —— 幽灵竞速的基准线
+      hue:210-energy*FB_HUE,
+      beacons:beacons.map(b=>({x:b.x,y:b.y,hue:b.hue,lit:b.lit,score:b.score})),
+      score:beacons.reduce((s,b)=>s+b.score,0)/BEACON_N,
+      litCount:beacons.filter(b=>b.lit).length
+    };
+    if(rounds.length>=MAP_KEEP) rounds.shift();
+    rounds.push(rec); mapSel=-1; lastMap=rec;
+    return rec;
+  }
+  /* 纯读：不改任何游戏状态。mapSel<0 = 看最新那张 */
+  function buildMapModel(){
+    if(!rounds.length) return null;
+    return mapSel<0 ? rounds[rounds.length-1]
+                    : rounds[Math.max(0,Math.min(rounds.length-1,mapSel))];
+  }
+  /* 纯绘制：所有输入都来自 model，不碰全局。这样测试可以只调它、不依赖真 canvas。 */
+  function paintMap(c,m,W,H){
+    const k=(W/2)/MAP_EXTENT, sx=x=>W/2+x*k, sy=y=>H/2+y*k;
+    c.fillStyle='#080a12'; c.fillRect(0,0,W,H);
+    c.lineCap='round';
+    for(const g of m.grid){          // 流场：短划线，越长越亮＝流越急（与原作同一套读图线索）
+      const mag=Math.sqrt(g.fx*g.fx+g.fy*g.fy);
+      if(mag<0.05) continue;
+      const len=6+mag*18, nx=g.fx/mag, ny=g.fy/mag;
+      c.beginPath();
+      c.moveTo(sx(g.x)-nx*len/2, sy(g.y)-ny*len/2);
+      c.lineTo(sx(g.x)+nx*len/2, sy(g.y)+ny*len/2);
+      c.strokeStyle='rgba(255,'+((232-mag*14)|0)+','+((205-mag*30)|0)+','+
+        (0.10+Math.min(0.35,mag*0.18)).toFixed(3)+')';
+      c.lineWidth=1+mag*0.8; c.stroke();
+    }
+    if(m.pts.length>1){              // 尾迹：先一条实线，再逐点画圆（q 越低越白，沿用原作配色）
+      c.beginPath(); c.moveTo(sx(m.pts[0].x), sy(m.pts[0].y));
+      for(let i=1;i<m.pts.length;i++) c.lineTo(sx(m.pts[i].x), sy(m.pts[i].y));
+      c.strokeStyle='rgba(255,238,196,0.85)'; c.lineWidth=3; c.stroke();
+      for(const p of m.pts){
+        const q=Math.max(0,Math.min(1,p.q));
+        c.beginPath(); c.arc(sx(p.x),sy(p.y), 1.5+(1-q)*2.5, 0, 6.2832);
+        c.fillStyle='rgba(255,'+((226-q*11)|0)+','+((190-q*80)|0)+',0.35)'; c.fill();
+      }
+    }
+    for(const b of m.beacons){       // 异光：点亮的用「等级」决定大小与亮度 —— 成绩是看得见的
+      const grade=Math.min(1,b.score/GRADE_REF);
+      if(b.lit){
+        const R=18+grade*46;
+        const gr=c.createRadialGradient(sx(b.x),sy(b.y),0,sx(b.x),sy(b.y),R*2.4);
+        gr.addColorStop(0,'hsla('+b.hue+',85%,66%,'+(0.55+grade*0.4).toFixed(3)+')');
+        gr.addColorStop(1,'hsla('+b.hue+',85%,66%,0)');
+        c.fillStyle=gr; c.beginPath(); c.arc(sx(b.x),sy(b.y),R*2.4,0,6.2832); c.fill();
+        c.beginPath(); c.arc(sx(b.x),sy(b.y), 6+grade*10, 0, 6.2832);
+        c.fillStyle='hsla('+b.hue+',92%,78%,0.9)'; c.fill();
+      }else{
+        c.beginPath(); c.arc(sx(b.x),sy(b.y), 7, 0, 6.2832);
+        c.strokeStyle='hsla('+b.hue+',90%,42%,0.5)'; c.lineWidth=2; c.stroke();
+      }
+    }
+    c.fillStyle='rgba(232,226,208,0.92)'; c.textAlign='left';
+    c.font='600 30px ui-monospace,Consolas,monospace';
+    c.fillText('第 '+m.idx+' 轮 · '+Math.round(m.score*100)+' 分', 34, H-78);
+    c.fillStyle='rgba(154,148,138,0.95)';
+    c.font='22px ui-monospace,Consolas,monospace';
+    c.fillText('点亮 '+m.litCount+'/'+BEACON_N+' · 微光原野·洋流', 34, H-42);
+    c.textAlign='right';
+    /* m.at 可能是 Date，也可能是 JSON 往返后的字符串（⑫ 幽灵回放要持久化模型），
+       两种都得能画 —— 否则序列化一次这张图就渲染不出来了。 */
+    const day=(m.at instanceof Date ? m.at : new Date(m.at));
+    c.fillText(isNaN(day.getTime()) ? '' : day.toISOString().slice(0,10), W-34, H-42);
+    c.textAlign='left';
+  }
+  function exportMapPNG(){           // 组装：模型 → 离屏 canvas → dataURL
+    const m=buildMapModel(); if(!m) return null;
+    const oc=document.createElement('canvas');
+    oc.width=MAP_SIZE; oc.height=MAP_SIZE;
+    const c=oc.getContext('2d');
+    paintMap(c,m,MAP_SIZE,MAP_SIZE);
+    let url=null;
+    try{ url=oc.toDataURL('image/png'); }catch(e){ url=null; }
+    lastMapURL=url;
+    return {model:m, canvas:oc, dataURL:url};
+  }
+  function showMap(){
+    const r=exportMapPNG();
+    if(galWrap) galWrap.classList.remove('hidden');
+    if(galMeta) galMeta.textContent = r
+      ? ('第 '+r.model.idx+' 轮 · 均分 '+Math.round(r.model.score*100)+
+         ' · 已记录 '+rounds.length+' 轮 · 地图码 '+seedToCode(mapSeed)+
+         '（本图地脉 '+ZONE_BAND.map(b=>b.name).join('/')+'）'+
+         (r.dataURL?'':'（本环境不支持 toDataURL，图未生成）'))
+      : '还没有完成的轮次 —— 点亮 3 盏异光后会自动抓图';
+    if(r && galImg && r.dataURL) galImg.src=r.dataURL;
+    grabFocus();
+    return !!r;
+  }
+  function hideMap(){ if(galWrap) galWrap.classList.add('hidden'); }
+  function toggleMap(){
+    if(galWrap && !galWrap.classList.contains('hidden')) hideMap(); else showMap();
+  }
+  function stepMap(d){
+    if(!rounds.length) return;
+    mapSel = (mapSel<0 ? rounds.length-1 : mapSel) + d;
+    mapSel = Math.max(0, Math.min(rounds.length-1, mapSel));
+    showMap();
+  }
+  /* 第三出口（best-effort）：宿主可能拦掉下载，所以在 UI 里同时给出右键另存为的说明 */
+  function downloadMap(){
+    const u=lastMapURL||(buildMapModel()&&exportMapPNG().dataURL);
+    if(!u) return;
+    try{
+      const m=buildMapModel();
+      const a=document.createElement('a');
+      a.href=u; a.download='微光原野_第'+(m?m.idx:0)+'轮.png';
+      document.body.appendChild(a); a.click();
+      setTimeout(()=>{ try{ a.remove(); }catch(_){} }, 0);
+    }catch(e){}
+  }
+  /* 第二出口：直接把图写进剪贴板（部分环境无 ClipboardItem → 静默降级，不报错打扰） */
+  function copyMap(){
+    const r=exportMapPNG();
+    if(!r||!r.canvas||!r.canvas.toBlob) return;
+    // navigator 用 typeof 判空：无头测试环境里没有 navigator（与 pollGamepad 同一套防护）
+    if(typeof navigator==='undefined'||!navigator.clipboard||!navigator.clipboard.write) return;
+    if(typeof ClipboardItem==='undefined') return;
+    r.canvas.toBlob(b=>{
+      if(!b) return;
+      try{ navigator.clipboard.write([new ClipboardItem({'image/png':b})]).catch(()=>{}); }catch(_){}
+    },'image/png');
+  }
+
+  /* ══════════ ⑫ 幽灵回放 → ⑫′ 真竞速（2026-09-13 升级）══════════
+     ⑩ 的记录层把每轮的尾迹点序存下来了，这里把它重放成一颗暗淡的冷色余光。
+     【判例更新 —— 现在是公平竞速了】
+     v3.3 时它**不是**竞速：每轮结算 flowPhase 大改道 + 重布吃共享世界流，
+     两轮的速度条件根本不同。⑧″ 把"重布落点/风暴时序"都钉成 f(seed, 计数) 之后，
+     同一种子下每一轮面对的世界逐位相同（flowPhase 本来就是点亮计数的纯函数），
+     真竞速的前提终于齐了：pts 带 t、rec 带 dur、播放头按 roundT 对位，
+     RACE = roundT − 幽灵在同弧长的时间。旧的"痕迹与陪伴"注释保留在 git 里。 */
+  let ghost=null, ghostS=0, ghostOn=false;
+  function setGhost(rec){
+    if(!rec||!rec.pts||rec.pts.length<2){ ghost=null; ghostOn=false; ghostS=0; return false; }
+    const pts=rec.pts, acc=new Float32Array(pts.length);
+    let total=0;
+    for(let i=1;i<pts.length;i++){
+      total+=Math.hypot(pts[i].x-pts[i-1].x, pts[i].y-pts[i-1].y); acc[i]=total;
+    }
+    if(!(total>=1)){ ghost=null; ghostOn=false; ghostS=0; return false; }  // 原地不动的一轮 → 无幽灵
+    /* ⑫′ 时间轴：新记录的 pts 带 t（录制时间）→ 按**真实节奏**重演；
+       旧记录没存时长 → 按恒速 GHOST_SPEED 合成时间轴，行为与旧版一致（降级不崩）。 */
+    let T, dur;
+    if(rec.dur>0 && typeof pts[0].t==='number'){
+      T=pts.map(p=>p.t); dur=rec.dur;
+    }else{
+      T=Array.from(acc, u=>u/GHOST_SPEED); dur=total/GHOST_SPEED;
+    }
+    ghost={pts:pts, acc:acc, total:total, idx:rec.idx, T:T, dur:dur};
+    ghostS=0; ghostOn=true;
+    return true;
+  }
+  /* 按累计弧长定位：s 用二分找线段再线性插值。纯读函数（测试直接拿它验点位）。 */
+  function ghostAtS(s){
+    if(!ghost) return null;
+    const p=ghost.pts, acc=ghost.acc, total=ghost.total;
+    let u=s%total; if(u<0) u+=total;
+    let lo=1, hi=p.length-1;
+    while(lo<hi){ const mid=(lo+hi)>>1; if(acc[mid]<u) lo=mid+1; else hi=mid; }
+    const i=lo, seg=acc[i]-acc[i-1];
+    const t=seg>1e-6 ? (u-acc[i-1])/seg : 0;
+    const a=p[i-1], b=p[i];
+    return {x:a.x+(b.x-a.x)*t, y:a.y+(b.y-a.y)*t, i:i};
+  }
+  function ghostAt(){ return ghostOn ? ghostPosAtTime(roundT) : null; }
+  /* ⑫′ 真实节奏重演的三个换算：时间↔弧长↔位置。ghostAtS（按弧长）保留，
+     拖尾渲染还靠它。ghostS 语义不变（播放头弧长），但改由 roundT 驱动。 */
+  function ghostTimeAtArc(u){        // 弧长 u → 幽灵自己的时间轴读数（竞速差用）
+    if(!ghost) return 0;
+    const T=ghost.T, acc=ghost.acc;
+    if(u<=0) return T[0]||0;
+    if(u>=ghost.total) return T[T.length-1]||0;
+    let lo=1, hi=T.length-1;
+    while(lo<hi){ const mid=(lo+hi)>>1; if(acc[mid]<u) lo=mid+1; else hi=mid; }
+    const i=lo, seg=acc[i]-acc[i-1], f=seg>1e-6?(u-acc[i-1])/seg:0;
+    return (T[i-1]||0)+(((T[i]||0)-(T[i-1]||0))*f);
+  }
+  function ghostArcAtTime(tt){       // 时间 tt → 播放头弧长
+    if(!ghost) return 0;
+    const T=ghost.T, acc=ghost.acc;
+    if(tt<=T[0]) return 0;
+    if(tt>=T[T.length-1]) return ghost.total;
+    let lo=1, hi=T.length-1;
+    while(lo<hi){ const mid=(lo+hi)>>1; if(T[mid]<tt) lo=mid+1; else hi=mid; }
+    const i=lo, seg=T[i]-T[i-1], f=seg>1e-6?(tt-T[i-1])/seg:0;
+    return acc[i-1]+((acc[i]-acc[i-1])*f);
+  }
+  function ghostPosAtTime(tt){       // 时间 tt → 幽灵位置
+    if(!ghost) return null;
+    const p=ghost.pts, T=ghost.T;
+    if(tt<=T[0]) return {x:p[0].x, y:p[0].y, done:false};
+    if(tt>=T[T.length-1]){ const l=p[p.length-1]; return {x:l.x, y:l.y, done:true}; }
+    let lo=1, hi=p.length-1;
+    while(lo<hi){ const mid=(lo+hi)>>1; if(T[mid]<tt) lo=mid+1; else hi=mid; }
+    const i=lo, seg=T[i]-T[i-1], f=seg>1e-6?(tt-T[i-1])/seg:0;
+    return {x:p[i-1].x+(p[i].x-p[i-1].x)*f, y:p[i-1].y+(p[i].y-p[i-1].y)*f, done:false};
+  }
+  function raceDelta(){              // 竞速差：正=比幽灵慢，负=快。同图（⑧″）才有意义
+    if(!ghostOn||!ghost||!(ghost.dur>0)) return null;
+    const gt = raceArc>=ghost.total ? ghost.dur : ghostTimeAtArc(raceArc);
+    return roundT-gt;
+  }
+  function stepGhost(){
+    if(!ghostOn||!ghost) return;
+    ghostS=ghostArcAtTime(Math.min(roundT, ghost.T[ghost.T.length-1]||0));
+  }
+
+  const hint=document.getElementById('hint'), title=document.getElementById('title'),
+        ctrl=document.getElementById('ctrl'), intro=document.getElementById('intro'),
+        helpBtn=document.getElementById('help');
+  // ⑩ 航迹图覆盖层（元素可能不存在 → 下面全部做空值保护）
+  const galWrap=document.getElementById('gallery'), galImg=document.getElementById('galImg'),
+        galMeta=document.getElementById('galMeta'), galDl=document.getElementById('galDl'),
+        galCopy=document.getElementById('galCopy'), galPrev=document.getElementById('galPrev'),
+        galNext=document.getElementById('galNext'), galClose=document.getElementById('galClose');
+  if(galDl)   galDl.addEventListener('click',e=>{ e.stopPropagation(); downloadMap(); });
+  if(galCopy) galCopy.addEventListener('click',e=>{ e.stopPropagation(); copyMap(); });
+  if(galPrev) galPrev.addEventListener('click',e=>{ e.stopPropagation(); stepMap(-1); });
+  if(galNext) galNext.addEventListener('click',e=>{ e.stopPropagation(); stepMap(1); });
+  if(galClose)galClose.addEventListener('click',e=>{ e.stopPropagation(); hideMap(); });
+  // 开场说明层：任意键/点击关闭；右下角按钮可随时唤回（原操作提示 16 秒后永久消失，无法找回）
+  function hideIntro(){ if(intro) intro.classList.add('hidden'); }
+  function showIntro(){ if(intro) intro.classList.remove('hidden'); }
+  function toggleIntro(){ if(!intro) return; intro.classList.toggle('hidden'); }
+  if(helpBtn) helpBtn.addEventListener('click',e=>{ e.stopPropagation(); grabFocus(); showIntro(); });
+  if(intro) intro.addEventListener('click',hideIntro);
+  ctrl.classList.add('show');   // 操作提示常驻（仅氛围文字 hint/title 仍按原节奏淡出）
+  setTimeout(()=>hint.classList.add('show'),600);
+  setTimeout(()=>hint.classList.remove('show'),6000);
+  setTimeout(()=>title.classList.add('show'),6600);
+  setTimeout(()=>title.classList.remove('show'),15000);
+
+  function update(dt){
+    t+=dt; sinceBeacon+=dt; roundT+=dt;
+    /* 凝滞（⑪）：扳机状态在这里统一刷新。pollGamepad 必须显式调——
+       readDesiredMove() 里一旦按了方向键就提前 return，不会轮询手柄。 */
+    pollGamepad();
+    brakeOn = input.kbBrake || input.ptr2 || input.padBrake;
+    const mv=readDesiredMove();
+    const k=Math.min(1,dt/INPUT_SMOOTH);
+    inX+=(mv.x-inX)*k; inY+=(mv.y-inY)*k;
+
+    let ux=inX, uy=inY;
+    const m2=ux*ux+uy*uy;
+    const thrusting = m2>1e-6 && !exhausted && light>0;
+    if(m2>1e-6){
+      const mag=Math.min(1,Math.sqrt(m2));   // 键盘恒 1；指针/手柄=0~1（半程拖拽=半推力）
+      const inv=1/Math.sqrt(m2); ux*=inv; uy*=inv;
+      const along=player.vx*ux+player.vy*uy;
+      const perpX=player.vx-along*ux, perpY=player.vy-along*uy;
+      const grip=1/(1+GRIP*dt);
+      player.vx=along*ux+perpX*grip; player.vy=along*uy+perpY*grip;
+      if(thrusting){ player.vx+=ux*ACCEL*dt*mag; player.vy+=uy*ACCEL*dt*mag; }
+      still=Math.max(0,still-dt*2);
+    } else still+=dt;
+
+    /* ── 潜流风暴（⑨）──
+       每 45~70 秒来一次、持续 12 秒，全场叠加一个方向统一的风场。
+       原来整片空间「处处一样、时时一样」——均匀随机等于零信息量，
+       玩家走十秒和走十分钟看到的是同一种东西，探索欲直接熄灭。 */
+    if(storm>0) storm=Math.max(0,storm-dt);
+    else{
+      stormT+=dt;
+      if(stormT>stormNext){ stormT=0; stormN++; stormRoll(); storm=12;
+        chord(-5,0.26); }
+    }
+    stormVis = storm>0 ? Math.min(1,Math.min(storm,12-storm)/2) : 0;  // 两端各 2 秒淡入淡出
+    stX=Math.cos(stormAng)*stormVis*0.9;   // 与洋流同一量纲 → 直接叠加，可复用同一套受力
+    stY=Math.sin(stormAng)*stormVis*0.9;
+
+    flow(player.x,player.y);
+    localF=Math.sqrt(F.x*F.x+F.y*F.y);
+    player.vx+=(F.x+stX)*FLOW_FORCE*dt; player.vy+=(F.y+stY)*FLOW_FORCE*dt;
+
+    /* 凝滞（⑪）：附加阻尼直接并进同一个指数衰减——物理上就是"更大的阻尼系数"，
+       不另起一条反向力，避免与洋流/推进叠加出怪东西。 */
+    const damp=Math.exp(-(DAMP_K+(brakeOn?BRAKE_K:0))*dt);
+    player.vx*=damp; player.vy*=damp;
+    player.x+=player.vx*dt; player.y+=player.vy*dt;
+    cam.x+=(player.x-cam.x)*Math.min(1,dt*3);
+    cam.y+=(player.y-cam.y)*Math.min(1,dt*3);
+    stepGhost(dt);            // ⑫ 推进上一轮路线的重演播放头
+
+    const speed=Math.sqrt(player.vx*player.vx+player.vy*player.vy);
+    playerSpeed=speed;
+    raceArc+=speed*dt;             // ⑫′：本轮累计弧长 —— 与幽灵对齐算竞速差
+    /* 相机随速度拉远（⑦）：让「快」被眼睛接收到，而不只是 H 面板里的一个数字。
+       上限 12%——再远就会让「读流」的视觉线索变形，那是本作唯一的技巧来源。 */
+    zoomCur+=((1-0.12*Math.min(1,speed/520))-zoomCur)*Math.min(1,dt*1.6);
+    const spd=Math.min(1,speed/SPEED_REF);
+    energy+=(spd-energy)*dt*ENERGY_K;
+    const calm=Math.min(1,still/STILL_FULL);
+
+    if(brakeOn){
+      /* 凝滞也花光，且**不回光**：回光条件是"没在用力"，凝滞恰恰在用力。
+         否则高速凝滞会同时满足 spd 大（回光多）与 BRAKE_COST 小 → 刹着车还在回光，倒挂。 */
+      light-=BRAKE_COST*dt; spent+=BRAKE_COST*dt; still=0;
+      if(light<=0){ light=0; exhausted=true; }
+    }else if(thrusting){
+      light-=THRUST_COST*dt; spent+=THRUST_COST*dt; noThrust=0;
+      if(light<=0){ light=0; exhausted=true; }
+    }else{
+      light=Math.min(1, light+(RIDE_BASE+RIDE_SPEED*spd)*dt);
+      noThrust+=dt;
+      if(exhausted && light>=EXHAUST_EXIT) exhausted=false;
+    }
+    eff += ((thrusting?0:1)-eff)*dt*0.5;
+
+    if(actx&&drones.filter){
+      drones.filter.frequency.value=300+energy*1500+light*400;
+      drones.shimmer.gain.value=energy*0.09+light*0.03;
+      drones.shimmerOsc.frequency.value=BASE*3*(1+energy*0.35);
+      // 风声开合：速度已经由 energy 平滑过，这里直接复用（⑦）
+      if(drones.wind){ drones.wind.gain.value=energy*0.05+stormVis*0.06;
+                       drones.windF.frequency.value=600+energy*1100; }
+    }
+
+    const sd=SAMPLE_DIST*(1-0.5*spd);
+    if((player.x-lastTx)**2+(player.y-lastTy)**2 > sd*sd){
+      addTrail(player.x,player.y,eff,roundT); lastTx=player.x; lastTy=player.y;
+    }
+
+    const boostDecay=Math.pow(BOOST_DECAY,dt*BOOST_RATE);
+    const pk=PUSH*(0.6+energy*FB_PUSH), sk=SWIRL*(0.6+energy*FB_PUSH);
+    // 缩放后可见世界更大 → 回卷边界必须按 zoomCur 放大，否则视野边缘会露空
+    const vw=innerWidth, vh=innerHeight, hw=vw/(2*zoomCur)+200, hh=vh/(2*zoomCur)+200;
+    for(const m of motes){
+      flow(m.x,m.y);
+      const fxs=F.x+stX, fys=F.y+stY;   // 风暴叠加进流场：光尘线条会被整片吹偏，风暴可读
+      const fl=Math.sqrt(fxs*fxs+fys*fys);
+      m.fx=fxs; m.fy=fys; m.fl=fl;      // 缓存流向量，draw 复用（省 260 次重算）
+      m.x+=fxs*FLOW_VIS*dt; m.y+=fys*FLOW_VIS*dt;
+      m.a+=dt*0.6;
+      m.x+=Math.cos(m.a)*0.18; m.y+=Math.sin(m.a*0.7)*0.12;
+      const px=m.x-player.x, py=m.y-player.y, d2=px*px+py*py;
+      if(d2<INFL2){ const pd=Math.sqrt(d2), w=1-pd/INFLUENCE_R;
+        m.x+=px/pd*w*pk*dt; m.y+=py/pd*w*pk*dt;
+        m.x+=-py/pd*w*sk*dt; m.y+=px/pd*w*sk*dt;
+        if(w>m.boost)m.boost=w; }
+      m.boost*=boostDecay;
+      const dx=m.x-cam.x, dy=m.y-cam.y;
+      if(dx>hw)m.x-=vw+400; if(dx<-hw)m.x+=vw+400;
+      if(dy>hh)m.y-=vh+400; if(dy<-hh)m.y+=vh+400;
+    }
+
+    if(awakeCount){
+      for(let i=0;i<ECHO_N;i++){
+        const e=echoes[i]; if(!e.awake) continue;
+        for(const m of motes){
+          const dx=e.x-m.x, dy=e.y-m.y, d2=dx*dx+dy*dy;
+          if(d2<ECHO_PULL_R2 && d2>4){
+            const d=Math.sqrt(d2), w=1-d/ECHO_PULL_R;
+            m.x+=dx/d*w*ECHO_PULL*dt; m.y+=dy/d*w*ECHO_PULL*dt;
+            m.x+=-dy/d*w*ECHO_SWIRL*dt; m.y+=dx/d*w*ECHO_SWIRL*dt;
+          }
+        }
+      }
+    }
+
+    for(const e of echoes){
+      e.phase+=dt*0.6;
+      const dx=e.x-player.x, dy=e.y-player.y, d2=dx*dx+dy*dy;
+      if(d2<ECHO_NEAR2){ const d=Math.sqrt(d2);
+        e.bloom+=dt*((ECHO_NEAR-d)/ECHO_NEAR)*0.5;
+        if(e.bloom>1 && !e.awake){ e.awake=true; awakeCount++;
+          chord(penta[e.note]+(e.deep?-12:0),0.18); burst(e.x,e.y,SPARK_N); flash=0.8; }
+        if(e.awake) stillTotal+=dt; }
+      else e.bloom=Math.max(e.awake?0.6:e.bloom*0.98, e.awake?0.6:0);
+    }
+    /* 异光：速度充能取代停留计时。
+       充能速率 = clamp((速度-V_MIN)/V_SPAN,0,1)，满 1.0 点亮。
+       速度不够 → 环停住并变暗；离开半径 → 充能流失。 */
+    const chargeRate=Math.max(0,Math.min(1,(speed-V_MIN)/V_SPAN));
+    for(const b of beacons){
+      b.phase+=dt*0.5;
+      const dx=b.x-player.x, dy=b.y-player.y;
+      if(dx*dx+dy*dy<BEACON_NEAR2){
+        b.bloom=Math.min(1,b.bloom+dt*1.2);
+        if(!b.lit){
+          b.chargeT+=dt;
+          b.charge += dt*chargeRate;
+          if(b.charge>1){
+            b.lit=true;
+            const sc=routeScore(b.chargeT);   // 航迹分决定这次收获
+            b.score=sc; lastScore=sc;
+            light=Math.min(1, light + REFUND_MIN + (REFUND_MAX-REFUND_MIN)*sc);
+            /* 连击（⑥）：表现层，不显示数字。
+               连续高质量点亮 → 音级往上走、尾迹转金、光晕变大；拖沓或光耗尽就归零。 */
+            if(!exhausted && sc>COMBO_GATE) combo=Math.min(6,combo+1); else combo=0;
+            chord(-12+Math.min(12,combo*2), 0.18+sc*0.12);
+            burst(b.x,b.y, Math.round(BEACON_SPARK_N*(0.45+sc)));
+            flash=0.5+sc*0.7;
+            flowPhase+=FLOW_SHIFT;             // 洋流改道 → 新地图
+            repositionBeacons();              // 未点亮的异光重布到新流场静水区
+            sinceBeacon=0; spent=0;
+            /* ── 一轮收束 + 自动续轮 ──
+               旧版 3 盏点亮后场上再无目标、无结算、无重开 → 约 90 秒内容后变屏保。
+               现在：给一段收束和弦 + 2 秒分数小字，1.6 秒后重置开新一轮。
+               roundEnding 闸门是必须的：这 1.6 秒里 every() 每帧都为真，
+               不设闸门会每帧触发一次收束。 */
+            if(!roundEnding && beacons.every(x=>x.lit)){
+              roundEnding=true; round++;
+              lastRoundScore=beacons.reduce((s,x)=>s+x.score,0)/BEACON_N;
+              /* ⑩：此刻 3 盏全亮、尾迹完整 → 抓一张航迹图存进记录层。
+                 只存不弹层（不打断氛围）——玩家按 P 时才拿出来看。 */
+              captureRound();
+              /* ⑫：把刚结束这一轮的路线交给幽灵，下一轮进场时它就在原地重演 */
+              setGhost(rounds[rounds.length-1]);
+              chord(0,0.34); chord(7,0.90,0.20);
+              burst(player.x,player.y,80); flash=1.2;
+              if(hint){
+                const rd=raceDelta();   // ⑫′：轮末战报 —— 同一张图，跑赢上一轮的自己
+                hint.textContent=`第 ${round} 轮 · ${Math.round(lastRoundScore*100)} 分`+
+                  (rd===null?'':` · ${rd<=0?'快':'慢'} ${Math.abs(rd).toFixed(1)}s`);
+                hint.classList.add('show');
+                setTimeout(()=>hint.classList.remove('show'),1600);
+              }
+              setTimeout(()=>{
+                for(const x of beacons){ x.lit=false; x.charge=0; x.chargeT=0;
+                                         x.score=0; x.bloom=0; }
+                flowPhase+=ROUND_SHIFT;        // 轮末大改道 = 新地图（⑧″：重布走子流 → 逐位可复现）
+                repositionBeacons();
+                sinceBeacon=0; spent=0; roundEnding=false;
+                /* ⑫′：轮内时间轴与风暴表清零 —— 每一轮都是同一条时间线，
+                   幽灵竞速才公平（代价：风暴不再随进程漂移，见分析文档诚实清单）。 */
+                roundT=0; raceArc=0; stormT=0; stormN=0; stormRoll();
+              },1600);
+            }
+          }
+        }
+      } else {
+        b.bloom=Math.max(0,b.bloom-dt*1.2);
+        if(!b.lit){
+          b.charge =Math.max(0,b.charge -dt*CHARGE_DECAY);
+          b.chargeT=Math.max(0,b.chargeT-dt*CT_DECAY);
+        }
+      }
+    }
+    for(const r of ripples){ r.r+=dt*(r.sonar?900:260); r.life-=dt*0.5; }
+    if(ripples.length) ripples=ripples.filter(r=>r.life>0);
+    if(sparks.length){
+      const sd2=Math.exp(-2.2*dt);
+      for(const s of sparks){ s.x+=s.vx*dt; s.y+=s.vy*dt; s.vx*=sd2; s.vy*=sd2; s.life-=dt*1.6; }
+      let i=sparks.length; while(i--){ if(sparks[i].life<=0){ sparks[i]=sparks[sparks.length-1]; sparks.pop(); } }
+    }
+    if(flash>0) flash=Math.max(0,flash-dt*3.5);
+
+    if(devOn){
+      const bar='█'.repeat(Math.round(light*20)).padEnd(20,'░');
+      const zone = localF>1.4 ? '急流(快·身不由己)'
+                 : localF<0.6 ? '静水(自己控速·异光藏这)' : '中流';
+      const sc=routeScore();
+      const fresh=Math.max(0,1-sinceBeacon/PAR_TIME);
+      const thrift=Math.max(0,1-spent/SPEND_PAR);
+      const cq=Math.max(0,Math.min(1,(CHARGE_PAR-activeChargeT())/(CHARGE_PAR-1)));
+      const rate=Math.max(0,Math.min(1,(playerSpeed-V_MIN)/V_SPAN));
+      /* ⑧ 分区读数：zoneIdxAt 返回名次索引（0 = 最静），ZONES[zi] 带 band 字段即 3 档档位。
+         ⚠️ 刻意**不显示名次**："本图静水排名 1/6"实测只有 40% 可复核（换相位网格就变），
+            那是不能兑现的说法。显示的是档位（稳健的那个量，实测 100% 一致）与实测 quiet。 */
+      const zi=zoneIdxAt(player.x,player.y), zn=ZONES[zi]||{name:'—',band:0,quiet:NaN};
+
+
+      dev.textContent =
+        `光 LIGHT  ${bar} ${light.toFixed(2)}${exhausted?'  [耗尽·失去推进权]':''}\n`+
+        `速度 SPD  ${playerSpeed.toFixed(0).padStart(4)} px/s   充能速率 ${(rate*100).toFixed(0)}%`+
+        `${playerSpeed<V_MIN?'  [太慢·点不亮]':''}\n`+
+        `洋流 |F|  ${localF.toFixed(2)}  ${zone}\n`+
+        `地脉 ZONE ${zn.name}  ◀你在这（该区实测最低 |F| ${isNaN(zn.quiet)?'—':zn.quiet.toFixed(2)}）\n`+
+        `档位分布  ${ZONE_BAND.map((b,bi)=>b.name+' '+ZONES.filter(z=>z.band===bi).length+'/6').join('   ')}`+
+        `   地图码 ${seedToCode(mapSeed)}   C 复制 / V 载入\n`+
+        `航迹分 v3 ${(sc*100).toFixed(0).padStart(3)}  = 时效${(fresh*100).toFixed(0)}·省光${(thrift*100).toFixed(0)}·充能${(cq*100).toFixed(0)}\n`+
+        `          权重 ${W_FRESH}/${W_THRIFT}/${W_CHARGE}；本段耗光 ${spent.toFixed(2)}/${SPEND_PAR}；距上次 ${sinceBeacon.toFixed(1)}s/${PAR_TIME}s\n`+
+        `异光 ${beacons.filter(b=>b.lit).length}/${BEACON_N}   上次得分 ${(lastScore*100).toFixed(0)}`+
+        `  等级 ${(Math.min(1,lastScore/GRADE_REF)*100).toFixed(0)}%\n`+
+        `顺流 EFF  ${(eff*100).toFixed(0).padStart(3)}%（仅供尾迹配色，已不参与计分）\n`+
+        `连击 COMBO ${combo}/6（仅表现层：音级·尾迹转金·光晕）   相机 ${zoomCur.toFixed(3)}\n`+
+        `凝滞 BRAKE ${brakeOn?'按住 · 阻尼 '+(DAMP_K+BRAKE_K).toFixed(1)+' · 耗光 '+BRAKE_COST+'/s':'松开'}\n`+
+        `风暴 STORM ${storm>0 ? storm.toFixed(1)+'s 剩 · 强度 '+(stormVis*100).toFixed(0)+'%'
+                              : '无（下次约 '+Math.max(0,stormNext-stormT).toFixed(0)+'s）'}\n`+
+        `轮次 ROUND ${round}   上轮得分 ${(lastRoundScore*100).toFixed(0)}\n`+
+        `航迹图 MAP  已记录 ${rounds.length} 轮 · 正在看第 ${buildMapModel()?buildMapModel().idx:'-'} 轮 · P 打开\n`+
+        `幽灵 GHOST ${ghostOn ? ('重演第 '+ghost.idx+' 轮 · 真实节奏 · 路程 '+ghost.total.toFixed(0)+
+                     'px · 用时 '+ghost.dur.toFixed(1)+'s · 播放头 '+(ghostS/ghost.total*100).toFixed(0)+'%') : '无（打完一轮才会出现）'}\n`+
+        `竞速 RACE ${(()=>{ const d=raceDelta();
+                      return d===null ? '——（无幽灵可比）'
+                        : (d<=0 ? '快 ' : '慢 ')+Math.abs(d).toFixed(1)+'s'; })()}\n`+
+        `H 关闭面板`;
+    }
+  }
+
+  function drawEcho(e){
+    const pulse=0.5+0.5*Math.sin(e.phase), R=(e.awake?26:10)+e.bloom*14+pulse*4+(e.deep?14:0);
+    const col=e.awake?'255,225,180':'180,210,255';
+    const grd=ctx.createRadialGradient(e.x,e.y,0,e.x,e.y,R*2.4);
+    grd.addColorStop(0,`rgba(${col},${0.5+e.bloom*0.4})`); grd.addColorStop(1,`rgba(${col},0)`);
+    ctx.fillStyle=grd; ctx.beginPath(); ctx.arc(e.x,e.y,R*2.4,0,7); ctx.fill();
+    ctx.beginPath(); ctx.arc(e.x,e.y,3+e.bloom*2,0,7);
+    ctx.fillStyle=`rgba(${col},0.85)`; ctx.fill();
+  }
+  function drawBeacon(b){
+    const pulse=0.5+0.5*Math.sin(b.phase);
+    // 点亮后的永久亮度 = 航迹分等级（0.2 随缘 → 0.70 以上老手，GRADE_REF 归一化）
+    const grade=Math.min(1, b.score/GRADE_REF);
+    const R=58 + b.bloom*46 + pulse*12 + (b.lit ? grade*46 : 0);
+    const a0=(b.lit?0.55:0.38) + b.bloom*0.30 + (b.lit? grade*0.40 : 0);
+    const grd=ctx.createRadialGradient(b.x,b.y,0,b.x,b.y,R*2.3);
+    grd.addColorStop(0,`hsla(${b.hue},85%,66%,${Math.min(0.95,a0)})`);
+    grd.addColorStop(1,`hsla(${b.hue},85%,66%,0)`);
+    ctx.fillStyle=grd; ctx.beginPath(); ctx.arc(b.x,b.y,R*2.3,0,7); ctx.fill();
+    ctx.beginPath(); ctx.arc(b.x,b.y,5+b.bloom*5+(b.lit?grade*7:0),0,7);
+    ctx.fillStyle=`hsla(${b.hue},92%,78%,0.9)`; ctx.fill();
+
+    /* 充能环：这是「速度点亮」规则唯一的教学入口。
+       速度够 → 亮环稳定生长；速度不够 → 环停住并变暗，玩家自己会归因。 */
+    if(!b.lit && b.charge>0.01){
+      const stalling = playerSpeed < V_MIN;
+      ctx.beginPath();
+      ctx.arc(b.x,b.y,CHARGE_R, -1.5708, -1.5708 + Math.min(1,b.charge)*6.2832);
+      ctx.strokeStyle=`hsla(${b.hue},90%,${stalling?48:76}%,${stalling?0.28:0.62})`;
+      ctx.lineWidth=stalling?2:3; ctx.stroke();
+    }
+  }
+
+  /* 方向指引：屏幕上一个极淡的呼吸小点，指向最近的未点亮异光。
+     没有它，玩家要在 3400×2600 的场里找 3 个半径 78 的点——而视口只有 1280×720，
+     等于只能随机游走。Journey 的远处光点、Sky 的星门方向都是同一件事：
+     探索的前提是「知道有东西可探索」。用该异光自己的色相，保持极淡不抢戏。 */
+  function drawCompass(w,h){
+    let tgt=null,bd=1e18;
+    for(const b of beacons){ if(b.lit) continue;
+      const d=(b.x-player.x)**2+(b.y-player.y)**2; if(d<bd){ bd=d; tgt=b; } }
+    if(!tgt) return;
+    const ang=Math.atan2(tgt.y-player.y, tgt.x-player.x);
+    const R=Math.min(w,h)*0.40;
+    const a=0.10+0.20*(0.5+0.5*Math.sin(t*1.6));
+    ctx.save(); ctx.translate(w/2,h/2); ctx.rotate(ang);
+    ctx.beginPath(); ctx.arc(R,0,4.5,0,7);
+    ctx.fillStyle=`hsla(${tgt.hue},85%,72%,${a.toFixed(3)})`; ctx.fill();
+    ctx.restore();
+  }
+
+  /* ⑧ 分区可视化：从原点辐射的 6 个扇面 + 外圈弧。
+     为什么敢画出来：分区是按**实测静水条件**命名的（见 measureZones），
+     所以"绿色那片灯多又好点"对玩家是可验证的，不是贴标签。
+     用扇形而不是噪声色块：本作的读图线索全是极坐标的（异光按半径分环、洋流按方向读）。 */
+  function drawZones(){
+    /* 每个扇面按它所在**档位**上色（z.hue 来自 ZONE_BAND）。
+       ⚠️ 同一档的两个扇面**不一定相邻** —— 它们是按静水名次三等分选出来的，
+       可能在圆的两侧。所以玩家会看到"同一种颜色出现在两个方向"，
+       那正是在说"这两个方向一样静"，不是画错了。 */
+    const RIM=1245;
+    for(let k=0;k<ZONE_N;k++){
+      const z=ZONES[k]; if(!z) continue;
+      const a0=z.sector*ZONE_W - zoneShift*ZONE_W;
+      ctx.beginPath(); ctx.moveTo(0,0);
+      ctx.arc(0,0,RIM*1.6,a0,a0+ZONE_W); ctx.closePath();
+      ctx.fillStyle=`hsla(${z.hue},60%,55%,0.032)`;      // 只够让"这一片和那一面不一样"被看见
+      ctx.fill();
+      ctx.beginPath(); ctx.arc(0,0,RIM,a0+ZONE_W*0.02,a0+ZONE_W*0.96);
+      ctx.strokeStyle=`hsla(${z.hue},70%,62%,0.20)`; ctx.lineWidth=2.5; ctx.stroke();
+    }
+  }
+
+  function draw(){
+    const w=innerWidth,h=innerHeight, calm=Math.min(1,still/STILL_FULL);
+    const hue=210-energy*FB_HUE+Math.sin(t*0.05)*8+calm*20;
+    const warm=Math.min(0.5, stillTotal/600);
+    const g=ctx.createLinearGradient(0,0,0,h);
+    g.addColorStop(0,`hsl(${hue},38%,${10+calm*4+warm*4}%)`);
+    g.addColorStop(1,`hsl(${hue+18+warm*14},42%,${16+calm*6+warm*5}%)`);
+    ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+
+    /* 相机缩放（⑦）：速度越快看得越远。必须先 translate 到屏幕中心再 scale，
+       否则缩放会把相机位置一起放大 → 画面整体跑偏。 */
+    ctx.save(); ctx.translate(w/2,h/2); ctx.scale(zoomCur,zoomCur); ctx.translate(-cam.x,-cam.y);
+
+    drawZones();       // ⑧ 分区底线：画在所有发光体之前，只当背景纹理，不抢异光的可读性
+
+    ctx.globalCompositeOperation='lighter';
+    const ck=Math.min(1,combo/5);                 // 连击 → 尾迹转金（⑥）
+    const cg=212*ck, cb=120*ck;
+    for(let i=0;i<trailCount;i++){
+      const idx=(trailHead-trailCount+i+TRAIL_CAP)%TRAIL_CAP;
+      const q=trailQ[idx], r=4+q*6;
+      ctx.beginPath(); ctx.arc(trailX[idx],trailY[idx],r,0,7);
+      ctx.fillStyle=`rgba(255,${((226-q*11)*(1-ck)+cg)|0},${((190-q*80)*(1-ck)+cb)|0},${((0.04+q*0.10)*(1+ck*0.7)).toFixed(3)})`;
+      ctx.fill();
+    }
+    ctx.globalCompositeOperation='source-over';
+
+    // 光尘画成流向线条：越长越亮＝流越急（读图、规划路线的依据）
+    ctx.lineCap='round';
+    for(const m of motes){
+      const a=0.20+m.z*0.35+m.boost*0.45, fl=m.fl;
+      if(fl<0.05){
+        ctx.beginPath(); ctx.arc(m.x,m.y,0.9+m.z*0.4,0,7);
+        ctx.fillStyle=`rgba(255,${(230-m.z*30)|0},${(200-m.z*40)|0},${a})`; ctx.fill();
+        continue;
+      }
+      const len=3+fl*11, nx=m.fx/fl, ny=m.fy/fl;
+      ctx.beginPath(); ctx.moveTo(m.x-nx*len, m.y-ny*len); ctx.lineTo(m.x, m.y);
+      ctx.strokeStyle=`rgba(255,${(232-fl*14)|0},${(205-fl*30)|0},${a})`;
+      ctx.lineWidth=0.5+m.z*0.9; ctx.stroke();
+    }
+
+    for(const r of ripples){
+      ctx.beginPath(); ctx.arc(r.x,r.y,r.r,0,7);
+      ctx.strokeStyle=`rgba(255,240,210,${r.life*0.4})`; ctx.lineWidth=2; ctx.stroke();
+    }
+    for(const e of echoes) drawEcho(e);
+    for(const b of beacons) drawBeacon(b);
+
+    /* ⑫ 幽灵回放：拖尾取「比播放头更早的位置」（ghostS - GAP*k），于是自然形成一条渐隐的线。
+       用冷蓝 (140~186, 196~240, 255) 与玩家的暖白明确区分 —— 它是痕迹，不该抢注意力。 */
+    if(ghostOn){
+      ctx.globalCompositeOperation='lighter';
+      for(let k=GHOST_TAIL;k>=0;k--){
+        const gp=ghostAtS(ghostS-k*GHOST_GAP);
+        if(!gp) continue;
+        const f=1-k/(GHOST_TAIL+1);
+        ctx.beginPath(); ctx.arc(gp.x,gp.y, 2.2+f*2.6, 0, 6.2832);
+        ctx.fillStyle='rgba('+((140+f*46)|0)+','+((196+f*44)|0)+',255,'+
+          (0.07+f*0.20).toFixed(3)+')';
+        ctx.fill();
+      }
+      ctx.globalCompositeOperation='source-over';
+    }
+
+    const gr=16+light*26+Math.min(10,combo*1.6), ga=(exhausted?0.22:0.35)+light*0.55;
+    const pg=ctx.createRadialGradient(player.x,player.y,0,player.x,player.y,gr);
+    pg.addColorStop(0,`rgba(255,245,225,${ga})`); pg.addColorStop(1,'rgba(255,245,225,0)');
+    ctx.fillStyle=pg; ctx.beginPath(); ctx.arc(player.x,player.y,gr,0,7); ctx.fill();
+    ctx.beginPath(); ctx.arc(player.x,player.y,exhausted?3:5,0,7);
+    ctx.fillStyle=`rgba(255,${(250-light*20)|0},${(240-light*60)|0},0.95)`; ctx.fill();
+
+    /* 速度指示环（替代原「航迹环」）：画的是「你现在的速度够不够点亮」。
+       原版画的是正在流失的航迹分——玩家不知道分是什么、掉了会怎样（因为不会失败），
+       得到的是困惑不是张力。换成速度后：实时、可行动，且是核心规则唯一的教学源。
+       弧满 = 金色加粗 = 此刻冲进异光就能点着。 */
+    const rateNow=Math.max(0,Math.min(1,(playerSpeed-V_MIN)/V_SPAN));
+    if(rateNow>0.01){
+      ctx.beginPath();
+      ctx.arc(player.x,player.y,RS_R, -1.5708, -1.5708 + rateNow*6.2832);
+      ctx.strokeStyle=`rgba(${rateNow>=1?'255,226,150':'160,220,255'},${(0.18+rateNow*0.35).toFixed(3)})`;
+      ctx.lineWidth=rateNow>=1?3:2; ctx.stroke();
+    }
+
+    ctx.globalCompositeOperation='lighter';
+    for(const s of sparks){
+      ctx.beginPath(); ctx.arc(s.x,s.y,1.4+s.life*2.6,0,7);
+      ctx.fillStyle=`rgba(255,248,232,${s.life*0.9})`; ctx.fill();
+    }
+    ctx.globalCompositeOperation='source-over';
+    ctx.restore();
+
+    const vg=ctx.createRadialGradient(w/2,h/2,h*0.3,w/2,h/2,h*0.85);
+    vg.addColorStop(0,'rgba(0,0,0,0)');
+    vg.addColorStop(1,`rgba(0,0,0,${(0.45+calm*0.30+stormVis*0.16).toFixed(3)})`);
+    ctx.fillStyle=vg; ctx.fillRect(0,0,w,h);
+    drawCompass(w,h);   // 放在暗角之后：否则指引点会被暗角压掉
+    if(flash>0){ ctx.globalCompositeOperation='lighter';
+      ctx.fillStyle=`rgba(255,246,230,${flash*0.10})`; ctx.fillRect(0,0,w,h);
+      ctx.globalCompositeOperation='source-over'; }
+  }
+
+  let last=performance.now();
+  function loop(now){
+    const dt=Math.min(0.05,(now-last)/1000); last=now;
+    update(dt); draw(); requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
