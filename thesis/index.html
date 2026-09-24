@@ -44,6 +44,16 @@
     padding:3px 10px;font-size:12px;color:var(--tx2);letter-spacing:.06em}
   .tag b{color:var(--acc);font-weight:600}
 
+  .shots{margin:16px 0}
+  .shots>summary{cursor:pointer;color:var(--tx2);font-size:13px;letter-spacing:.06em;
+    padding:9px 14px;border:1px solid var(--line);border-radius:8px;background:var(--card);
+    list-style:none;transition:.18s}
+  .shots>summary::-webkit-details-marker{display:none}
+  .shots>summary::before{content:"+ ";color:var(--acc)}
+  .shots[open]>summary::before{content:"− "}
+  .shots>summary:hover{color:var(--acc);border-color:var(--acc)}
+  .shots[open]>summary{margin-bottom:12px}
+
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
   .shot{background:var(--card);border:1px solid var(--line);border-radius:9px;overflow:hidden;
     cursor:zoom-in;transition:.18s}
@@ -121,7 +131,9 @@
     <span class="tag">无头仿真</span>
   </div>
 
-  <div class="grid">
+  <details class="shots">
+    <summary>界面截图（12 张 · 展开查看）</summary>
+    <div class="grid">
     <figure class="shot"><img src="img/aoli-title.jpg" loading="lazy" alt="标题界面"><figcaption class="cap">标题界面</figcaption></figure>
     <figure class="shot"><img src="img/aoli-mainmenu.jpg" loading="lazy" alt="主菜单"><figcaption class="cap">主菜单</figcaption></figure>
     <figure class="shot"><img src="img/aoli-memorywall.jpg" loading="lazy" alt="记忆墙"><figcaption class="cap">记忆墙（叙事核心）</figcaption></figure>
@@ -134,7 +146,8 @@
     <figure class="shot"><img src="img/aoli-transition1.png" loading="lazy" alt="转场 1"><figcaption class="cap">转场 · 标题 → 主菜单</figcaption></figure>
     <figure class="shot"><img src="img/aoli-transition2.png" loading="lazy" alt="转场 2"><figcaption class="cap">转场 · 主菜单 → 记忆墙</figcaption></figure>
     <figure class="shot"><img src="img/aoli-transition3.png" loading="lazy" alt="转场 3"><figcaption class="cap">转场 · 记忆墙 → 暂停</figcaption></figure>
-  </div>
+    </div>
+  </details>
 
   <p style="margin-top:18px;font-size:13.5px">
     → <a href="aoli-architecture.html" style="color:var(--acc)">《澳里·光景》系统架构一页图</a>

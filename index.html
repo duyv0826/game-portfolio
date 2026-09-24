@@ -603,7 +603,7 @@ html{scrollbar-color:var(--surface-3) var(--bg);scrollbar-width:thin;}
           <p class="hero-tag">GAME DESIGN · INTERACTIVE MEDIA</p>
           <h1 class="hero-name">洪昺森<span class="dot">.</span></h1>
           <p class="hero-title">互动媒体艺术 · 游戏设计方向 <strong>研究生</strong><br>澳门科技大学</p>
-          <p class="hero-sub">澳门科技大学互动媒体艺术（游戏设计方向）在读硕士。当前研究：氛围探索游戏的<b>弱目的性设计</b>——我放进游戏的引导，到底有没有被玩家接到。学位作品《澳里·光景》（Unity）：79 个自研脚本、204 个自动化测试全部通过；擅长把设计决策变成可以跑出来看的数。</p>
+          <p class="hero-sub">澳门科技大学互动媒体艺术（游戏设计方向）在读硕士。当前研究：氛围探索游戏的<b>弱目的性设计</b>——我放进游戏的引导，到底有没有被玩家接到。可玩原型《微光原野》用 5 档策略 bot × 220 局仿真把设计意图跑成数据；Unity 工程 79 个自研脚本、204 个自动化测试全部通过。</p>
           <div class="hero-actions">
             <a class="btn btn-primary" href="#works">查看作品</a>
             <a class="btn btn-ghost" href="#contact">与我联系</a>
@@ -780,19 +780,6 @@ html{scrollbar-color:var(--surface-3) var(--bg);scrollbar-width:thin;}
 const WORKS = [
   {
     no: '00',
-    title: '《澳里·光景》Aoli — 学位作品',
-    type: '学位作品 · 氛围探索',
-    status: '开发中 · 可试玩原型',
-    tags: ['Unity', 'C#', '氛围探索', '弱目的性设计', '澳门老城纹样', '无头仿真', '204 自动化测试'],
-    cover: 'assets/work-18.jpg',
-    desc: '研究生学位作品：在一座没有任务清单的岛城里，玩家靠光、声音与痕迹去理解发生过的事。题材取自澳门老城的招牌、窗花与瓷砖纹样。',
-    detail: 'Unity 开发的氛围探索游戏。核心研究问题很朴素：我放进去的引导，到底有没有被玩家接到。工程现状：79 个自研脚本、一万五千余行，204 个自动化测试（EditMode 201 + PlayMode 3）全部通过，提交历史在 GitHub 可查；已搭建无头仿真、叙事导演与谜题状态机，把游戏当作「可验证的系统」来做——设计决策可以用数据检验，而不是凭感觉。Tap 点击回应 / Hum 哼鸣互动 / Companion AI 同伴 / 水晶信标 / LineRenderer 光轨 / 记忆墙。',
-    story: ["学位作品：Unity 氛围探索游戏，把任务清单、数值和进度条全部拿掉，研究弱目的性设计下「引导是否抵达玩家」。", "题材取自澳门老城的招牌、窗花与瓷砖纹样；记忆墙是叙事核心，光轨与哼鸣构成非语言交互。", "工程纪律：79 个自研脚本、204 个自动化测试全部通过、GitHub 提交历史完整可查；配套低目的性 HTML5 原型《微光原野》与 5 档策略 bot × 220 局仿真验证设计意图。"],
-    link: 'https://duyv0826.github.io/game-portfolio/thesis/',
-    hint: '学位作品页：系统架构一页图 + 12 张界面截图'
-  },
-  {
-    no: '01',
     title: '《微光原野》Glimmer Field — 弱目的性原型',
     type: '学位作品配套 · 可直接试玩',
     status: '可试玩',
@@ -803,6 +790,19 @@ const WORKS = [
     story: ["弱目的性氛围原型：没有目标、没有失败、没有计时，光尘在洋流里漂，玩家骑着急流点亮异光。", "身份是设计对照案例（design contrast case）：与《澳里·光景》同作者、同一条自变量轴上的两个极值，而非简单对照组。", "用 5 档策略 bot × 220 局仿真把「这样设计成不成立」变成可以跑出来看的数；赢的策略恰好验证设计意图。"],
     link: 'https://duyv0826.github.io/game-portfolio/thesis/glimmer-field.html',
     hint: '鼠标拖拽推进 · 带着速度穿过异光 · H 唤出数值面板'
+  },
+  {
+    no: '01',
+    title: '《澳里·光景》Aoli — 学位作品',
+    type: '学位作品 · 氛围探索',
+    status: '开发中',
+    tags: ['Unity', 'C#', '氛围探索', '弱目的性设计', '澳门老城纹样', '无头仿真', '204 自动化测试'],
+    cover: 'assets/work-18.jpg',
+    desc: '研究生学位作品：在一座没有任务清单的岛城里，玩家靠光、声音与痕迹去理解发生过的事。题材取自澳门老城的招牌、窗花与瓷砖纹样。',
+    detail: 'Unity 开发的氛围探索游戏。核心研究问题很朴素：我放进去的引导，到底有没有被玩家接到。工程现状：79 个自研脚本、一万五千余行，204 个自动化测试（EditMode 201 + PlayMode 3）全部通过，提交历史在 GitHub 可查；已搭建无头仿真、叙事导演与谜题状态机，把游戏当作「可验证的系统」来做——设计决策可以用数据检验，而不是凭感觉。Tap 点击回应 / Hum 哼鸣互动 / Companion AI 同伴 / 水晶信标 / LineRenderer 光轨 / 记忆墙。',
+    story: ["学位作品：Unity 氛围探索游戏，把任务清单、数值和进度条全部拿掉，研究弱目的性设计下「引导是否抵达玩家」。", "题材取自澳门老城的招牌、窗花与瓷砖纹样；记忆墙是叙事核心，光轨与哼鸣构成非语言交互。", "工程纪律：79 个自研脚本、204 个自动化测试全部通过、GitHub 提交历史完整可查；配套低目的性 HTML5 原型《微光原野》与 5 档策略 bot × 220 局仿真验证设计意图。"],
+    link: 'https://duyv0826.github.io/game-portfolio/thesis/',
+    hint: '学位作品页：系统架构一页图 + 12 张界面截图'
   },
   {
     no: '02',
