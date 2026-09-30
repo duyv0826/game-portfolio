@@ -431,7 +431,9 @@ html{scrollbar-color:var(--surface-3) var(--bg);scrollbar-width:thin;}
   color:var(--accent);letter-spacing:.02em;margin-bottom:36px;word-break:break-all;
   padding:14px 28px;border:1px solid var(--border);border-radius:12px;display:inline-block;
   background:var(--accent-soft);transition:border-color .3s,box-shadow .3s;
+  cursor:pointer;user-select:all;
 }
+.contact-mail:focus-visible{outline:2px solid var(--accent);outline-offset:3px;}
 .contact-mail:hover{border-color:var(--accent-dim);box-shadow:0 0 30px rgba(240,178,75,.12);}
 .contact-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
 .btn-copy{background:var(--surface-2);border:1px solid var(--border);color:var(--text);}
@@ -727,10 +729,10 @@ html{scrollbar-color:var(--surface-3) var(--bg);scrollbar-width:thin;}
         <h2 class="section-title">保持<em>联系</em></h2>
       </div>
       <p class="contact-lead rv">如果你想聊聊游戏、互动媒体或合作机会，欢迎通过邮箱、LinkedIn、GitHub 或 Itch.io 联系我。</p>
-      <div class="contact-mail rv" id="contactMail">2260030089@student.must.edu.mo</div>
+      <div class="contact-mail rv" id="contactMail" role="button" tabindex="0" aria-label="点击显示邮箱">点击显示邮箱</div>
       <div class="contact-actions rv">
         <button class="btn btn-primary" id="copyMail">复制邮箱地址</button>
-        <a class="btn btn-ghost" href="mailto:2260030089@student.must.edu.mo">发送邮件</a>
+        <button class="btn btn-ghost" id="sendMail">发送邮件</button>
       </div>
       <div class="contact-links rv">
         <a href="https://duyv0826.github.io/game-portfolio/thesis/" target="_blank" rel="noopener">学位作品 ·《澳里·光景》</a>
@@ -1235,9 +1237,24 @@ if (hud && !matchMedia('(pointer: coarse)').matches && !reducedMotion) {
   }
 })();
 
-/* ---------- 复制邮箱 ---------- */
+/* ---------- 邮箱：源码内不出现完整地址，按需揭示 + 运行时拼接 ---------- */
+function mailAddr(){
+  return '2260030089' + String.fromCharCode(64) + 'student.must.edu.mo';
+}
+(function(){
+  const el = $('#contactMail');
+  if (!el) return;
+  const reveal = () => { el.textContent = mailAddr(); el.removeAttribute('aria-label'); };
+  el.addEventListener('click', reveal);
+  el.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); reveal(); }
+  });
+})();
+$('#sendMail').addEventListener('click', () => {
+  window.location.href = 'mailto:' + mailAddr();
+});
 $('#copyMail').addEventListener('click', () => {
-  const mail = '2260030089@student.must.edu.mo';
+  const mail = mailAddr();
   const done = () => toast('邮箱地址已复制：' + mail);
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(mail).then(done).catch(() => fallbackCopy(mail, done));

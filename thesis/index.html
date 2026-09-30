@@ -208,7 +208,7 @@
 
 <footer>
   洪昺森 · IMD 游戏设计 2026 级 · 学号 2260030089<br>
-  <a href="mailto:2260030089@student.must.edu.mo">2260030089@student.must.edu.mo</a> ·
+  <a href="#" id="mailLink" role="button">点击显示邮箱</a> ·
   <a href="https://duyv0826.github.io/game-portfolio/" target="_blank" rel="noopener">广度作品集（17+ 作品）</a> ·
   <a href="https://github.com/duyv0826" target="_blank" rel="noopener">GitHub</a>
 </footer>
@@ -228,6 +228,13 @@
   function close(){lb.classList.remove('show'); document.body.style.overflow='';}
   lb.addEventListener('click',close);
   document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
+})();
+(function(){
+  var a=document.getElementById('mailLink'); if(!a) return;
+  var addr='2260030089'+String.fromCharCode(64)+'student.must.edu.mo', shown=false;
+  a.addEventListener('click',function(e){
+    if(!shown){ e.preventDefault(); a.textContent=addr; a.href='mailto:'+addr; shown=true; }
+  });
 })();
 </script>
 </body>
