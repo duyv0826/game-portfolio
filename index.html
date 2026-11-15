@@ -12,14 +12,41 @@
 <!-- 社交分享卡片：og:image 使用本仓库自托管封面（2026-09-24 修复：不再依赖外部部署域名） -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="洪昺森 · 互动媒体艺术 / 游戏设计作品集">
-<meta property="og:description" content="澳门科技大学游戏设计方向在读硕士。学位作品《澳里·光景》氛围探索游戏 + 18 个可玩原型：Chrono Loop 时间循环解谜、声景生成器、LLM 分支叙事等，多个作品可在线直接试玩。">
+<meta property="og:description" content="澳门科技大学游戏设计方向在读硕士。学位作品《澳里·光景》氛围探索游戏 + 18 个作品：Chrono Loop 时间循环解谜、声景生成器、LLM 分支叙事等，其中 7 个可在浏览器直接打开。">
 <meta property="og:url" content="https://duyv0826.github.io/game-portfolio/">
+<meta property="og:site_name" content="洪昺森 · 互动媒体艺术 / 游戏设计作品集">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://duyv0826.github.io/game-portfolio/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="洪昺森 · 互动媒体艺术 / 游戏设计作品集">
-<meta name="twitter:description" content="学位作品《澳里·光景》+ 18 个可玩原型，多个作品可在线直接试玩。">
+<meta name="twitter:description" content="学位作品《澳里·光景》+ 18 个作品，其中 7 个可在浏览器直接打开。">
 <meta name="twitter:image" content="https://duyv0826.github.io/game-portfolio/og-cover.png">
+<meta name="twitter:image:alt" content="洪昺森作品集分享卡">
+<link rel="canonical" href="https://duyv0826.github.io/game-portfolio/">
 <link rel="preconnect" href="https://miaoda.feishu.cn">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  "name": "洪昺森 · 互动媒体艺术 / 游戏设计作品集",
+  "url": "https://duyv0826.github.io/game-portfolio/",
+  "mainEntity": {
+    "@type": "Person",
+    "name": "洪昺森",
+    "alternateName": "Bingsen Hong",
+    "jobTitle": "互动媒体艺术（游戏设计方向）硕士研究生",
+    "affiliation": { "@type": "CollegeOrUniversity", "name": "澳门科技大学" },
+    "sameAs": [
+      "https://github.com/duyv0826",
+      "https://duyv0826.itch.io",
+      "https://www.linkedin.com/in/bingsen-hong-must"
+    ],
+    "knowsAbout": ["游戏设计", "Unity", "互动媒体艺术", "氛围探索游戏", "数据可视化"]
+  }
+}
+</script>
 <link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Chakra+Petch:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap">
 <style>
 /* ============================================================
@@ -265,6 +292,14 @@ html{scrollbar-color:var(--surface-3) var(--bg);scrollbar-width:thin;}
 }
 .section-desc{margin-left:auto;color:var(--muted);font-size:14px;max-width:360px;border-left:2px solid var(--accent-dim);padding-left:18px;}
 .section-desc code{font-family:var(--font-display);color:var(--accent-2);font-size:12.5px;}
+.section-more{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:-30px 0 38px;}
+.section-more a{
+  font-family:var(--font-display);font-size:13.5px;letter-spacing:.02em;color:var(--accent);
+  text-decoration:none;border-bottom:1px solid rgba(240,178,75,.35);padding-bottom:2px;
+  transition:color .2s var(--ease),border-color .2s var(--ease);
+}
+.section-more a:hover{color:var(--text);border-color:var(--text);}
+.section-more-note{font-size:12.5px;color:var(--faint);}
 
 /* 滚动揭示（克制：仅标题与卡片，非全站铺） */
 .rv{opacity:0;transform:translateY(18px);transition:opacity .6s var(--ease),transform .6s var(--ease);}
@@ -642,17 +677,22 @@ html{scrollbar-color:var(--surface-3) var(--bg);scrollbar-width:thin;}
       <div class="section-head rv" data-bg="01">
         <span class="section-no">01 / SELECTED WORKS</span>
         <h2 class="section-title">精选<em>作品</em></h2>
-        <p class="section-desc">16 个真实项目：游戏开发、视觉研究、互动媒体与系统工程。<code>点击卡片</code>查看详情。</p>
+        <p class="section-desc">19 个作品（NO.00–NO.18）：游戏开发、互动媒体、视觉研究与系统工程，其中 7 个可在浏览器直接打开。<code>点击卡片</code>查看详情。</p>
+      </div>
+      <div class="section-more rv">
+        <a href="开发过程与设计思路.html">附册：17 篇广度作品的开发过程与设计思路</a>
+        <span class="section-more-note">每篇含概述 / 开发过程 / 设计思路 / 复盘</span>
       </div>
       <div class="filter-bar rv" role="group" aria-label="作品筛选">
-        <button class="filter-btn active" data-filter="all">全部<span class="count">12</span></button>
+        <button class="filter-btn active" data-filter="all">全部<span class="count">19</span></button>
+        <button class="filter-btn" data-filter="学位作品">学位作品<span class="count"></span></button>
         <button class="filter-btn" data-filter="游戏设计">游戏设计<span class="count"></span></button>
         <button class="filter-btn" data-filter="互动媒体">互动媒体<span class="count"></span></button>
         <button class="filter-btn" data-filter="视觉研究">视觉研究<span class="count"></span></button>
         <button class="filter-btn" data-filter="系统工程">系统工程<span class="count"></span></button>
       </div>
       <div class="works-grid" id="worksGrid"></div>
-      <div class="works-empty" id="worksEmpty">该分类下暂无作品，可在 data 中补充。</div>
+      <div class="works-empty" id="worksEmpty">该分类下暂无作品。</div>
     </div>
   </section>
 
@@ -739,6 +779,7 @@ html{scrollbar-color:var(--surface-3) var(--bg);scrollbar-width:thin;}
         <a href="https://www.linkedin.com/in/bingsen-hong-must" target="_blank" rel="noopener">LinkedIn</a>
         <a href="https://github.com/duyv0826" target="_blank" rel="noopener">GitHub</a>
         <a href="https://duyv0826.itch.io" target="_blank" rel="noopener">Itch.io</a>
+        <a href="开发过程与设计思路.html">附册 · 开发过程与设计思路</a>
       </div>
     </div>
   </section>
@@ -755,7 +796,7 @@ html{scrollbar-color:var(--surface-3) var(--bg);scrollbar-width:thin;}
 </footer>
 
 <!-- ===== 作品详情模态框 ===== -->
-<div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-label="作品详情">
+<div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
   <div class="modal" id="modalBox">
     <button class="modal-close" id="modalClose" aria-label="关闭详情">×</button>
     <div class="modal-cover"><img id="modalCover" src="" alt=""></div>
@@ -1009,6 +1050,13 @@ const WORKS = [
   }
 ];
 
+/* ---------- 附册锚点：广度作品在《开发过程与设计思路》中的章节（附册沿用旧编号 w01–w17） ---------- */
+const DOC_ANCHORS = {
+  '02':'w01','03':'w02','04':'w03','05':'w04','06':'w05','07':'w06',
+  '08':'w07','09':'w08','10':'w09','11':'w10','12':'w11','13':'w12',
+  '14':'w13','15':'w14','16':'w15','17':'w16','18':'w17'
+};
+
 /* ---------- 工具 ---------- */
 const $  = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
@@ -1025,8 +1073,11 @@ function toast(msg){
 /* ---------- 作品渲染 ---------- */
 let revealObs; // 滚动观察器（渲染前声明，避免 TDZ）
 const grid = $('#worksGrid');
+// 「学位作品」是跨 type 的一类：NO.00「学位作品配套 · 可直接试玩」与 NO.01「学位作品 · 氛围探索」
+const inCategory = (w, f) => f === 'all'
+  || (f === '学位作品' ? w.type.indexOf('学位作品') >= 0 : w.type === f);
 function renderWorks(filter = 'all'){
-  const list = filter === 'all' ? WORKS : WORKS.filter(w => w.type === filter);
+  const list = WORKS.filter(w => inCategory(w, filter));
   grid.innerHTML = list.map(w => `
     <article class="work-card rv" tabindex="0" role="button" aria-label="查看作品 ${w.title}"
       data-index="${WORKS.indexOf(w)}" data-type="${w.type}">
@@ -1048,7 +1099,7 @@ function renderWorks(filter = 'all'){
   observeReveals();
   // 卡片点击/键盘打开详情
   $$('.work-card').forEach(card => {
-    const open = () => openModal(+card.dataset.index);
+    const open = () => openModal(+card.dataset.index, card);
     card.addEventListener('click', open);
     card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
   });
@@ -1058,7 +1109,7 @@ renderWorks();
 /* ---------- 筛选 ---------- */
 $$('.filter-btn').forEach(btn => {
   const f = btn.dataset.filter;
-  const cnt = f === 'all' ? WORKS.length : WORKS.filter(w => w.type === f).length;
+  const cnt = WORKS.filter(w => inCategory(w, f)).length;
   const el = btn.querySelector('.count');
   if (el) el.textContent = cnt;
   btn.addEventListener('click', () => {
@@ -1072,8 +1123,10 @@ $$('.filter-btn').forEach(btn => {
 
 /* ---------- 模态框 ---------- */
 const overlay = $('#modalOverlay'), box = $('#modalBox');
-function openModal(i){
+let modalTrigger = null;
+function openModal(i, trigger){
   const w = WORKS[i];
+  modalTrigger = trigger || document.activeElement;
   $('#modalCover').src = w.cover;
   $('#modalCover').alt = w.title + ' 封面';
   $('#modalType').textContent = w.type + ' · NO.' + w.no;
@@ -1094,6 +1147,10 @@ function openModal(i){
   if (w.github){
     playHtml += '<a class="gh-btn" href="' + w.github + '" target="_blank" rel="noopener">GitHub 源码 ↗</a>';
   }
+  const doc = DOC_ANCHORS[w.no];
+  if (doc){
+    playHtml += '<a class="gh-btn" href="开发过程与设计思路.html#' + doc + '" target="_blank" rel="noopener">附册全文 ↗</a>';
+  }
   if (w.link && w.hint){
     playHtml += '<span class="play-hint">' + w.hint + '</span>';
   }
@@ -1104,19 +1161,33 @@ function openModal(i){
       ? '本作品为可运行网页原型，封面图为实机游戏画面。'
       : w.github
         ? '源码已开源至 GitHub，可在本地运行体验。封面图为项目实机截图。'
-        : (w.no === '06'
+        : (w.no === '07'
           ? '封面图为真实 RTSP 运行环境截图：mediamtx 服务器实时推流 + FFplay 播放画面。'
           : '封面图为项目实机截图。如需补充可玩链接（GitHub 仓库 / 作品视频）或在线演示，可在 WORKS 数据中追加。');
   overlay.classList.add('open');
   document.body.style.overflow = 'hidden';
+  $('#modalClose').focus({ preventScroll: true });
 }
 function closeModal(){
+  if (!overlay.classList.contains('open')) return;
   overlay.classList.remove('open');
   document.body.style.overflow = '';
+  if (modalTrigger && typeof modalTrigger.focus === 'function') {
+    modalTrigger.focus({ preventScroll: true });
+  }
+  modalTrigger = null;
 }
 $('#modalClose').addEventListener('click', closeModal);
 overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeModal(); return; }
+  if (e.key !== 'Tab' || !overlay.classList.contains('open')) return;
+  const focusables = box.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])');
+  if (!focusables.length) return;
+  const first = focusables[0], last = focusables[focusables.length - 1];
+  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+});
 
 /* ---------- 移动端导航 ---------- */
 const navToggle = $('#navToggle'), navLinks = $('#navLinks');
