@@ -151,6 +151,7 @@ game-portfolio/
 - Chrono Loop Web 支持移动端触控（◀▶ 移动 / ⤒ 跳跃 / ⟲ 回溯虚拟按键，画布自适应小屏）
 - 星尘捕手支持鼠标/触屏控制、连击得分倍率、程序化 Web Audio 音效与 BGM、本地最高纪录、`?demo=1` 静置预览模式（M 静音 / P 暂停 / R 重开）
 - 自定义深色滚动条、全局 focus-visible 可访问性样式
+- 首屏 `desc` 写作规范（2026-11-16）：≤75 字、最多三个分句，必须含一个「判断」或一个「数字」；禁用形容词（「高还原」「深入」）与无口径的百分比（如无样本量的「满意度提升 32%」）
 
 
 <details>
@@ -159,6 +160,7 @@ game-portfolio/
 ## 部署状态（2026-09-23 更新）
 
 - 已部署至豆包妙搭：应用 ID `app_17dzfrpfs2x`，**当前线上 17 个作品与本地一致（编号连续 01–17）**
+- ✅ 2026-11-16 全站首屏文案（`desc`）重写：16 个作品按「约束 → 取舍 → 证据」结构改写，把原本只写在 `detail` / `story` 里的证据（204 个自动化测试、5 档 bot × 220 局仿真、10 项联机断言、<200ms 实测等）提到卡片首屏；改前备份 `_backup/index-v26-20261116.html`；node 解析校验 WORKS 19 条字段完整、desc 均值 70 字、无语法错误。**附册与线上 Pages 尚未同步（待发布）**
 - ✅ 2026-09-23 新增第 16 号作品：Co-Desk 联机共创自习桌（HCI 课程全栈项目：Electron + React / FastAPI / WebSocket / SQLite，系统工程类「已完成」，GitHub 源码 https://github.com/duyv0826/co-desk；封面为 2026-05-05 本机实机主界面截图 work-16.jpg；附册与模态框均已补齐 16 号文案）
 - ✅ 2026-09-23 新增第 17 号作品：对话归档台 · AI 对话总结 MVP（AI 产品「历史对话自动总结」功能原型：本地 Ollama qwen3:8b 真实模型 + 规则引擎双降级，结构化要点 / 原文锚点 / 隐私开关 / 自动归档 / 智能命名，系统工程类「原型」，封面为 ?demo=summarized 演示态实机截图 work-17.jpg；模态框与附册均已补齐 17 号文案）
 - ✅ 2026-09-23 已迁移至 GitHub Pages 主部署：**https://duyv0826.github.io/game-portfolio/**（仓库 duyv0826/game-portfolio，public，Pages 源 master 根目录；已实测 17 作品与附册在线、无平台水印。原豆包工作托管 https://4m1405d04e4rc.doubaoapps.com/app/app_17dzfrpfs2x 保留不动）
