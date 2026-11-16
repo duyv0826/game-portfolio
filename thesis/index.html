@@ -153,6 +153,27 @@
     → <a href="aoli-architecture.html" style="color:var(--acc)">《澳里·光景》系统架构一页图</a>
     <span style="color:var(--tx3);font-size:12px">（无头仿真 / 叙事导演 / 谜题状态机三层）</span>
   </p>
+
+  <h3 style="font-size:14.5px;letter-spacing:.1em;color:var(--tx);font-weight:500;margin:28px 0 4px">引导验证 · 第一批（仿真，非被试）</h3>
+  <p class="plane" style="margin:8px 0 4px">
+    把「引导」拆成<b>玩家能读到多少信息</b>来消融：全盲 / 只给 8 方位 / 方位+距离 / 全图规划，另加两组去掉近旁高亮的对照。
+    每个条件 60 个种子 × 120 秒，共 420 局，全部在同一套无头仿真上跑完——不经编辑器、不需要被试。
+  </p>
+  <div class="ev">
+    <div><div class="n">10% → 100%</div><div class="l">只留方位后的收齐率</div></div>
+    <div><div class="n">95.3s → 9.7s</div><div class="l">收齐全部碎片用时中位</div></div>
+    <div><div class="n">9.6 vs 9.6</div><div class="l">再加距离（含去掉高亮的对照）</div></div>
+    <div><div class="n">420 局</div><div class="l">7 条件 × 60 种子 × 120s</div></div>
+  </div>
+  <div class="note">
+    <b>这组数能回答什么、不能回答什么。</b>
+    能回答：方位是唯一起作用的那一维——不给方位时 60 局里只有 6 局收齐（10%），给了方位 100% 收齐、用时从 95.3 秒压到 9.7 秒；
+    再往「距离数字」上加信息没有增益（9.59s vs 9.63s，去掉近旁高亮的对照里同样复现），让 bot 预先规划整张图并配减速反而更慢（12.68s）——
+    因为这块 18×12 的矩形场地里没有需要绕行的结构。也正因为如此，"多给一点信息"在效率上换不到东西，界面不必为精确度付成本。
+    <br><br>
+    不能回答：<b>玩家有没有接住。</b>这是 bot 的行为，bot 拿到方位就照着走；真人会分心、会误读、会反向。
+    真人被试仍是唯一能填的那一半，也是这一页目前唯一留白的地方。
+  </div>
 </section>
 
 <section>
