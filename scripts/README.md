@@ -51,3 +51,47 @@ git -C D:\projects\game-portfolio remote set-url origin git@github.com:duyv0826/
 - 推送后必须**线上正文与本地 `index.html` 逐字一致**才算成功，避免"推上去了但 Pages 还是旧版"
 
 发布前的入库流程见仓库根目录 `README-入库与发布清单.md`。
+
+---
+
+## image-batch.ps1 — 批量图片规格化
+
+把任意尺寸的截图统一成封面规格（默认 1280×720 / JPEG / ≤200KB），带透明通道的 PNG 会拍平到白底，EXIF 等元数据一并丢弃。
+
+```powershell
+# 干跑：只出结果表，报告哪些合规、哪些要改、改成多大
+powershell -File .\scripts\image-batch.ps1
+
+# 真正输出到 assets\_out（不动原图）
+powershell -File .\scripts\image-batch.ps1 -Apply
+
+# 覆盖原图（先自动备份到 assets\_backup\images-<时间戳>\）
+powershell -File .\scripts\image-batch.ps1 -Apply -InPlace
+
+# 只修某一张不合规的
+powershell -File .\scripts\image-batch.ps1 -Source .\assets\work-18.jpg -Apply -InPlace
+
+# 换成别的规格给别的用途
+.\scripts\image-batch.ps1 -Width 1920 -Height 1080 -MaxKB 300 -Source .\shots -Apply
+```
+
+| 参数 | 默认 | 说明 |
+|---|---|---|
+| `-Source` | `<仓库>\assets` | 目录或单个文件 |
+| `-Output` | `<Source>\_out` | 非 `-InPlace` 时的输出目录 |
+| `-Width` / `-Height` | 1280 / 720 | 目标像素 |
+| `-Mode` | `cover` | `cover` 居中裁切铺满 / `fit` 等比缩放留白 / `stretch` 拉伸 |
+| `-MaxKB` | 200 | 体积上限 |
+| `-Quality` / `-MinQuality` | 88 / 40 | JPEG 质量起点与下限，每档降 6 逐级试 |
+| `-Format` | `jpg` | `jpg` / `png` |
+| `-InPlace` | 关 | 覆盖原图，自动先备份 |
+| `-Apply` | 关 | 不加就是干跑，不写任何文件 |
+| `-Force` | 关 | 已合规的也重做 |
+| `-Recurse` | 关 | 递归子目录 |
+
+压缩策略：先按 `-Quality` 起调，逐档降到 `-MinQuality` 找第一个达标值；到底仍超标就把整图缩到 90%/81%/73% 各试一次。**对已经合规的图片不动**，所以可以整个目录反复跑，不会二次劣化。
+
+写完后脚本会**重新打开产物复核**尺寸与体积，不合规直接报错退出，不会留下"看起来成功实际超标"的文件。
+
+退出码：`0` 成功 / `2` 路径不存在 / `3` 产物复核未通过 / `4` 全部失败。
+
