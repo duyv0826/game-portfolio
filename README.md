@@ -18,7 +18,7 @@
 | 入口 | 链接 |
 | --- | --- |
 | 作品集（19 个作品，多个可在线试玩） | https://duyv0826.github.io/game-portfolio/ |
-| 学位作品页《澳里·光景》+《微光原野》试玩 | https://game-design-portfolio-99765.app.workbuddy.host/ |
+| 学位作品页《澳里·光景》+《微光原野》试玩 | https://duyv0826.github.io/game-portfolio/thesis/ |
 | GitHub | https://github.com/duyv0826 |
 | Itch.io | https://duyv0826.itch.io |
 
@@ -133,7 +133,7 @@ game-portfolio/
 | Itch.io 链接 | ✅ 2026-09-21 加回联系区：`duyv0826.itch.io`（账号以 GitHub 登录，用户名为 duyv0826；本地与线上均已同步，release_id 7687809321375780114）。注：当前网络环境无法直接访问 itch.io，链接有效性以账号登录态为准 |
 | 作品详情 | 可在页面底部 `WORKS` 数组补充可玩链接、视频与更多数据 |
 | 线上同步 | ✅ 已于 2026-09-14 完成（构建 v24），线上 = 本地 v3，无需再操作 |
-| 部署后的分享图 | 部署上线后，将 `index.html` 中 `og:image` / `twitter:image` 的相对路径替换为线上绝对 URL（如 `https://你的域名/og-cover.png`），微信/邮件/招聘平台即可显示分享卡 |
+| 部署后的分享图 | ✅ 已完成：`index.html` 中 `og:image` / `twitter:image` 均为线上绝对 URL（`https://duyv0826.github.io/game-portfolio/og-cover.png`，1200×630），微信/邮件/招聘平台分享卡正常 |
 
 ## 已实现交互
 
@@ -159,7 +159,7 @@ game-portfolio/
 
 ## 部署状态（2026-09-23 更新）
 
-- 已部署至豆包妙搭：应用 ID `app_17dzfrpfs2x`，**当前线上 17 个作品与本地一致（编号连续 01–17）**
+- 已部署至豆包妙搭：应用 ID `app_17dzfrpfs2x`，**当时线上 17 个作品与本地一致（编号连续 01–17）**（此处为 2026-09 归档记录；NO.00《澳里·光景》与 NO.01《微光原野》为 2026-11-16 追加，现共 19 个作品，以线上 `WORKS` 数组为准）
 - ✅ 2026-11-16 全站首屏文案（`desc`）重写：16 个作品按「约束 → 取舍 → 证据」结构改写，把原本只写在 `detail` / `story` 里的证据（204 个自动化测试、5 档 bot × 220 局仿真、10 项联机断言、<200ms 实测等）提到卡片首屏；改前备份 `_backup/index-v26-20261116.html`；node 解析校验 WORKS 19 条字段完整、无语法错误。文案长度实测：区间 55–86 字、均值 73 字（NO.09 86 / NO.00 83 / NO.06 82 三条略超 80，其余 ≤78）。已推送 `master`（11e06d0）并经 Pages 线上抓取验证生效
 - ✅ 2026-11-16 删除 NO.03 无样本量的「游戏体验满意度提升 32%」：index.html 的 `detail`、`story` 与附册 NO.02 复盘三处一并改为定性表述（「内测反馈支持自适应难度的价值」），保留「做过内测」的事实、不再留不可追问的数字
 - ✅ 2026-11-16 《澳里·光景》引导验证仿真跑完首批 420 局（7 条件 × 60 seeds × 120s）。实验器写在 Unity 工程 `Assets/Scripts/Tests/Experiments/GuidanceAblationExperiment.cs`（纯 C#、不经编辑器，提交 `7206bcf`）：只留方位信息后收齐率 10%→100%、收齐用时中位 95.3s→9.7s；再加距离（9.59 vs 9.63s，含去掉近旁高亮的对照）或全图规划+减速（9.63 vs 12.68s）均无增益。据此更新 NO.01 的 `desc`（75 字）、`detail`（补 420 局口径与边界）、tags（加「420 局引导消融」），并在 thesis 页新增「引导验证 · 第一批（仿真，非被试）」区块；改前备份 `_backup/index-v27-20261116.html` 与 `_backup/thesis-index-v27-20261116.html`。**表述边界：这是 bot 行为，任何位置都不得写成「玩家接住了引导」**
