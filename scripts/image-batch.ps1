@@ -22,6 +22,7 @@ param(
     [int]$MinQuality = 40,
     [ValidateSet('jpg', 'png')]
     [string]$Format = 'jpg',
+    [switch]$AllowUpscale,
     [switch]$InPlace,
     [switch]$Apply,
     [switch]$Force,
@@ -112,7 +113,18 @@ foreach ($f in $files) {
     try {
         $sw = $img.Width
         $sh = $img.Height
-        if (($sw -eq $Width) -and ($sh -eq $Height) -and ($before -le $MaxKB) -and (-not $Force)) {
+
+        # 默认不放大：源图比目标小时，把目标按比例降到源图刚好能容纳的尺寸（比例不变），
+        # 宁可少像素也不拿插值伪造细节；要强行放大用 -AllowUpscale
+        $dstW = $Width
+        $dstH = $Height
+        if (-not $AllowUpscale) {
+            $fit = [math]::Min([math]::Min(1.0, $sw / $Width), [math]::Min(1.0, $sh / $Height))
+            $dstW = [math]::Max([int][math]::Round($Width * $fit), 1)
+            $dstH = [math]::Max([int][math]::Round($Height * $fit), 1)
+        }
+
+        if (($sw -eq $dstW) -and ($sh -eq $dstH) -and ($before -le $MaxKB) -and (-not $Force)) {
             $rows += [pscustomobject][ordered]@{
                 文件 = $f.Name; 原尺寸 = "${sw}x${sh}"; 原KB = [math]::Round($before, 1)
                 新尺寸 = ''; 新KB = ''; 质量 = ''; 说明 = '已合规，跳过'; 产物 = ''
@@ -121,7 +133,7 @@ foreach ($f in $files) {
             continue
         }
 
-        $bmp = [System.Drawing.Bitmap]::new($Width, $Height, [System.Drawing.Imaging.PixelFormat]::Format24bppRgb)
+        $bmp = [System.Drawing.Bitmap]::new($dstW, $dstH, [System.Drawing.Imaging.PixelFormat]::Format24bppRgb)
         $g = [System.Drawing.Graphics]::FromImage($bmp)
         $g.Clear([System.Drawing.Color]::White)
         $g.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
@@ -129,12 +141,12 @@ foreach ($f in $files) {
         $g.CompositingQuality = [System.Drawing.Drawing2D.CompositingQuality]::HighQuality
         $g.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::HighQuality
 
-        $dstRect = [System.Drawing.Rectangle]::new(0, 0, $Width, $Height)
+        $dstRect = [System.Drawing.Rectangle]::new(0, 0, $dstW, $dstH)
         if ($Mode -eq 'stretch') {
             $g.DrawImage($img, $dstRect)
         } else {
             $srcAspect = $sw / $sh
-            $dstAspect = $Width / $Height
+            $dstAspect = $dstW / $dstH
             if ($Mode -eq 'cover') {
                 if ($srcAspect -gt $dstAspect) {
                     $cropH = $sh; $cropW = [int]($sh * $dstAspect); $ox = [int](($sw - $cropW) / 2); $oy = 0
@@ -144,9 +156,9 @@ foreach ($f in $files) {
                 $srcRect = [System.Drawing.Rectangle]::new($ox, $oy, $cropW, $cropH)
                 $g.DrawImage($img, $dstRect, $srcRect, [System.Drawing.GraphicsUnit]::Pixel)
             } else {
-                if ($srcAspect -gt $dstAspect) { $dw = $Width; $dh = [int]($Width / $srcAspect) }
-                else { $dh = $Height; $dw = [int]($Height * $srcAspect) }
-                $dx = [int](($Width - $dw) / 2); $dy = [int](($Height - $dh) / 2)
+                if ($srcAspect -gt $dstAspect) { $dw = $dstW; $dh = [int]($dstW / $srcAspect) }
+                else { $dh = $dstH; $dw = [int]($dstH * $srcAspect) }
+                $dx = [int](($dstW - $dw) / 2); $dy = [int](($dstH - $dh) / 2)
                 $g.DrawImage($img, [System.Drawing.Rectangle]::new($dx, $dy, $dw, $dh))
             }
         }
@@ -155,8 +167,8 @@ foreach ($f in $files) {
         # 质量阶梯：从 -Quality 逐档下降，取第一个 ≤ 上限的
         $chosen = $null
         $chosenQ = 0
-        $finalW = $Width
-        $finalH = $Height
+        $finalW = $dstW
+        $finalH = $dstH
         $note = ''
         $q = $Quality
         while ($q -ge $MinQuality) {
@@ -170,8 +182,8 @@ foreach ($f in $files) {
             # 质量到底仍超标：整图缩到 90% / 81% / 73%，各试一次
             for ($i = 1; $i -le 3; $i++) {
                 if ($chosen) { break }
-                $nw = [int]($Width * [math]::Pow(0.9, $i))
-                $nh = [int]($Height * [math]::Pow(0.9, $i))
+                $nw = [int]($dstW * [math]::Pow(0.9, $i))
+                $nh = [int]($dstH * [math]::Pow(0.9, $i))
                 $small = [System.Drawing.Bitmap]::new($nw, $nh, [System.Drawing.Imaging.PixelFormat]::Format24bppRgb)
                 $g2 = [System.Drawing.Graphics]::FromImage($small)
                 $g2.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
@@ -211,12 +223,13 @@ foreach ($f in $files) {
 
         $desc = if ($note) { $note }
                 elseif ($before -gt $MaxKB) { '压到上限内' }
-                elseif ($sw -ne $Width -or $sh -ne $Height) { '仅规范尺寸' }
+                elseif ($sw -ne $dstW -or $sh -ne $dstH) { '仅规范尺寸' }
                 else { '重编码' }
         $rows += [pscustomobject][ordered]@{
             文件 = $f.Name; 原尺寸 = "${sw}x${sh}"; 原KB = [math]::Round($before, 1)
             新尺寸 = "${finalW}x${finalH}"; 新KB = $newKB; 质量 = $chosenQ; 说明 = $desc
             产物 = if ($Apply) { $dstPath } else { $dstName }
+            期望W = $finalW; 期望H = $finalH
         }
     }
     finally {
@@ -254,8 +267,8 @@ foreach ($r in $rows) {
     $im.Dispose()
     $kb = [math]::Round($item.Length / 1KB, 1)
     if ($kb -gt $MaxKB) { $bad += "$($r.文件)：$kb KB 超过上限"; continue }
-    if ($r.说明 -ne '整图缩至') {
-        if ($w -ne $Width -or $h -ne $Height) { $bad += "$($r.文件)：尺寸 ${w}x${h} 不是 ${Width}x${Height}" }
+    if ($w -ne $r.期望W -or $h -ne $r.期望H) {
+        $bad += "$($r.文件)：尺寸 ${w}x${h}，应为 $($r.期望W)x$($r.期望H)"
     }
 }
 

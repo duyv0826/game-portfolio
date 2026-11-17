@@ -79,7 +79,7 @@ $blockers = @()
 
 # 备份目录绝不上线
 $stageCandidates = @($tracked | ForEach-Object { $_.Substring(3).Trim() }) + $untracked
-$badDirs = $stageCandidates | Where-Object { $_ -match '^(?i)(_backup|_shots|assets/_ai_backup)/|\.backup-' }
+$badDirs = $stageCandidates | Where-Object { $_ -match '(?i)(^|/)(_backup|_shots)/|assets/_ai_backup/|\.backup-' }
 if ($badDirs) {
     $blockers += '改动里含备份目录/备份文件（_backup、_shots、assets/_ai_backup、*.backup-*）：' + ($badDirs -join ', ')
 }
