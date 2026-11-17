@@ -106,3 +106,19 @@ powershell -File .\scripts\image-batch.ps1 -Source .\assets\work-18.jpg -Apply -
 
 退出码：`0` 成功 / `2` 路径不存在 / `3` 产物复核未通过 / `4` 全部失败。
 
+---
+
+## portfolio-healthcheck.ps1 — 线上巡检
+
+确认 Pages 上每一个页面、每一张封面都还能打开。清单不硬编码：从仓库里自动发现根目录 + 子目录所有 `.html`（排除 `_backup`）、站点文件、`assets\work-*.jpg`，当前是 33 个地址。
+
+```powershell
+pwsh -File .\scripts\portfolio-healthcheck.ps1                    # 全量，逐条打印耗时
+pwsh -File .\scripts\portfolio-healthcheck.ps1 -Quiet             # 只打印失败项
+pwsh -File .\scripts\portfolio-healthcheck.ps1 -Json .\health.json
+```
+
+通过标准：HTTP 200 且响应体非空。退出码 `0` 全绿 / `1` 有失败 / `2` 没有可巡检目标。
+
+已配置定时任务「作品集线上巡检」：每周一 11:20（云端执行，不依赖本机开机）检查上述 33 个地址，全绿只回一行结论，有异常逐条列出地址与状态码。手动排查用上面的脚本，两者清单一致。
+
