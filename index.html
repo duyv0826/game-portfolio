@@ -12,7 +12,7 @@
 <!-- 社交分享卡片：og:image 使用本仓库自托管封面（2026-09-24 修复：不再依赖外部部署域名） -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="洪昺森 · 互动媒体艺术 / 游戏设计作品集">
-<meta property="og:description" content="澳门科技大学游戏设计方向在读硕士。学位作品《澳里·光景》氛围探索游戏 + 18 个作品：Chrono Loop 时间循环解谜、声景生成器、LLM 分支叙事等，其中 7 个可在浏览器直接打开。">
+<meta property="og:description" content="澳门科技大学游戏设计方向在读硕士。学位作品《澳里·光景》氛围探索游戏 + 18 个作品：Chrono Loop 时间循环解谜、声景生成器、LLM 分支叙事等，其中 8 个可在浏览器直接打开。">
 <meta property="og:url" content="https://duyv0826.github.io/game-portfolio/">
 <meta property="og:site_name" content="洪昺森 · 互动媒体艺术 / 游戏设计作品集">
 <meta property="og:locale" content="zh_CN">
@@ -21,7 +21,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="洪昺森 · 互动媒体艺术 / 游戏设计作品集">
-<meta name="twitter:description" content="学位作品《澳里·光景》+ 18 个作品，其中 7 个可在浏览器直接打开。">
+<meta name="twitter:description" content="学位作品《澳里·光景》+ 18 个作品，其中 8 个可在浏览器直接打开。">
 <meta name="twitter:image" content="https://duyv0826.github.io/game-portfolio/og-cover.png">
 <meta name="twitter:image:alt" content="洪昺森作品集分享卡">
 <link rel="canonical" href="https://duyv0826.github.io/game-portfolio/">
@@ -677,7 +677,7 @@ html{scrollbar-color:var(--surface-3) var(--bg);scrollbar-width:thin;}
       <div class="section-head rv" data-bg="01">
         <span class="section-no">01 / SELECTED WORKS</span>
         <h2 class="section-title">精选<em>作品</em></h2>
-        <p class="section-desc">19 个作品（NO.00–NO.18）：游戏开发、互动媒体、视觉研究与系统工程，其中 7 个可在浏览器直接打开。<code>点击卡片</code>查看详情。</p>
+        <p class="section-desc">19 个作品（NO.00–NO.18）：游戏开发、互动媒体、视觉研究与系统工程，其中 8 个可在浏览器直接打开。<code>点击卡片</code>查看详情。</p>
       </div>
       <div class="section-more rv">
         <a href="开发过程与设计思路.html">附册：17 篇广度作品的开发过程与设计思路</a>
@@ -957,7 +957,10 @@ const WORKS = [
     cover: 'assets/work-10.jpg',
     desc: '覆盖 1980–2020 年全球游戏销量的交互式分析看板：年份/地区/品类三维筛选联动，5 个 KPI 实时刷新，5 种图表交叉对比。',
     detail: '基于 16,327 款销量 ≥10 万套的游戏数据构建的交互式数据看板：年份区间滑块 + 地区（北美/欧洲/日本/其他）+ 品类（Action/Adventure 等 12 类）三维筛选联动，所有 KPI 与图表实时刷新。包含年度销量趋势堆叠面积图（可切换分线对比）、地区销量占比环形图、品类销量对比条形图、平台销量排名等 5 种可视化，深色游戏风格视觉，响应式布局。数据口径透明标注于页面底部。',
-    story: ["基于 16,327 款销量 ≥10 万套的游戏数据构建的交互式分析看板，覆盖 1980–2020 年。", "年份区间滑块 + 地区（北美 / 欧洲 / 日本 / 其他）+ 品类（12 类）三维筛选联动，所有 KPI 与图表实时刷新；年度趋势堆叠面积图（可切换分线对比）、地区占比环形图、品类对比条形图、平台排名等 5 种可视化交叉验证。", "深色游戏风格视觉、响应式布局，数据口径透明标注于页面底部，保证结论可追溯。"]
+    story: ["基于 16,327 款销量 ≥10 万套的游戏数据构建的交互式分析看板，覆盖 1980–2020 年。", "年份区间滑块 + 地区（北美 / 欧洲 / 日本 / 其他）+ 品类（12 类）三维筛选联动，所有 KPI 与图表实时刷新；年度趋势堆叠面积图（可切换分线对比）、地区占比环形图、品类对比条形图、平台排名等 5 种可视化交叉验证。", "深色游戏风格视觉、响应式布局，数据口径透明标注于页面底部，保证结论可追溯。"],
+    link: 'sales-dashboard.html',
+    linkLabel: '▶ 打开交互看板',
+    hint: '年份滑块 · 地区/品类多选联动 · 图表随筛选实时刷新'
   },
   {
     no: '12',
@@ -1142,7 +1145,7 @@ function openModal(i, trigger){
   const playBox = $('#modalPlay');
   let playHtml = '';
   if (w.link){
-    playHtml += '<a class="play-btn" href="' + w.link + '" target="_blank" rel="noopener">▶ 在浏览器中试玩</a>';
+    playHtml += '<a class="play-btn" href="' + w.link + '" target="_blank" rel="noopener">' + (w.linkLabel || '▶ 在浏览器中试玩') + '</a>';
   }
   if (w.github){
     playHtml += '<a class="gh-btn" href="' + w.github + '" target="_blank" rel="noopener">GitHub 源码 ↗</a>';

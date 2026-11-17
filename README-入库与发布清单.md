@@ -13,9 +13,9 @@
 | 作品条数 | 19 条，`no` 为 `00`–`18` |
 | 封面 | `assets/work-1.jpg` – `assets/work-19.jpg`（19 张） |
 | 附册 | `开发过程与设计思路.html`（每作品 概述 / 开发过程 / 设计思路 / 复盘 四段），锚点 `DOC_ANCHORS w01–w17` 对应 `NO.02–NO.18` |
-| 链接字段 | 有 `link`（试玩/在线页）：00、01、08、10、12、13、15；有 `github`：14、15、16、17；**两者皆无：02、03、04、05、06、07、09、11、18 共 9 条** |
+| 链接字段 | 有 `link`（试玩/在线页）：00、01、08、10、11、12、13、15；有 `github`：14、15、16、17；**两者皆无：02、03、04、05、06、07、09、18 共 8 条** |
 | `story` 段数 | 3 段为多数；2 段：05、07、16；4 段：18 |
-| 备份目录 | `_backup/`，命名 `index-v<NN>-<YYYYMMDD>.html`，当前到 `v27` |
+| 备份目录 | `_backup/`，命名 `index-v<NN>-<YYYYMMDD>.html`，当前到 `v28` |
 | 主部署 | GitHub Pages，`master` 根目录 → https://duyv0826.github.io/game-portfolio/ |
 | 仓库 | `duyv0826/game-portfolio`（public） |
 | 归档部署 | 豆包妙搭 `app_17dzfrpfs2x`（保留不动，不再作为主部署） |
