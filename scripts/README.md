@@ -27,8 +27,21 @@ powershell -File .\scripts\deploy-portfolio.ps1
 | `-SkipVerify` | 关 | 跳过线上轮询 |
 | `-VerifyTimeoutSec` | 180 | 等 Pages 的上限 |
 | `-MaxFileMB` | 25 | 单文件体积上限 |
+| `-Transport` | `auto` | 推送通道：`auto` 先 HTTPS 再 SSH / `https` / `ssh` |
 
 退出码：`0` 成功 / `2` 环境不符 / `3` 体检未通过 / `4` commit 失败 / `5` 推送失败 / `6` 推送成功但线上未生效。
+
+## 推送通道（本机实测）
+
+本机到 github.com 的 HTTPS 会稳定被 `Recv failure: Connection was reset` 打断，SSH 正常（`ssh -T git@github.com` 返回 `Hi duyv0826!`）。所以 `auto` 模式先走 origin 的 HTTPS，失败后自动把 `https://github.com/OWNER/REPO.git` 换算成 `git@github.com:OWNER/REPO.git` 再推一次，两条都失败才报错退出（此时提交已安全留在本地）。
+
+想省掉每次那 10 秒的失败尝试：
+
+```powershell
+git -C D:\projects\game-portfolio remote set-url origin git@github.com:duyv0826/game-portfolio.git
+```
+
+之后固定用 `-Transport ssh` 或保持 `auto` 均可。
 
 ## 脚本里已经固化的红线
 
