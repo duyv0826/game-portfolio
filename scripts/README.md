@@ -50,6 +50,12 @@ git -C D:\projects\game-portfolio remote set-url origin git@github.com:duyv0826/
 - `index.html` 找不到 `WORKS` 数据块或小于 5KB → 中止
 - 推送后必须**线上正文与本地 `index.html` 逐字一致**才算成功，避免"推上去了但 Pages 还是旧版"
 
+## 一个已知的缓存坑：换图片要等 10 分钟
+
+`index.html` 每次推送都会变，校验能立刻对上；但 `assets/` 下的图片走 GitHub Pages CDN，响应头是 `Cache-Control: max-age=600`，**换封面后线上最长 10 分钟内还是旧图**，加 `?cb=` 查询串也绕不过（CDN 的缓存键不含查询串）。
+
+判断方法：仓库里已经是新文件（`git cat-file -s HEAD:assets/work-18.jpg`）但线上 `Content-Length` 还是旧值，且响应头 `X-Cache: HIT`、`Age` 很小 —— 就是 CDN 缓存，等它过期即可，不用重新推送。要立刻生效只能改文件名（例如 `work-18-v2.jpg`）并同步改 `index.html` 里的引用。
+
 发布前的入库流程见仓库根目录 `README-入库与发布清单.md`。
 
 ---
