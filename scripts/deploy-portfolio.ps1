@@ -17,7 +17,9 @@ param(
     [string]$Branch = 'master',
     [string]$SiteUrl = 'https://duyv0826.github.io/game-portfolio/',
     [int]$VerifyTimeoutSec = 180,
-    [int]$MaxFileMB = 25
+    [int]$MaxFileMB = 25,
+    [ValidateSet('auto', 'https', 'ssh')]
+    [string]$Transport = 'auto'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -126,7 +128,7 @@ Write-Ok "commit message: $Message"
 
 if ($DryRun) {
     Write-Step 'DRY RUN 结束，未做任何改动'
-    Write-Host "  将执行：git add -A → git commit → git push origin $Branch → 校验 $SiteUrl"
+    Write-Host "  将执行：git add -A → git commit → 推送（$Transport）→ 校验 $SiteUrl"
     exit 0
 }
 
@@ -139,15 +141,43 @@ if ($LASTEXITCODE -ne 0) { Write-Bad 'git commit 失败（可能是钩子或钩�
 $sha = (& git -C $RepoPath rev-parse --short HEAD).Trim()
 Write-Ok "已提交 $sha"
 
-Write-Step "5. 推送 origin/$Branch"
-& git -C $RepoPath push origin $Branch
-if ($LASTEXITCODE -ne 0) {
-    Write-Bad '推送失败。网络问题常见于 github.com 主站连接被重置，重试即可；提交已保存本地'
-    Write-Host "  重试命令：git -C `"$RepoPath`" push origin $Branch"
+Write-Step "5. 推送 $Branch"
+
+# HTTPS 通道在本机常被 RST（github.com 主站连接重置），SSH 通常可用，故 auto 模式两条都试
+$sshUrl = $null
+if ($remoteUrl -match '^(?i)https?://[^/]+/(.+)$') {
+    $sshUrl = 'git@github.com:' + $Matches[1]
+} elseif ($remoteUrl -match '^(?i)git@[^:]+:(.+)$') {
+    $sshUrl = $remoteUrl
+}
+
+$targets = @()
+if ($Transport -ne 'ssh') { $targets += @{ Label = 'origin（HTTPS）'; Target = 'origin' } }
+if ($Transport -ne 'https' -and $sshUrl -and ($sshUrl -ne $remoteUrl)) {
+    $targets += @{ Label = "SSH（$sshUrl）"; Target = $sshUrl }
+}
+if ($targets.Count -eq 0) { Write-Bad '没有可用的推送通道'; exit 5 }
+
+$pushed = $false
+foreach ($t in $targets) {
+    Write-Host "  尝试 $($t.Label) ..."
+    & git -C $RepoPath push $t.Target $Branch 2>&1 | ForEach-Object { Write-Host "    $_" }
+    if ($LASTEXITCODE -eq 0) {
+        $pushed = $true
+        Write-Ok "推送完成（$($t.Label)）"
+        if ($t.Target -ne 'origin') {
+            Write-Host "  提示：可执行 git -C `"$RepoPath`" remote set-url origin $sshUrl 让后续都用 SSH" -ForegroundColor DarkGray
+        }
+        break
+    }
+    Write-Warn2 "$($t.Label) 失败，换下一条通道"
+}
+
+if (-not $pushed) {
+    Write-Bad '所有通道都失败，提交已安全保存在本地，未丢失'
+    Write-Host "  先用 SSH 重试：git -C `"$RepoPath`" push $(if ($sshUrl) { $sshUrl } else { 'origin' }) $Branch"
     exit 5
 }
-& git -C $RepoPath rev-parse --abbrev-ref '@{u}' *> $null
-Write-Ok '推送完成'
 
 if ($SkipVerify) {
     Write-Host "`n已完成。线上地址：$SiteUrl（已跳过校验）"
