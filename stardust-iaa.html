@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>星尘捕手 · IAA 构建</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns%3D%22http://www.w3.org/2000/svg%22 viewBox%3D%220 0 64 64%22%3E%3Crect width%3D%2264%22 height%3D%2264%22 rx%3D%2214%22 fill%3D%22%230e3a52%22/%3E%3Ctext x%3D%2232%22 y%3D%2245%22 font-size%3D%2238%22 text-anchor%3D%22middle%22 fill%3D%22%23ffd166%22%3E%E2%98%85%3C/text%3E%3C/svg%3E">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:100%; height:100%; overflow:hidden; background:#06121f;
+    font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    user-select:none; -webkit-user-select:none; }
+  #game { display:block; width:100vw; height:100vh; touch-action:none; }
+</style>
+</head>
+<body>
+<canvas id="game"></canvas>
+<script>
+"use strict";
+/* ============================================================
+   IAA 构建说明
+   - 三个激励视频广告位：复活 / 双倍得分 30 秒 / 开局护盾 20 秒
+   - 全部走同一个 showRewardedAd(placement, onDone) 占位函数
+   - 接入真实 SDK：只替换 showRewardedAd 的函数体，其它代码不动
+   ============================================================ */
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+const F = '"PingFang SC","Microsoft YaHei",system-ui,sans-serif';
+const rand = (a,b) => a + Math.random()*(b-a);
+const DEMO = window.__forceDemo === true || (typeof location !== 'undefined' && /[?&]demo=1/.test(location.search));
+
+let W=0, H=0, DPR=1;
+let bgStars=[], shooters=[];
+let lastTime=performance.now();
+
+function makeBG(){
+  bgStars=[];
+  const n = Math.floor(W*H/9000);
+  for(let i=0;i<n;i++){
+    bgStars.push({ x:Math.random()*W, y:Math.random()*H, r:rand(0.5,2.1),
+      sp:rand(3,16), ph:Math.random()*Math.PI*2, tw:rand(0.5,2), a:rand(0.25,0.95) });
+  }
+}
+function resize(){
+  DPR = Math.min(window.devicePixelRatio||1, 2);
+  W = window.innerWidth; H = window.innerHeight;
+  canvas.width = Math.floor(W*DPR); canvas.height = Math.floor(H*DPR);
+  canvas.style.width = W+'px'; canvas.style.height = H+'px';
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  makeBG();
+}
+window.addEventListener('resize', resize);
+resize();
+
+/* ================= 状态 ================= */
+let state='menu', paused=false, muted=false;
+let score=0, best=0, hearts=3, combo=0, maxCombo=0;
+let elapsed=0, starTimer=0.9, meteorTimer=1.5;
+let mouseX=W/2, mouseY=H*0.8, shake=0, overAt=0, newBest=false;
+let stars=[], meteors=[], parts=[], texts=[];
+const player={ x:W/2, y:H-90, r:36, pulse:0 };
+try{ best = parseInt(localStorage.getItem('stardust-best')||'0',10)||0; }catch(e){}
+
+/* ================= IAA 状态 ================= */
+let reviveUsed=false;     // 本局是否已用过复活
+let doubleUsed=false;     // 本局是否已用过双倍
+let doubleUntil=0;        // 双倍生效到第几秒
+let shield=0;             // 剩余护盾秒数
+let pendingShield=0;      // 下一局开局护盾
+let shieldBlocked=0;      // 统计护盾挡下的损伤次数（调试用）
+let adActive=null;        // 当前广告位标识
+let adDone=null;          // 广告完成回调
+let adStart=0;            // 广告开始时间
+let adTimer=null;         // 占位广告的结束定时器
+let hitButtons=[];        // 本帧可点击区域（画布控件）
+
+/* ============================================================
+   唯一集成点：激励视频广告
+   接真实 SDK 时把函数体换成 SDK 的调用，例如：
+     sdk.showRewardedVideo({ placement: placement,
+       success: onDone, fail: () => toast('广告未看完') })
+   ============================================================ */
+function showRewardedAd(placement, onDone){
+  adActive = placement;
+  adDone = onDone;
+  adStart = performance.now();
+  if(state==='play') paused=true;
+  /* 占位倒计时用定时器推进，不挂在绘制循环上：
+     页面被后台节流、或某些环境不跑 requestAnimationFrame 时，广告仍会正常结束并发奖，
+     不会把玩家永久卡在“广告播放中”。接真实 SDK 时这一段整体被 SDK 回调替代。 */
+  clearTimeout(adTimer);
+  adTimer = setTimeout(function(){ finishAdPlaceholder(); }, AD_PLACEHOLDER_MS);
+}
+const AD_PLACEHOLDER_MS = 1400;
+function finishAdPlaceholder(){
+  if(!adActive) return;
+  const cb = adDone;
+  adActive = null; adDone = null;
+  if(cb) cb();
+}
+const PLACEMENT_LABEL = {
+  revive: '复活广告位',
+  double: '双倍得分广告位',
+  shield: '开局护盾广告位'
+};
+
+/* ================= 生成 ================= */
+function spawnStar(){
+  const special = Math.random() < Math.min(0.12, 0.04+elapsed/150);
+  const r = special? 13 : rand(8,14);
+  stars.push({ x:rand(r+10,W-r-10), y:-r-12, vy:rand(70,110)+Math.min(150,elapsed*1.4),
+    r, special, wob:Math.random()*Math.PI*2, wamp:rand(4,18), ws:rand(1,2.4),
+    caught:false, ct:0, value:special?50:10 });
+}
+function spawnMeteor(){
+  const left = Math.random()<0.5;
+  meteors.push({ x:left?rand(-60,W*0.3):rand(W*0.7,W+60), y:rand(-80,-30),
+    vx:(left?1:-1)*rand(20,60), vy:rand(180,260)+Math.min(160,elapsed*1.2),
+    r:rand(12,20), rot:Math.random()*Math.PI, vr:rand(-3,3) });
+}
+
+/* ================= 更新 ================= */
+function updateBG(dt){
+  for(const s of bgStars){ s.y+=s.sp*dt; if(s.y>H+2){ s.y=-2; s.x=Math.random()*W; } s.ph+=s.tw*dt; }
+  if(shooters.length<2 && Math.random()<dt*0.06)
+    shooters.push({ x:rand(0,W*0.7), y:rand(0,H*0.4), vx:rand(300,460), vy:rand(120,200), life:1 });
+  for(let i=shooters.length-1;i>=0;i--){
+    const sh=shooters[i]; sh.x+=sh.vx*dt; sh.y+=sh.vy*dt; sh.life-=dt*0.7;
+    if(sh.life<=0 || sh.x>W+40 || sh.y>H+40) shooters.splice(i,1);
+  }
+}
+function updateAmbient(dt){
+  for(let i=parts.length-1;i>=0;i--){
+    const p=parts[i]; p.life-=dt;
+    if(p.life<=0){ parts.splice(i,1); continue; }
+    p.vx*=1-Math.min(1,p.drag*dt); p.vy*=1-Math.min(1,p.drag*dt);
+    p.vy+=(p.grav||0)*dt; p.x+=p.vx*dt; p.y+=p.vy*dt;
+  }
+  for(let i=texts.length-1;i>=0;i--){ texts[i].life-=dt; if(texts[i].life<=0) texts.splice(i,1); }
+}
+function update(dt){
+  elapsed+=dt;
+  if(shield>0) shield=Math.max(0,shield-dt);
+  const starInt = Math.max(0.34, 0.85-elapsed*0.006);
+  starTimer-=dt;
+  if(starTimer<=0){
+    spawnStar(); starTimer=starInt;
+    if(elapsed>45 && Math.random()<0.35) spawnStar();
+  }
+  if(elapsed>10){
+    meteorTimer-=dt;
+    if(meteorTimer<=0){ spawnMeteor(); meteorTimer=Math.max(1.1,3.4-elapsed*0.015); }
+  }
+  player.y=H-90;
+  player.x += (mouseX-player.x)*Math.min(1,dt*14);
+  player.x = Math.max(player.r+6, Math.min(W-player.r-6, player.x));
+  player.pulse = Math.max(0, player.pulse-dt*3);
+  if(Math.random()<dt*40)
+    parts.push({ x:player.x+rand(-10,10), y:player.y+rand(-6,6), vx:rand(-8,8), vy:rand(-6,4),
+      life:0.5, max:0.5, size:rand(1.5,3.5), color:'rgba(255,225,160,0.5)', grav:0, drag:2 });
+  for(let i=stars.length-1;i>=0;i--){
+    const s=stars[i];
+    if(s.caught){
+      s.ct+=dt*5;
+      s.x+=(player.x-s.x)*Math.min(1,dt*18);
+      s.y+=(player.y-s.y)*Math.min(1,dt*18);
+      if(s.ct>=1){
+        stars.splice(i,1);
+        burst(player.x,player.y,s.special?22:12,s.special?'#7ef0ff':'#ffd166');
+        combo++; maxCombo=Math.max(maxCombo,combo);
+        const basePts = Math.round(s.value*(1+Math.floor(combo/5)*0.5));
+        const doubled = (doubleUntil>elapsed);
+        const pts = basePts*(doubled?2:1);
+        score+=pts;
+        addText(player.x,player.y-34,'+'+pts+(doubled?' ×2':''),s.special?'#7ef0ff':'#ffd166',s.special?22:16);
+        if(combo>0 && combo%5===0)
+          addText(player.x,player.y-66,'连击 '+combo+'！','#ffd166',17);
+        playCatch(s.special);
+      }
+      continue;
+    }
+    s.y+=s.vy*dt; s.wob+=s.ws*dt;
+    const dx=s.x+Math.sin(s.wob)*s.wamp;
+    const ddx=dx-player.x, ddy=s.y-player.y, rr=player.r+s.r;
+    if(ddx*ddx+ddy*ddy<rr*rr){ s.caught=true; s.ct=0; player.pulse=1; continue; }
+    if(s.y-s.r>H){
+      stars.splice(i,1);
+      if(combo>5) addText(s.x,H-50,'连击中断','rgba(255,255,255,0.5)',13);
+      combo=0; playMiss();
+    }
+  }
+  for(let i=meteors.length-1;i>=0;i--){
+    const m=meteors[i];
+    m.x+=m.vx*dt; m.y+=m.vy*dt; m.rot+=m.vr*dt;
+    if(Math.random()<dt*60)
+      parts.push({ x:m.x+rand(-6,6), y:m.y+rand(-4,4), vx:rand(-10,10), vy:rand(20,60),
+        life:0.45, max:0.45, size:rand(2,5), color:'rgba(255,150,90,0.7)', grav:0, drag:0 });
+    const ddx=m.x-player.x, ddy=m.y-player.y, rr=player.r+m.r*0.8;
+    if(ddx*ddx+ddy*ddy<rr*rr){ meteors.splice(i,1); hurt(); continue; }
+    if(m.y-m.r>H) meteors.splice(i,1);
+  }
+  updateAmbient(dt);
+  shake=Math.max(0,shake-dt*60);
+}
+
+/* ================= 反馈 ================= */
+function burst(x,y,n,color){
+  for(let i=0;i<n;i++){
+    const a=Math.random()*Math.PI*2, sp=rand(40,260);
+    parts.push({ x:x, y:y, vx:Math.cos(a)*sp, vy:Math.sin(a)*sp-40,
+      life:rand(0.3,0.7), max:0.7, size:rand(2,5), color:color, grav:180, drag:1.5 });
+  }
+}
+function addText(x,y,text,color,size){
+  texts.push({ x:x,y:y,text:text,color:color,size:size,life:1,vy:-34 });
+}
+function hurt(){
+  /* 护盾优先抵挡 */
+  if(shield>0){
+    shieldBlocked++;
+    shake=10; combo=0;
+    burst(player.x,player.y,18,'#7ef0ff');
+    addText(player.x,player.y-40,'护盾抵挡','#7ef0ff',16);
+    tone(520,0.16,'triangle',0.14,0,300);
+    return;
+  }
+  hearts--; combo=0; shake=16;
+  burst(player.x,player.y,26,'#ff6b5e');
+  playHit();
+  if(hearts<=0){
+    /* 广告位 1：本局未复活过，先给一次复活机会 */
+    if(!reviveUsed && !DEMO){ state='revive'; canvas.style.cursor='auto'; return; }
+    gameOver();
+  }
+}
+function startGame(){
+  state='play'; paused=false;
+  score=0; hearts=3; combo=0; maxCombo=0; elapsed=0;
+  stars=[]; meteors=[]; parts=[]; texts=[];
+  starTimer=0.9; meteorTimer=1.5;
+  reviveUsed=false; doubleUsed=false; doubleUntil=0;
+  shield=pendingShield; pendingShield=0;
+  player.x=W/2; player.y=H-90; player.pulse=0;
+  canvas.style.cursor='none';
+  tone(660,0.08,'sine',0.12); tone(880,0.1,'sine',0.1,0.08);
+  if(shield>0) addText(player.x,player.y-70,'护盾 '+Math.round(shield)+'s','#7ef0ff',16);
+}
+function gameOver(){
+  state='over'; overAt=Date.now();
+  canvas.style.cursor='auto';
+  newBest = score>best;
+  if(newBest){ best=score; try{ localStorage.setItem('stardust-best',String(best)); }catch(e){} }
+  burst(player.x,player.y,40,'#ffd166');
+  if(AC){ tone(523,0.18,'sine',0.15,0); tone(392,0.2,'sine',0.15,0.16); tone(262,0.4,'sine',0.16,0.34); }
+}
+
+/* ================= 广告按钮行为 ================= */
+function doRevive(){
+  showRewardedAd('revive', function(){
+    reviveUsed=true;
+    hearts=1; combo=0;
+    meteors=[]; meteorTimer=3;
+    shield=Math.max(shield,2.5);
+    state='play'; paused=false; adActive=null; adDone=null;
+    canvas.style.cursor='none';
+    addText(player.x,player.y-70,'复活！','#7ef0ff',20);
+  });
+}
+function doDouble(){
+  if(doubleUsed) return;
+  doubleUsed=true;
+  showRewardedAd('double', function(){
+    doubleUntil=elapsed+30;
+    adActive=null; adDone=null; paused=false;
+    addText(player.x,player.y-70,'双倍得分 30s','#ffd166',18);
+  });
+}
+function doShieldStart(){
+  showRewardedAd('shield', function(){
+    pendingShield=20;
+    adActive=null; adDone=null;
+    startGame();
+  });
+}
+function giveUp(){
+  gameOver();
+}
+
+/* ================= 音频 ================= */
+let AC=null, master=null, bgmTimer=null, noteIdx=0, nextNoteTime=0;
+const melody=[220,261.63,293.66,329.63,392,440,392,329.63];
+function initAudio(){
+  if(AC) return;
+  const Ctor = window.AudioContext || window.webkitAudioContext;
+  if(!Ctor) return;
+  AC = new Ctor();
+  master = AC.createGain();
+  master.gain.value = muted?0:0.5;
+  master.connect(AC.destination);
+  if(AC.state==='suspended') AC.resume();
+  noteIdx=0; nextNoteTime=AC.currentTime+0.1;
+  bgmTimer = setInterval(function(){
+    if(state!=='play' || paused){ nextNoteTime = AC.currentTime+0.15; return; }
+    while(nextNoteTime < AC.currentTime+0.35){
+      const f = melody[noteIdx%melody.length] * (Math.random()<0.2?2:1);
+      tone(f,0.5,'sine',0.04,nextNoteTime-AC.currentTime);
+      tone(f*1.5,0.5,'triangle',0.018,nextNoteTime-AC.currentTime);
+      noteIdx++; nextNoteTime+=0.26;
+    }
+  },120);
+}
+function tone(freq,dur,type,vol,when,slideTo){
+  if(!AC) return;
+  const t0 = AC.currentTime+(when||0);
+  const o=AC.createOscillator(), g=AC.createGain();
+  o.type=type||'sine';
+  o.frequency.setValueAtTime(freq,t0);
+  if(slideTo) o.frequency.exponentialRampToValueAtTime(slideTo,t0+dur);
+  g.gain.setValueAtTime(0.0001,t0);
+  g.gain.exponentialRampToValueAtTime(vol||0.15,t0+0.015);
+  g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+  o.connect(g); g.connect(master);
+  o.start(t0); o.stop(t0+dur+0.05);
+}
+function noise(dur,vol){
+  if(!AC) return;
+  const n=Math.floor(AC.sampleRate*dur);
+  const buf=AC.createBuffer(1,n,AC.sampleRate);
+  const d=buf.getChannelData(0);
+  for(let i=0;i<n;i++) d[i]=Math.random()*2-1;
+  const src=AC.createBufferSource(); src.buffer=buf;
+  const f=AC.createBiquadFilter(); f.type='lowpass'; f.frequency.value=900;
+  const g=AC.createGain(); g.gain.value=vol;
+  src.connect(f); f.connect(g); g.connect(master);
+  src.start();
+}
+function playCatch(special){
+  if(!AC) return;
+  if(special){ tone(880,0.12,'sine',0.2); tone(1318.5,0.16,'sine',0.16,0.09); }
+  else tone(Math.min(1200,500*Math.pow(2,(combo%24)/24)),0.11,'sine',0.16);
+}
+function playHit(){ if(!AC) return; tone(160,0.25,'sawtooth',0.2,0,60); noise(0.2,0.1); }
+function playMiss(){ if(!AC) return; tone(220,0.12,'sine',0.07,0,160); }
+function toggleMute(){ muted=!muted; if(master) master.gain.value=muted?0:0.5; }
+
+/* ================= 输入 ================= */
+function primaryAction(){
+  initAudio();
+  if(state==='menu') startGame();
+  else if(state==='over' && Date.now()-overAt>500) startGame();
+  else if(state==='revive'){ /* 复活界面必须点按钮，避免误触跳过 */ }
+}
+function hitTest(x,y){
+  for(let i=hitButtons.length-1;i>=0;i--){
+    const b=hitButtons[i];
+    if(x>=b.x && x<=b.x+b.w && y>=b.y && y<=b.y+b.h) return b.id;
+  }
+  return null;
+}
+function runButton(id){
+  initAudio();
+  if(id==='revive-ad') doRevive();
+  else if(id==='revive-giveup') giveUp();
+  else if(id==='double-ad') doDouble();
+  else if(id==='shield-ad') doShieldStart();
+  else if(id==='over-restart') startGame();
+  else if(id==='over-shield') doShieldStart();
+}
+window.addEventListener('mousemove', function(e){ mouseX=e.clientX; mouseY=e.clientY; });
+window.addEventListener('touchmove', function(e){ const t=e.touches[0]; if(t){ mouseX=t.clientX; mouseY=t.clientY; } }, {passive:true});
+window.addEventListener('pointerdown', function(e){
+  if(e.button!==undefined && e.button!==0 && e.pointerType==='mouse') return;
+  if(adActive) return;                        // 广告播放中吞掉点击
+  const id=hitTest(e.clientX, e.clientY);
+  if(id){ e.preventDefault(); runButton(id); return; }
+  primaryAction();
+});
+window.addEventListener('keydown', function(e){
+  const k=e.key.toLowerCase();
+  if(k==='m'){ toggleMute(); return; }
+  if(k==='p'){ if(state==='play') paused=!paused; return; }
+  if(k===' '||k==='enter'){ e.preventDefault(); if(adActive) return; primaryAction(); return; }
+  if(k==='r' && state==='over'){ startGame(); }
+});
+window.addEventListener('blur', function(){ if(state==='play') paused=true; });
+
+/* ================= 绘制 ================= */
+function rr(x,y,w,h,r){
+  r=Math.min(r, w/2, h/2);
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.arcTo(x+w,y,x+w,y+h,r);
+  ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r);
+  ctx.arcTo(x,y,x+w,y,r);
+  ctx.closePath();
+}
+/* 按可用宽度自动缩字号，避免小屏被裁 */
+function fittedText(text,cx,y,maxW,baseSize,weight,color){
+  let size=baseSize;
+  ctx.font=(weight||'400')+' '+size+'px '+F;
+  while(size>9 && ctx.measureText(text).width>maxW){
+    size-=1; ctx.font=(weight||'400')+' '+size+'px '+F;
+  }
+  ctx.fillStyle=color; ctx.fillText(text,cx,y);
+  return size;
+}
+function makeButton(id, label, sub, cx, y, w, h){
+  const x=cx-w/2;
+  const glow=0.35+0.25*Math.sin(performance.now()/300);
+  ctx.save();
+  ctx.fillStyle='rgba(255,209,102,'+glow.toFixed(2)+')';
+  rr(x,y,w,h,h/2); ctx.fill();
+  ctx.strokeStyle='rgba(255,225,160,0.9)'; ctx.lineWidth=2;
+  rr(x,y,w,h,h/2); ctx.stroke();
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillStyle='#08202f';
+  ctx.font='700 '+(sub?16:17)+'px '+F;
+  ctx.fillText(label, cx, sub? y+h*0.36 : y+h*0.5);
+  if(sub){
+    ctx.font='12px '+F; ctx.fillStyle='rgba(8,32,47,0.72)';
+    ctx.fillText(sub, cx, y+h*0.72);
+  }
+  ctx.restore();
+  hitButtons.push({ x:x, y:y, w:w, h:h, id:id });
+}
+function drawBG(){
+  const g=ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,'#071a2e'); g.addColorStop(0.55,'#0b2740'); g.addColorStop(1,'#0e3a52');
+  ctx.fillStyle=g; ctx.fillRect(-20,-20,W+40,H+40);
+  for(const s of bgStars){
+    const a=s.a*(0.55+0.45*Math.sin(s.ph));
+    ctx.globalAlpha=Math.max(0,Math.min(1,a));
+    ctx.fillStyle = s.r>1.3? '#cfe9ff' : '#ffffff';
+    ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2); ctx.fill();
+  }
+  ctx.globalAlpha=1;
+  for(const sh of shooters){
+    const g2=ctx.createLinearGradient(sh.x,sh.y,sh.x-sh.vx*0.12,sh.y-sh.vy*0.12);
+    g2.addColorStop(0,'rgba(255,255,255,0.8)'); g2.addColorStop(1,'rgba(255,255,255,0)');
+    ctx.strokeStyle=g2; ctx.lineWidth=2; ctx.beginPath();
+    ctx.moveTo(sh.x,sh.y); ctx.lineTo(sh.x-sh.vx*0.12,sh.y-sh.vy*0.12); ctx.stroke();
+  }
+}
+function drawStar(s){
+  const dx=s.x+Math.sin(s.wob)*s.wamp;
+  const tw=0.75+0.25*Math.sin(performance.now()/160+s.wob*3);
+  ctx.save(); ctx.translate(dx,s.y);
+  if(s.special){
+    ctx.rotate(performance.now()/300);
+    ctx.shadowColor='rgba(126,240,255,0.9)'; ctx.shadowBlur=18;
+    ctx.fillStyle='#7ef0ff';
+    ctx.beginPath();
+    for(let i=0;i<4;i++){
+      const a=i*Math.PI/2, px=Math.cos(a)*s.r, py=Math.sin(a)*s.r;
+      if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+    }
+    ctx.closePath(); ctx.fill();
+    ctx.shadowBlur=8;
+    ctx.beginPath(); ctx.arc(0,0,s.r*0.42,0,Math.PI*2); ctx.fillStyle='#e6fbff'; ctx.fill();
+  }else{
+    ctx.shadowColor='rgba(255,209,102,0.8)'; ctx.shadowBlur=14;
+    ctx.fillStyle='#ffd166';
+    ctx.beginPath(); ctx.arc(0,0,Math.max(0.5,s.r*tw),0,Math.PI*2); ctx.fill();
+    ctx.shadowBlur=0;
+    ctx.fillStyle='rgba(255,255,255,0.85)';
+    ctx.beginPath(); ctx.arc(-s.r*0.28,-s.r*0.3,Math.max(0.5,s.r*0.22),0,Math.PI*2); ctx.fill();
+  }
+  ctx.restore();
+}
+function drawMeteor(m){
+  ctx.save(); ctx.translate(m.x,m.y); ctx.rotate(m.rot);
+  const g=ctx.createRadialGradient(0,0,0,0,0,m.r*2.2);
+  g.addColorStop(0,'rgba(255,120,80,0.9)'); g.addColorStop(0.5,'rgba(255,90,60,0.35)'); g.addColorStop(1,'rgba(255,90,60,0)');
+  ctx.fillStyle=g;
+  ctx.beginPath();
+  ctx.moveTo(m.r*1.6,0); ctx.lineTo(-m.r*1.2,-m.r*0.8); ctx.lineTo(-m.r*2.2,0); ctx.lineTo(-m.r*1.2,m.r*0.8);
+  ctx.closePath(); ctx.fill();
+  ctx.beginPath(); ctx.arc(0,0,m.r*0.7,0,Math.PI*2); ctx.fillStyle='#ff6b5e'; ctx.fill();
+  ctx.beginPath(); ctx.arc(0,0,m.r*0.35,0,Math.PI*2); ctx.fillStyle='#ffe0c8'; ctx.fill();
+  ctx.restore();
+}
+function drawBubble(){
+  const pr=player.r*(1+player.pulse*0.25);
+  const g=ctx.createRadialGradient(player.x,player.y-6,2,player.x,player.y,pr*1.5);
+  g.addColorStop(0,'rgba(255,240,200,0.18)'); g.addColorStop(0.6,'rgba(255,214,130,0.08)'); g.addColorStop(1,'rgba(255,214,130,0)');
+  ctx.fillStyle=g;
+  ctx.beginPath(); ctx.arc(player.x,player.y,pr*1.5,0,Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(player.x,player.y,pr,0,Math.PI*2);
+  ctx.fillStyle='rgba(255,255,255,0.10)'; ctx.fill();
+  ctx.lineWidth=2.5; ctx.strokeStyle='rgba(255,231,180,0.95)'; ctx.stroke();
+  if(shield>0){
+    ctx.beginPath(); ctx.arc(player.x,player.y,pr*1.22,0,Math.PI*2);
+    ctx.strokeStyle='rgba(126,240,255,0.75)'; ctx.lineWidth=2; ctx.stroke();
+  }
+  ctx.beginPath(); ctx.arc(player.x-9,player.y-9,pr*0.42,0,Math.PI*1.3);
+  ctx.strokeStyle='rgba(255,255,255,0.35)'; ctx.lineWidth=3; ctx.stroke();
+  ctx.beginPath(); ctx.arc(player.x,player.y,2.5,0,Math.PI*2); ctx.fillStyle='rgba(255,255,255,0.7)'; ctx.fill();
+}
+function drawPart(p){
+  const a=Math.max(0,p.life/p.max);
+  ctx.globalAlpha=a;
+  ctx.fillStyle=p.color;
+  ctx.beginPath(); ctx.arc(p.x,p.y,Math.max(0.4,p.size*a),0,Math.PI*2); ctx.fill();
+  ctx.globalAlpha=1;
+}
+function drawText(t){
+  ctx.globalAlpha=Math.max(0,t.life);
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.font='700 '+t.size+'px '+F;
+  ctx.fillStyle=t.color; ctx.shadowColor='rgba(0,0,0,0.6)'; ctx.shadowBlur=6;
+  ctx.fillText(t.text,t.x,t.y);
+  ctx.shadowBlur=0; ctx.globalAlpha=1;
+}
+function heart(x,y,s){
+  ctx.beginPath();
+  ctx.moveTo(x,y+s*0.35);
+  ctx.bezierCurveTo(x,y,x-s*0.5,y,x-s*0.5,y+s*0.35);
+  ctx.bezierCurveTo(x-s*0.5,y+s*0.8,x,y+s*0.95,x,y+s*1.1);
+  ctx.bezierCurveTo(x,y+s*0.95,x+s*0.5,y+s*0.8,x+s*0.5,y+s*0.35);
+  ctx.bezierCurveTo(x+s*0.5,y,x,y,x,y+s*0.35);
+  ctx.closePath();
+}
+function drawHUD(){
+  ctx.textAlign='left'; ctx.textBaseline='top';
+  ctx.shadowColor='rgba(0,0,0,0.5)'; ctx.shadowBlur=8;
+  ctx.font='700 34px '+F; ctx.fillStyle='#ffffff';
+  ctx.fillText(String(score),22,20);
+  if(combo>=2){
+    ctx.font='600 17px '+F; ctx.fillStyle='#ffd166';
+    ctx.fillText('连击 x'+combo,22,62);
+  }
+  ctx.shadowBlur=0;
+  for(let i=0;i<3;i++){
+    const hx=W-30-i*32, hy=24;
+    ctx.fillStyle=i<hearts?'#ff5f6d':'rgba(255,255,255,0.15)';
+    heart(hx,hy,13); ctx.fill();
+  }
+  /* 双倍剩余时间 */
+  if(doubleUntil>elapsed){
+    ctx.textAlign='left'; ctx.textBaseline='top';
+    ctx.font='600 15px '+F; ctx.fillStyle='#7ef0ff';
+    ctx.fillText('×2 得分 '+Math.ceil(doubleUntil-elapsed)+'s',22,combo>=2?86:62);
+  }
+  /* 护盾剩余时间 */
+  if(shield>0){
+    ctx.textAlign='center'; ctx.textBaseline='top';
+    ctx.font='600 15px '+F; ctx.fillStyle='#7ef0ff';
+    ctx.fillText('护盾 '+Math.ceil(shield)+'s',W/2,18);
+  }
+  /* 广告位 2：双倍得分按钮（每局一次，右上角避开手势区） */
+  if(!doubleUsed && !DEMO){
+    const bw=Math.min(136,W*0.36), bh=44;
+    makeButton('double-ad','看广告 ×2',null,W-bw/2-16, 62, bw, bh);
+  }
+  ctx.textAlign='right'; ctx.textBaseline='alphabetic';
+  ctx.font='12px '+F; ctx.fillStyle='rgba(255,255,255,0.4)';
+  ctx.fillText('M 静音 · P 暂停',W-22,H-14);
+}
+function vignette(){
+  const g=ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*0.45,W/2,H/2,Math.max(W,H)*0.75);
+  g.addColorStop(0,'rgba(0,0,0,0)'); g.addColorStop(1,'rgba(0,0,0,0.32)');
+  ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+}
+function drawMenu(){
+  ctx.fillStyle='rgba(4,12,22,0.35)'; ctx.fillRect(0,0,W,H);
+  const cx=W/2;
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.font='700 62px '+F;
+  const g=ctx.createLinearGradient(cx-150,0,cx+150,0);
+  g.addColorStop(0,'#ffd166'); g.addColorStop(1,'#ffab40');
+  ctx.fillStyle=g; ctx.shadowColor='rgba(255,190,90,0.55)'; ctx.shadowBlur=30;
+  ctx.fillText('星尘捕手',cx,H*0.36);
+  ctx.shadowBlur=0;
+  ctx.font='300 17px '+F; ctx.fillStyle='rgba(255,255,255,0.75)';
+  ctx.fillText('Stardust Catcher',cx,H*0.36+48);
+  ctx.textBaseline='middle';
+  fittedText('移动鼠标或手指，用泡泡接住金色星辰',cx,H*0.36+86,W-40,15,'400','rgba(255,255,255,0.62)');
+  fittedText('避开红色流星 · 连击越高得分越高',cx,H*0.36+110,W-40,14,'400','rgba(255,255,255,0.45)');
+  if(best>0){
+    ctx.fillStyle='#ffd166'; ctx.font='600 16px '+F;
+    ctx.fillText('最高纪录 '+best,cx,H*0.36+148);
+  }
+  const a=0.55+0.45*Math.sin(performance.now()/300);
+  ctx.font='600 21px '+F; ctx.fillStyle='rgba(255,255,255,'+a.toFixed(2)+')';
+  ctx.fillText('点击 或 按空格 开始',cx,H*0.62);
+  ctx.font='12px '+F; ctx.fillStyle='rgba(255,255,255,0.4)';
+  ctx.fillText('M 静音 · P 暂停',cx,H-30);
+  /* 广告位 3：开局护盾（在主界面提供，进入下一局生效） */
+  if(!DEMO){
+    const bw=Math.min(240,W*0.7), bh=48;
+    makeButton('shield-ad','看广告 · 开局带护盾 20 秒',null,cx,H*0.72,bw,bh);
+  }
+}
+function drawRevive(){
+  ctx.fillStyle='rgba(4,12,22,0.62)'; ctx.fillRect(0,0,W,H);
+  const cx=W/2;
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.font='700 40px '+F; ctx.fillStyle='#ffffff';
+  ctx.shadowColor='rgba(0,0,0,0.6)'; ctx.shadowBlur=10;
+  ctx.fillText('就剩一次机会',cx,H*0.30);
+  ctx.shadowBlur=0;
+  ctx.textBaseline='middle';
+  fittedText('看一段激励视频，可以带着 1 颗心继续这局',cx,H*0.38,W-40,15,'400','rgba(255,255,255,0.72)');
+  ctx.fillStyle='#ffd166'; ctx.font='600 18px '+F;
+  ctx.fillText('当前得分 '+score,cx,H*0.47);
+  const bw=Math.min(300,W*0.8), bh=56;
+  makeButton('revive-ad','看广告复活',null,cx,H*0.58,bw,bh);
+  const bw2=Math.min(200,W*0.55), bh2=42;
+  ctx.globalAlpha=1;
+  const x=cx-bw2/2, y=H*0.70;
+  ctx.fillStyle='rgba(255,255,255,0.10)'; rr(x,y,bw2,bh2,bh2/2); ctx.fill();
+  ctx.strokeStyle='rgba(255,255,255,0.35)'; ctx.lineWidth=1.5; rr(x,y,bw2,bh2,bh2/2); ctx.stroke();
+  ctx.fillStyle='rgba(255,255,255,0.8)'; ctx.font='600 15px '+F;
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('结束本局',cx,y+bh2/2);
+  hitButtons.push({x:x, y:y, w:bw2, h:bh2, id:'revive-giveup'});
+  ctx.font='12px '+F; ctx.fillStyle='rgba(255,255,255,0.4)';
+  ctx.fillText('本局复活机会仅一次',cx,H*0.80);
+}
+function drawOver(){
+  ctx.fillStyle='rgba(4,12,22,0.5)'; ctx.fillRect(0,0,W,H);
+  const cx=W/2;
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.font='700 52px '+F; ctx.fillStyle='#ffffff'; ctx.shadowColor='rgba(0,0,0,0.6)'; ctx.shadowBlur=10;
+  ctx.fillText('游戏结束',cx,H*0.24);
+  ctx.shadowBlur=0;
+  ctx.font='300 20px '+F; ctx.fillStyle='rgba(255,255,255,0.7)';
+  ctx.fillText('最终得分',cx,H*0.34);
+  ctx.font='700 60px '+F; ctx.fillStyle='#ffd166';
+  ctx.fillText(String(score),cx,H*0.43);
+  ctx.textBaseline='middle';
+  fittedText('最高纪录 '+best+(newBest?'   ★ 新纪录！':''),cx,H*0.52,W-40,16,'400','rgba(255,255,255,0.55)');
+  if(!DEMO){
+    const bw=Math.min(300,W*0.8), bh=50;
+    makeButton('over-shield','看广告 · 带护盾再来一局',null,cx,H*0.60,bw,bh);
+  }
+  const a=0.55+0.45*Math.sin(performance.now()/300);
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.font='600 17px '+F; ctx.fillStyle='rgba(255,255,255,'+a.toFixed(2)+')';
+  ctx.fillText('点击空白处 或 按 R 重新开始',cx,H*0.76);
+}
+function drawPause(){
+  ctx.fillStyle='rgba(4,12,22,0.45)'; ctx.fillRect(0,0,W,H);
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.font='600 24px '+F; ctx.fillStyle='#ffffff';
+  ctx.fillText('已暂停 · 按 P 继续',W/2,H/2);
+}
+function drawAd(){
+  const t=(performance.now()-adStart)/1000;
+  const total=1.4, left=Math.max(0,total-t);
+  ctx.fillStyle='rgba(2,8,16,0.92)'; ctx.fillRect(0,0,W,H);
+  const cx=W/2;
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.font='600 13px '+F; ctx.fillStyle='rgba(255,255,255,0.5)';
+  ctx.fillText('IAA 构建 · 广告位占位',cx,H*0.30);
+  ctx.font='700 28px '+F; ctx.fillStyle='#ffffff';
+  ctx.fillText('激励视频播放中',cx,H*0.40);
+  ctx.font='15px '+F; ctx.fillStyle='#ffd166';
+  ctx.fillText(PLACEMENT_LABEL[adActive]||'广告位',cx,H*0.47);
+  /* 倒计时环 */
+  const p=1-Math.max(0,left)/total;
+  ctx.beginPath(); ctx.arc(cx,H*0.60,34,0,Math.PI*2);
+  ctx.strokeStyle='rgba(255,255,255,0.14)'; ctx.lineWidth=4; ctx.stroke();
+  ctx.beginPath(); ctx.arc(cx,H*0.60,34,-Math.PI/2,-Math.PI/2+Math.PI*2*p);
+  ctx.strokeStyle='#ffd166'; ctx.lineWidth=4; ctx.stroke();
+  ctx.font='700 20px '+F; ctx.fillStyle='#ffffff';
+  ctx.fillText(String(Math.ceil(left)),cx,H*0.60);
+  ctx.font='12px '+F; ctx.fillStyle='rgba(255,255,255,0.45)';
+  ctx.fillText('接入真实 SDK 后此处为视频画面',cx,H*0.70);
+}
+function draw(){
+  hitButtons=[];
+  ctx.clearRect(0,0,W,H);
+  ctx.save();
+  if(shake>0.5) ctx.translate(rand(-shake,shake),rand(-shake,shake));
+  drawBG();
+  for(const m of meteors) drawMeteor(m);
+  for(const s of stars) drawStar(s);
+  drawBubble();
+  for(const p of parts) drawPart(p);
+  for(const t of texts) drawText(t);
+  vignette();
+  ctx.restore();
+  if(adActive){ drawAd(); return; }
+  if(state==='play'&&!paused) drawHUD();
+  if(state==='play'&&paused) drawPause();
+  if(state==='revive') drawRevive();
+  if(state==='menu') drawMenu();
+  if(state==='over') drawOver();
+}
+
+/* ================= 演示模式（?demo=1 / __forceDemo，静置展示接星场景） ================= */
+function setupDemo(){
+  state='play'; paused=false;
+  score=0; hearts=3; combo=0; maxCombo=0; elapsed=0;
+  starTimer=99999; meteorTimer=99999;
+  stars=[]; meteors=[]; parts=[]; texts=[];
+  player.x=W/2; player.y=H-90; player.pulse=1;
+  canvas.style.cursor='none';
+  const place=function(fx,fy,r,special){
+    stars.push({ x:W*fx, y:H*fy, vy:0, r:r, special:special,
+      wob:Math.random()*Math.PI*2, wamp:8, ws:1.6, caught:false, ct:0, value:special?50:10 });
+  };
+  place(0.33,0.26,11,false);
+  place(0.58,0.19,10,false);
+  place(0.73,0.37,13,true);
+  place(0.24,0.51,10,false);
+  place(0.83,0.60,11,false);
+  meteors.push({ x:W*0.52, y:H*0.13, vx:0, vy:0, r:16, rot:0.6, vr:0 });
+  for(let i=0;i<24;i++){
+    const a=Math.random()*Math.PI*2, sp=rand(30,140);
+    parts.push({ x:player.x+Math.cos(a)*player.r*0.9, y:player.y+Math.sin(a)*player.r*0.9,
+      vx:Math.cos(a)*sp*0.18, vy:Math.sin(a)*sp*0.18, life:rand(0.6,1.2), max:1.2,
+      size:rand(1.5,3.5), color:'rgba(255,209,102,0.75)', grav:0, drag:1.4 });
+  }
+}
+
+/* ================= 主循环 ================= */
+function frame(ts){
+  const dt=Math.min(0.05,(ts-lastTime)/1000||0.016);
+  lastTime=ts;
+  /* 广告占位结束由 showRewardedAd 里的定时器负责，这里只管画 */
+  updateBG(dt);
+  if(state==='play'&&!paused&&!adActive) update(dt);
+  else updateAmbient(dt);
+  draw();
+  requestAnimationFrame(frame);
+}
+if (DEMO) setupDemo();
+requestAnimationFrame(frame);
+
+/* ================= 真机自检（?diag=1） ================= */
+/* 手机上打开 ?diag=1，脚本自己点一遍关键路径并把结果写成 PASS/FAIL 列表，
+   截图发回即可 —— 不需要人眼判断按钮大小和是否恢复。 */
+function safeInsets(){
+  const p=document.createElement('div');
+  p.style.cssText='position:fixed;left:0;top:0;width:0;height:0;'
+    +'padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)';
+  document.body.appendChild(p);
+  const cs=getComputedStyle(p);
+  const v={ top:parseFloat(cs.paddingTop)||0, right:parseFloat(cs.paddingRight)||0,
+            bottom:parseFloat(cs.paddingBottom)||0, left:parseFloat(cs.paddingLeft)||0 };
+  p.remove(); return v;
+}
+const DIAG=[];
+function dg(ok,label,detail){ DIAG.push({ok:ok,label:label,detail:detail}); }
+function dgPanel(){
+  let el=document.getElementById('diag');
+  if(!el){ el=document.createElement('pre'); el.id='diag';
+    el.style.cssText='position:fixed;inset:0;margin:0;padding:14px 16px;z-index:99;'
+      +'background:rgba(4,8,16,.93);color:#e8edf5;font:12px/1.75 ui-monospace,Menlo,Consolas,monospace;'
+      +'white-space:pre-wrap;word-break:break-all;overflow:auto';
+    document.body.appendChild(el); }
+  const fail=DIAG.filter(d=>!d.ok).length;
+  const head='星尘捕手 · 真机自检   '+(DIAG.length-fail)+'/'+DIAG.length+' PASS'
+    +(fail?'   ✗ '+fail+'\n':'   ✓ 全部通过\n');
+  el.textContent=head+DIAG.map(d=>
+    (d.ok?'[PASS] ':'[FAIL] ')+d.label+(d.detail?'  ← '+d.detail:'')
+  ).join('\n')+(probeReady?'\n\n>> 请用手指点一下屏幕任意位置，测这一下的延迟 <<':'\n\n把这一屏截图发回来即可。');
+}
+function btnById(id){ return hitButtons.filter(b=>b.id===id)[0]||null; }
+/* 一个按钮是否够大、是否被刘海/手势条压住 */
+function checkBtn(id,ins,zone){
+  const b=btnById(id);
+  if(!b){ dg(false,zone+'.'+id,'本帧没有这个按钮'); return; }
+  const big=b.w>=44&&b.h>=44;
+  const clearTop=b.y>=ins.top-0.5;
+  const clearBottom=(b.y+b.h)<=H-ins.bottom+0.5;
+  dg(big,zone+'.'+id+'.size',Math.round(b.w)+'×'+Math.round(b.h)+' px（建议≥44）');
+  dg(clearTop&&clearBottom,zone+'.'+id+'.safeArea',
+    'y '+Math.round(b.y)+'~'+Math.round(b.y+b.h)+' / 安全区 '+Math.round(ins.top)+'~'+Math.round(H-ins.bottom));
+}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+/* 帧率采样：软件跑出来的 fps 决定了拖动时的最小跟随误差。
+   同时设帧数上限，避免无头环境里 rAF 被虚拟时钟卡住时永不返回。 */
+function measureFps(ms){
+  return new Promise(res=>{
+    var n=0, t0=performance.now(), CAP=240;
+    (function f(){
+      n++;
+      var dt=performance.now()-t0;
+      if(dt<ms && n<CAP) requestAnimationFrame(f);
+      else res(dt>0 ? n/(dt/1000) : 0);
+    })();
+  });
+}
+
+/* 触控延迟探针：等一根真手指点一下，量"手指→事件→上屏"三段 */
+var probeReady=false, probeDone=false;
+document.addEventListener('pointerdown', function(e){
+  if(!probeReady) return;
+  probeReady=false; probeDone=true;
+  var t0=e.timeStamp, t1=performance.now();
+  requestAnimationFrame(function(){
+    var t2=performance.now();
+    dg(t1-t0<120,'latency.handler','手指→处理 '+Math.round(t1-t0)+' ms');
+    dg(t2-t0<220,'latency.screen','手指→上屏 '+Math.round(t2-t0)+' ms（其中处理 '+(Math.round(t1-t0))+'）');
+    dgPanel();
+  });
+}, true);
+async function runDiag(){
+  const ins=safeInsets();
+  dg(true,'env.viewport',W+'×'+H+' @'+DPR+'x');
+  dg(true,'env.safeInsets','上'+ins.top+' 下'+ins.bottom+' 左'+ins.left+' 右'+ins.right);
+  dg(H>600&&W<600,'env.portrait','竖屏且宽度<600（不是桌面窗口）');
+
+  /* 主界面 */
+  dg(state==='menu','menu.state',state);
+  checkBtn('shield-ad',ins,'menu');
+
+  /* 模拟点击开始 */
+  const cv=document.querySelector('canvas');
+  const r=cv.getBoundingClientRect();
+  cv.dispatchEvent(new PointerEvent('pointerdown',{clientX:r.width/2,clientY:r.height*0.86,bubbles:true,pointerType:'touch'}));
+  await sleep(260);
+  dg(state==='play','start.tap',state);
+
+  /* 游玩界面按钮 */
+  checkBtn('double-ad',ins,'play');
+  dg(true,'play.pauseKey','本版无触屏暂停/静音键，仅键盘 M/P（小游戏工程版有屏上按钮）');
+
+  /* 走一次双倍广告，看是否恢复 */
+  const before=IAA.stats();
+  try { runButton('double-ad'); } catch(err) { dg(false,'ad.double.threw',String(err&&err.message||err)); }
+  dg(!!IAA.stats().adActive,'ad.double.open','adActive='+IAA.stats().adActive);
+  for(let i=0;i<30;i++){ if(!IAA.stats().adActive) break; await sleep(120); }
+  await sleep(160);
+  const after=IAA.stats();
+  dg(true,'ad.double.closed','adActive='+after.adActive);
+  dg(!after.paused,'ad.double.resume','paused='+after.paused+' 广告中='+after.adActive);
+  dg(state==='play','ad.double.state',state);
+  dg(after.doubleLeft>before.doubleLeft,'ad.double.reward','倍率时长 '+before.doubleLeft+'→'+after.doubleLeft);
+
+  /* 复活流程可达性（只查函数存在，不真的开广告） */
+  dg(typeof doRevive==='function'&&typeof giveUp==='function','revive.handlers','复活/放弃两个入口都在');
+
+  /* 帧率：软件跟手的上限由它决定 */
+  const fps=await Promise.race([measureFps(1200), sleep(3000).then(()=>null)]);
+  if(fps===null) dg(false,'perf.fps','取不到帧率（当前环境不推进 requestAnimationFrame）');
+  else dg(fps>=50,'perf.fps',Math.round(fps)+' fps（每帧 '+Math.round(1000/fps)+' ms，即理论最小跟随延迟）');
+
+  /* 交给真手指：点一下屏幕测端到端延迟（无头/自动化可用 probe=0 跳过） */
+  if(/[?&]probe=0/.test(location.search)){
+    dg(true,'latency.disabled','probe=0，跳过手指探针');
+  } else {
+    probeReady=true; probeDone=false;
+    dgPanel();
+    await sleep(9000);
+    if(!probeDone){
+      dg(true,'latency.skipped','9 秒内没收到手指点击（无头环境或没点），此机真机延迟未测');
+    }
+  }
+  dgPanel();
+}
+if(/[?&]diag=1/.test(location.search)){
+  setTimeout(runDiag, 900);
+  /* 兜底：8 秒内没出结果就把已收集的条目先铺出来，避免白屏看不出卡在哪 */
+  setTimeout(function(){
+    if(!document.getElementById('diag')){
+      dg(false,'diag.timeout','自检 15 秒未完成，下面是已跑到的部分');
+      dgPanel();
+    }
+  }, 15000);
+}
+
+/* 供接入 SDK 时替换 / 调试 */
+window.IAA = { showRewardedAd, PLACEMENT_LABEL, stats: function(){
+  return { score, hearts, reviveUsed, doubleUsed, shield: Math.round(shield), shieldBlocked,
+           state, paused, adActive, doubleLeft: Math.max(0, Math.round((doubleUntil-elapsed)*10)/10) };
+}, layout: function(){
+  return { W, H, dpr:DPR, state, paused, adActive,
+           buttons: hitButtons.map(b=>({id:b.id,x:Math.round(b.x),y:Math.round(b.y),w:Math.round(b.w),h:Math.round(b.h)})) };
+} };
+</script>
+</body>
+</html>
