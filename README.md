@@ -1,5 +1,7 @@
 # 洪昺森 · 互动媒体艺术 / 游戏设计作品集
 
+[English](README.en.md) | 中文
+
 **在线访问：https://duyv0826.github.io/game-portfolio/**
 
 澳门科技大学互动媒体艺术（游戏设计方向）在读硕士的个人作品集。纯 HTML + CSS + 原生 JavaScript，无框架、无构建步骤，双击即可运行。
@@ -10,16 +12,16 @@
 
 | 编号 | 作品 | 说明 |
 | --- | --- | --- |
-| NO.00 | 《澳里·光景》Aoli | Unity 氛围探索游戏：没有任务清单的岛城，玩家靠光、声音与痕迹理解发生过的事；79 个自研脚本、204 个自动化测试（全部通过）、无头仿真 + 叙事导演 + 谜题状态机 |
-| NO.01 | 《微光原野》Glimmer Field | 弱目的性 HTML5 原型，点开即玩；与学位作品构成同一条自变量轴（目的性／控制权）上的两个极值 |
+| NO.00 | 《微光原野》Glimmer Field | 弱目的性 HTML5 原型，点开即玩；与学位作品构成同一条自变量轴（目的性／控制权）上的两个极值 |
+| NO.01 | 《澳里·光景》Aoli | Unity 氛围探索游戏：没有任务清单的岛城，玩家靠光、声音与痕迹理解发生过的事；79 个自研脚本、204 个自动化测试（全部通过）、无头仿真 + 叙事导演 + 谜题状态机 |
 
 ## 入口
 
 | 入口 | 链接 |
 | --- | --- |
-| 作品集（19 个作品，多个可在线试玩） | https://duyv0826.github.io/game-portfolio/ |
+| 作品集（20 个作品，多个可在线试玩） | https://duyv0826.github.io/game-portfolio/ |
 | 学位作品页《澳里·光景》+《微光原野》试玩 | https://duyv0826.github.io/game-portfolio/thesis/ |
-| 附册《开发过程与设计思路》（17 篇） | https://duyv0826.github.io/game-portfolio/开发过程与设计思路.html |
+| 附册《开发过程与设计思路》（18 篇） | https://duyv0826.github.io/game-portfolio/开发过程与设计思路.html |
 | 简历（PDF，2026-09-20 生成） | https://duyv0826.github.io/game-portfolio/resume.pdf |
 | GitHub | https://github.com/duyv0826 |
 | Itch.io | https://duyv0826.itch.io |
@@ -100,7 +102,7 @@ game-portfolio/
 页面已填入真实信息（来自电脑中的简历与作品集资料）：
 
 - 姓名 / 简介 / 教育经历：洪昺森，澳门科技大学计算机科学本科（2022–2026）→ 互动媒体艺术游戏设计方向硕士在读（2026.09 起）
-- 作品共 **19 个**：NO.00《澳里·光景》（学位作品）与 NO.01《微光原野》（可试玩原型）置顶，其后为 Chrono Loop、AI 横版肉鸽游戏、Blender 3D 创作、Android 贪吃蛇、YOLOv8 识别、RTSP 服务器、Chrono Loop Web 试玩原型、XV6 MLFQ 调度器、物语系列设定深挖全景图、全球游戏销量数据看板、脉冲星场交互式声景生成器、星尘捕手交互式收集游戏、岔路 Branch Road（LLM 分支叙事）、抉择的房间（分支叙事）、生生不息（互动媒体艺术）、Co-Desk 联机共创自习桌（HCI 全栈联机自习）、对话归档台 AI 对话总结 MVP（本地模型摘要工具）
+- 作品共 **20 个**：NO.00《微光原野》（可试玩原型）与 NO.01《澳里·光景》（学位作品）置顶，其后为 Chrono Loop、AI 横版肉鸽游戏、Blender 3D 创作、Android 贪吃蛇、YOLOv8 识别、RTSP 服务器、Chrono Loop Web 试玩原型、XV6 MLFQ 调度器、物语系列设定深挖全景图、全球游戏销量数据看板、脉冲星场交互式声景生成器、星尘捕手交互式收集游戏、岔路 Branch Road（LLM 分支叙事）、抉择的房间（分支叙事）、生生不息（互动媒体艺术）、Co-Desk 联机共创自习桌（HCI 全栈联机自习）、对话归档台 AI 对话总结 MVP（本地模型摘要工具）、Mometa（UE5 卡牌游戏 · 手牌散落交互设计）
 - 实习：澳门数字动力科技有限公司 研发部实习生（2025.06–2025.08）
 - 联系方式：LinkedIn、GitHub、Itch.io、简历 PDF；邮箱不在本页明文展示，请在作品页「保持联系」区点击获取
 
