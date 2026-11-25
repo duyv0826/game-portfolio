@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Development &amp; Design Notes — Bingsen Hong Portfolio Appendix (EN)</title>
+<meta name="description" content="Eighteen project write-ups from Bingsen Hong's portfolio: what was built, which decisions were made and why, and what the result taught. English edition of the Chinese appendix.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Development &amp; Design Notes — Bingsen Hong">
+<meta property="og:description" content="18 projects, each with build process, design reasoning and retrospective.">
+<meta property="og:url" content="https://duyv0826.github.io/game-portfolio/design-notes-en.html">
+<meta property="og:image" content="https://duyv0826.github.io/game-portfolio/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="zh_CN">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.ico">
+<link rel="alternate" hreflang="zh-Hans" href="https://duyv0826.github.io/game-portfolio/%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B%E4%B8%8E%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%B7%AF.html">
+<link rel="alternate" hreflang="en" href="https://duyv0826.github.io/game-portfolio/design-notes-en.html">
+<style>
+:root{
+  --bg:#0B0907;
+  --surface:#16120D;
+  --surface-2:#1E1811;
+  --border:rgba(243,236,225,.12);
+  --border-strong:rgba(243,236,225,.26);
+  --text:#F4EDE1;
+  --muted:#B6AB99;
+  --faint:rgba(243,236,225,.55);
+  --accent:#F0B24B;
+  --accent-dim:#D18F2E;
+  --accent-2:#FF8A5C;
+  --accent-soft:rgba(240,178,75,.10);
+  --font-display:'Chakra Petch',system-ui,sans-serif;
+  --font-body:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;
+  --maxw:1080px;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);color:var(--text);font-family:var(--font-body);
+  line-height:1.7;font-size:15.5px;-webkit-font-smoothing:antialiased;
+}
+::selection{background:rgba(240,178,75,.28);}
+a{color:var(--accent);text-decoration:none;transition:color .2s var(--ease);}
+a:hover{color:var(--accent-2);}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 26px;}
+
+header.site{
+  position:sticky;top:0;z-index:50;background:rgba(11,9,7,.92);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+}
+.navbar{display:flex;align-items:center;justify-content:space-between;padding:14px 26px;max-width:var(--maxw);margin:0 auto;}
+.brand{font-family:var(--font-display);font-size:13.5px;letter-spacing:.16em;color:var(--muted);}
+.brand b{color:var(--accent);}
+.navbar .links{display:flex;gap:20px;font-size:13px;letter-spacing:.06em;font-family:var(--font-display);}
+.navbar .links a{color:var(--muted);}
+.navbar .links a:hover{color:var(--accent);}
+.navbar .links a.zh{border-left:1px solid var(--border-strong);padding-left:20px;}
+
+.hero{padding:70px 0 52px;text-align:center;position:relative;overflow:hidden;}
+.hero::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 70% 45% at 50% -10%, rgba(240,178,75,.10), transparent 60%),
+    repeating-linear-gradient(0deg, transparent, transparent 23px, rgba(243,236,225,.025) 24px),
+    repeating-linear-gradient(90deg, transparent, transparent 23px, rgba(243,236,225,.025) 24px);
+}
+.hero .kicker{font-family:var(--font-display);font-size:12px;letter-spacing:.3em;color:var(--accent-2);margin-bottom:18px;}
+.hero h1{font-family:var(--font-display);font-size:clamp(28px,4.6vw,48px);font-weight:800;letter-spacing:.02em;}
+.hero h1 .dot{color:var(--accent);}
+.hero .sub{margin-top:16px;color:var(--muted);font-size:15px;max-width:620px;margin-inline:auto;text-align:left;}
+.hero .meta{margin-top:20px;font-family:var(--font-display);font-size:12.5px;letter-spacing:.12em;color:var(--faint);}
+.hero .meta span{color:var(--accent);}
+.hero .note{margin-top:14px;font-size:13.5px;color:var(--faint);max-width:660px;margin-inline:auto;text-align:left;}
+
+.toc{
+  margin:10px 0 52px;padding:22px 24px;background:var(--surface);
+  border:1px solid var(--border);border-radius:14px;
+}
+.toc .toc-title{font-family:var(--font-display);font-size:12px;letter-spacing:.24em;color:var(--accent);margin-bottom:14px;}
+.toc .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:6px 14px;}
+.toc a{display:flex;align-items:baseline;gap:10px;font-size:13.5px;color:var(--muted);padding:5px 8px;border-radius:8px;transition:all .2s var(--ease);}
+.toc a:hover{background:var(--accent-soft);color:var(--accent);}
+.toc a .no{font-family:var(--font-display);font-size:11px;color:var(--accent-dim);flex:none;}
+
+.work{
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:28px 30px 24px;margin-bottom:20px;scroll-margin-top:84px;
+  position:relative;overflow:hidden;
+}
+.work::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent-2));opacity:.75;}
+.work .head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;}
+.work .no{font-family:var(--font-display);font-size:14px;font-weight:700;color:var(--accent);letter-spacing:.1em;}
+.work h2{font-family:var(--font-display);font-size:20px;font-weight:800;letter-spacing:.01em;}
+.work .badges{margin:10px 0 4px;display:flex;gap:8px;flex-wrap:wrap;}
+.badge{font-size:11.5px;padding:4px 10px;border-radius:999px;border:1px solid var(--border-strong);color:var(--muted);letter-spacing:.03em;font-family:var(--font-display);}
+.badge.type{color:var(--accent);border-color:rgba(240,178,75,.4);}
+.badge.status{color:var(--accent-2);border-color:rgba(255,138,92,.4);}
+.work .sec{margin-top:16px;}
+.work .sec h3{
+  font-family:var(--font-display);font-size:11.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--accent-dim);margin-bottom:7px;display:flex;align-items:center;gap:9px;
+}
+.work .sec h3::before{content:"";width:16px;height:1px;background:var(--accent-dim);opacity:.6;flex:none;}
+.work p{color:var(--muted);font-size:14.5px;}
+.work p + p{margin-top:7px;}
+.work .overview p{color:var(--text);font-size:15px;}
+.work .zh-link{display:inline-block;margin-top:16px;font-size:12.5px;color:var(--faint);border-bottom:1px solid var(--border-strong);padding-bottom:2px;}
+.work .zh-link:hover{color:var(--accent);border-color:var(--accent);}
+
+footer{padding:40px 0 56px;text-align:center;color:var(--faint);font-size:13px;}
+footer a{color:var(--accent);}
+
+@media (max-width:680px){
+  .work{padding:22px 18px 18px;}
+  .navbar .links{display:none;}
+  .hero{padding:52px 0 38px;}
+  .toc .grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="navbar">
+    <div class="brand">HONG BINGSEN · <b>DEV NOTES</b></div>
+    <nav class="links">
+      <a href="index.html?lang=en">← Portfolio</a>
+      <a href="#toc">Contents</a>
+      <a class="zh" href="开发过程与设计思路.html">中文版</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="kicker">PORTFOLIO APPENDIX · DEV PROCESS &amp; DESIGN REASONING</p>
+    <h1>Development &amp; Design Notes<span class="dot">.</span></h1>
+    <p class="sub">Eighteen projects, each split into four parts: what it is, how it was built, the decisions behind it, and what the result actually showed. Written by me, after the build — including the parts that failed.</p>
+    <p class="meta">18 PROJECTS · GAME DESIGN 7 / INTERACTIVE MEDIA 6 / VISUAL RESEARCH 2 / SYSTEMS 3 · <span>2026.11</span></p>
+    <p class="note">Numbering: notes 01–18 map to portfolio entries NO.02–NO.19. The two degree works — NO.00 <em>Glimmer Field</em> and NO.01 <em>Aoli</em> — have their own pages under <a href="thesis/index.html">/thesis</a> and are not included here.</p>
+  </div>
+</section>
+
+<div class="wrap">
+<nav class="toc" id="toc">
+  <p class="toc-title">CONTENTS</p>
+  <div class="grid">
+    <a href="#w01"><span class="no">01</span>Chrono Loop — time-loop puzzler</a>
+    <a href="#w02"><span class="no">02</span>AI-assisted side-scrolling roguelike</a>
+    <a href="#w03"><span class="no">03</span>Blender 3D still-life study</a>
+    <a href="#w04"><span class="no">04</span>Android touch Snake</a>
+    <a href="#w05"><span class="no">05</span>YOLOv8 car-model recognition</a>
+    <a href="#w06"><span class="no">06</span>RTSP streaming server</a>
+    <a href="#w07"><span class="no">07</span>Chrono Loop Web — rewind prototype</a>
+    <a href="#w08"><span class="no">08</span>XV6 MLFQ scheduler + visualisation</a>
+    <a href="#w09"><span class="no">09</span>Monogatari lore map</a>
+    <a href="#w10"><span class="no">10</span>Global game-sales dashboard</a>
+    <a href="#w11"><span class="no">11</span>Pulsar Field — playable soundscape</a>
+    <a href="#w12"><span class="no">12</span>Stardust Catcher — arcade collection</a>
+    <a href="#w13"><span class="no">13</span>Branch Road — LLM branching narrative</a>
+    <a href="#w14"><span class="no">14</span>Room of Choice — 18-ending narrative</a>
+    <a href="#w15"><span class="no">15</span>Living — generative ecosystem</a>
+    <a href="#w16"><span class="no">16</span>Co-Desk — networked study desk</a>
+    <a href="#w17"><span class="no">17</span>Conversation Archive — AI summary MVP</a>
+    <a href="#w18"><span class="no">18</span>Mometa (UE5) — hand cards &amp; difficulty</a>
+  </div>
+</nav>
+
+<!-- ===== 01 ===== -->
+<article class="work" id="w01">
+  <div class="head"><span class="no">01 · NO.02</span><h2>Chrono Loop — a time-loop puzzler</h2></div>
+  <div class="badges"><span class="badge type">Game design</span><span class="badge status">Completed</span><span class="badge">Unity</span><span class="badge">C#</span><span class="badge">Aseprite</span></div>
+  <div class="sec overview"><h3>Overview</h3>
+    <p>A Unity time-rewind puzzle built end to end by one person — concept, mechanics, code and pixel art. Rewind is not a power-up bolted onto a puzzle; it is the loop the whole game stands on.</p>
+  </div>
+  <div class="sec"><h3>Build</h3>
+    <p>Paper prototype first, only to pin the rules: how far back can you rewind, which state survives the jump and which resets. Every later level depends on those answers, and answering them on paper is what keeps a cool-sounding mechanic from playing hollow.</p>
+    <p>Then the Unity + C# rewind system, with art drawn frame by frame in Aseprite so mechanics and visuals share one language. Difficulty climbs by cognitive load rather than by damage: single rewind teaches the rule, later rooms stack multi-segment rewinds with moving platforms. Ghost trails, audio and result screens carry the feedback load, so a failed attempt reads as information instead of punishment.</p>
+  </div>
+  <div class="sec"><h3>Design reasoning</h3>
+    <p>The loop I wanted is <em>fail → rewind → retry</em> as a gain, not a loss. Traditional puzzling asks you to be right once; this asks you to explore. That permission to experiment is the emotion the time-loop premise is actually good at carrying.</p>
+  </div>
+  <div class="sec"><h3>Retrospective</h3>
+    <p>It proved one person can carry design through to finished art. The obvious next step is widening the rewind target: from rewinding the character to rewinding the world — enemy positions, mechanisms, the state of the room.</p>
+  </div>
+  <a class="zh-link" href="开发过程与设计思路.html#w01">中文原文 / Chinese original →</a>
+</article>
+
+<!-- ===== 02 ===== -->
+<article class="work" id="w02">
+  <div class="head"><span class="no">02 · NO.03</span><h2>AI-assisted side-scrolling roguelike</h2></div>
+  <div class="badges"><span class="badge type">Game design</span><span class="badge status">Completed</span><span class="badge">Python</span><span class="badge">Pygame</span><span class="badge">Behaviour trees</span><span class="badge">Trello</span></div>
+  <div class="sec overview"><h3>Overview</h3>
+    <p>A four-person Pygame roguelike. I led the project and owned two systems: enemy AI and dynamic difficulty.</p>
+  </div>
+  <div class="sec"><h3>Build</h3>
+    <p>On the management side, Trello carried the milestone plan, with tasks cut fine enough that dependencies between code, art and design were visible before they became blockers. We shipped a complete playable build on schedule.</p>
+    <p>Enemies run on behaviour trees with patrol, chase, attack and flee states, selected from live signals like player distance and health. Difficulty follows the player instead of a fixed curve: health, miss rate and clear speed feed adjustments to enemy density and attack frequency.</p>
+  </div>
+  <div class="sec"><h3>Design reasoning</h3>
+    <p>Difficulty should track performance, so a newcomer is not pushed out and a veteran is not bored. A behaviour tree is what makes that safe to tune — the enemy stays predictable in shape while varying in behaviour, so difficulty can move without the encounter turning random.</p>
+  </div>
+  <div class="sec"><h3>Retrospective</h3>
+    <p>Playtests supported the adaptive approach. The bigger takeaway was organisational: on a four-person team, how you organise people matters as much as how you write code.</p>
+  </div>
+  <a class="zh-link" href="开发过程与设计思路.html#w02">中文原文 / Chinese original →</a>
+</article>
+
+<!-- ===== 03 ===== -->
+<article class="work" id="w03">
+  <div class="head"><span class="no">03 · NO.04</span><h2>Blender 3D still-life study</h2></div>
+  <div class="badges"><span class="badge type">Visual research</span><span class="badge status">Completed</span><span class="badge">Blender</span><span class="badge">Cycles</span><span class="badge">Python API</span></div>
+  <div class="sec overview"><h3>Overview</h3>
+    <p>A 3D tabletop still life. I owned the core models, the translucent shader work and the render pipeline, with Python scripting around all of it.</p>
+  </div>
+  <div class="sec"><h3>Build</h3>
+    <p>Blockout first — proportion, structure and silhouette carry the frame, so composition got settled at low detail before any modelling hours were spent. Glass and liquid were the hard part: transmission and refraction stacked through layered shader nodes, then re-lit repeatedly until the material read as clear rather than grey.</p>
+    <p>Blender's Python API handled scene assembly, camera path animation and batch rendering. The mechanical, repeatable work went to the script; the judgement work — lighting, material, framing — stayed manual.</p>
+  </div>
+  <div class="sec"><h3>Design reasoning</h3>
+    <p>Procedural where the work is repeatable, hand-made where it needs taste. That split is the most comfortable way I have found to work in 3D, and it holds for any scene project afterwards.</p>
+  </div>
+  <div class="sec"><h3>Retrospective</h3>
+    <p>This is where Blender's Python API and the Cycles pipeline became fluent rather than familiar. The reusable part turned out to be the automation, not the asset.</p>
+  </div>
+  <a class="zh-link" href="开发过程与设计思路.html#w03">中文原文 / Chinese original →</a>
+</article>
+
+<!-- ===== 04 ===== -->
+<article class="work" id="w04">
+  <div class="head"><span class="no">04 · NO.05</span><h2>Android touch Snake</h2></div>
+  <div class="badges"><span class="badge type">Game design</span><span class="badge status">Completed</span><span class="badge">Kotlin</span><span class="badge">Android Studio</span><span class="badge">Touch input</span></div>
+  <div class="sec overview"><h3>Overview</h3>
+    <p>Snake rebuilt for phones, solo, in Kotlin. The actual brief was narrower than "port a classic": a game designed around precise timed turns has to survive a finger.</p>
+  </div>
+  <div class="sec"><h3>Build</h3>
+    <p>Kotlin framework, full core logic, multi-scene audio and a working grip on Activity lifecycle and resource handling. Swipe steering, collision against walls and the snake's own body, pause and scoring all landed in the first pass.</p>
+    <p>The second pass was entirely feel: judgement windows and sensitivity retuned against gesture latency so the snake reads as following the thumb instead of lagging behind it.</p>
+  </div>
+  <div class="sec"><h3>Design reasoning</h3>
+    <p>Keyboard Snake rewards timing precision measured in frames. Touch cannot deliver that, so the fairness has to move into the input layer — a wider judgement window and forgiving sensitivity, rather than a one-to-one key map onto glass.</p>
+  </div>
+  <div class="sec"><h3>Retrospective</h3>
+    <p>A complete Android pass: syntax, lifecycle, resources, packaging. It closed the mobile line on my skill list rather than leaving it at "read about it".</p>
+  </div>
+  <a class="zh-link" href="开发过程与设计思路.html#w04">中文原文 / Chinese original →</a>
+</article>
+
+<!-- ===== 05 ===== -->
+<article class="work" id="w05">
+  <div class="head"><span class="no">05 · NO.06</span><h2>YOLOv8 car-model recognition</h2></div>
+  <div class="badges"><span class="badge type">Visual research</span><span class="badge status">Completed</span><span class="badge">Python</span><span class="badge">YOLOv8</span><span class="badge">OpenCV</span><span class="badge">ONNX</span></div>
+  <div class="sec overview"><h3>Overview</h3>
+    <p>Real-time recognition of one specific car model (Xiaomi SU7) on resource-limited edge hardware.</p>
+  </div>
+  <div class="sec"><h3>Build</h3>
+    <p>1,100 images built by a positive/negative strategy — 700 of the target, 400 of near-identical sedans — split 90/5/5. Two models compared under identical conditions: YOLOv8n at 3M parameters against YOLOv8s at 11M, 640×640 input, 300 epochs.</p>
+    <p>n won on value for this data size. Export to ONNX removed the framework dependency and left a cross-platform deployment path.</p>
+  </div>
+  <div class="sec"><h3>Design reasoning</h3>
+    <p>The negatives are the design. Training on "car vs. not car" produces a detector that fails on the only question that matters — this sedan or the sedan next to it. And on an edge device, latency and deployment cost are the hard constraints; accuracy only has to clear the bar.</p>
+  </div>
+  <div class="sec"><h3>Retrospective</h3>
+    <p>Data construction, model comparison, lightweighting and ONNX deployment as one chain. The lesson that stuck: data quality and deployment constraints decide outcomes more often than architecture does.</p>
+  </div>
+  <a class="zh-link" href="开发过程与设计思路.html#w05">中文原文 / Chinese original →</a>
+</article>
+
+<!-- ===== 06 ===== -->
+<article class="work" id="w06">
+  <div class="head"><span class="no">06 · NO.07</span><h2>RTSP streaming server, from scratch</h2></div>
+  <div class="badges"><span class="badge type">Interactive media</span><span class="badge status">Completed</span><span class="badge">Python</span><span class="badge">Sockets</span><span class="badge">RTSP / RTP / SDP</span><span class="badge">Threading</span></div>
+  <div class="sec overview"><h3>Overview</h3>
+    <p>A multi-client RTSP server written without leaning on an existing library: protocol commands, session handling and concurrent streaming all implemented directly.</p>
+  </div>
+  <div class="sec"><h3>Build</h3>
+    <p>Five core commands — OPTIONS, DESCRIBE, SETUP, PLAY, TEARDOWN — implemented against the RFC state machine. Each session generates its own conformant SDP description, so clients stay isolated from one another.</p>
+    <p>Sockets plus threads for concurrency. Verified in FFplay and VLC: under 200 ms latency at a stable 30 fps with multiple clients attached.</p>
+  </div>
+  <div class="sec"><h3>Design reasoning</h3>
+    <p>Protocol before code. Drawing every legal state transition first is what separates "it plays a video" from "it is a server". Per-session SDP is the line between a demo and a toy built for one client.</p>
+  </div>
+  <div class="sec"><h3>Retrospective</h3>
+    <p>The streaming stack — RTSP, RTP, SDP — and threaded network code, learned by having to satisfy them. Protocol compliance is a quality floor in systems work, not a feature.</p>
+  </div>
+  <a class="zh-link" href="开发过程与设计思路.html#w06">中文原文 / Chinese original →</a>
+</article>
+
+<!-- ===== 07 ===== -->
+<article class="work" id="w07">
+  <div class="head"><span class="no">07 · NO.08</span><h2>Chrono Loop Web — rewind prototype</h2></div>
+  <div class="badges"><span class="badge type">Interactive media</span><span class="badge status">Playable</span><span class="badge">HTML5 Canvas</span><span class="badge">JavaScript</span></div>
+  <div class="sec overview"><h3>Overview</h3>
+    <p>The rewind mechanic from Chrono Loop rebuilt as a browser-playable prototype, so the fail-rewind-retry loop can be felt in thirty seconds without installing anything.</p>
+  </div>
+  <div class="sec"><h3>Build</h3>
+    <p>State is written per frame into a five-second ring buffer — a replayable history with no save system attached. Death auto-rewinds 2.5 seconds at double speed; R rewinds three seconds by hand. Ghost trails and backflowing particles make the reversal visible rather than merely functional.</p>
+    <p>Levels include a moving platform, spikes and an exit. Edge cases that surfaced during play were fixed rather than documented: history exhaustion, stuck keys across resets, plus on-screen buttons and canvas scaling for mobile.</p>
+  </div>
+  <div class="sec"><h3>Design reasoning</h3>
+    <p>A ring buffer, because "the last few seconds" is exactly the retry window — a full save system would be overkill for the same effect. Two rewinds, two rhythms: automatic for rescue, manual for intent. Everything else serves one goal, that the core loop is legible on first contact.</p>
+  </div>
+  <div class="sec"><h3>Retrospective</h3>
+    <p>The mechanic works on the web. What the prototype really taught is that boundary states — empty history, held keys — have to be designed in a rewind game, not discovered later.</p>
+  </div>
+  <a class="zh-link" href="开发过程与设计思路.html#w07">中文原文 / Chinese original →</a>
+</article>
+
+<!-- ===== 08 ===== -->
+<article class="work" id="w08">
+  <div class="head"><span class="no">08 · NO.09</span><h2>XV6 MLFQ scheduler + visualisation</h2></div>
+  <div class="badges"><span class="badge type">Systems</span><span class="badge status">Completed</span><span class="badge">C</span><span class="badge">XV6 kernel</span><span class="badge">MLFQ</span><span class="badge">Python viz</span></div>
+  <div class="sec overview"><h3>Overview</h3>
+    <p>Undergraduate thesis: a multi-level feedback queue scheduler implemented from zero inside the XV6 teaching kernel, replacing the default round-robin, with experiments run against real scheduling logs.</p>
+  </div>
+  <div class="sec"><h3>Build</h3>
+    <p>Process control blocks extended in proc.h / proc.c / trap.c with three fields — queue level 0–2, ticks in queue, wait ticks. The scheduler was rewritten for three priority queues: new processes start in Q0, CPU-bound processes demote when the quantum expires, I/O-bound processes keep their level by yielding often.</p>
+    <p>A timer-driven anti-starvation pass keeps the bottom queue from dying. Then a Python visualisation framework turned kernel logs into Gantt charts of demotion and comparison bars of retained priority — the experiments were read off real runs, not simulated.</p>
+  </div>
+  <div class="sec"><h3>Design reasoning</h3>
+    <p>MLFQ is priority set by observed behaviour instead of by declaration, which is what buys responsiveness without giving up throughput. And a scheduler's correctness is not a matter of opinion: the log either shows the demotion or it does not.</p>
+  </div>
+  <div class="sec"><h3>Retrospective</h3>
+    <p>Interactive processes responded measurably better than under round-robin. It is the closest I have come to operating-systems theory as working code, and the project that made the bottom of the stack feel concrete.</p>
+  </div>
+  <a class="zh-link" href="开发过程与设计思路.html#w08">中文原文 / Chinese original →</a>
+</article>
+
+<!-- ===== 09 ===== -->
+<article class="work" id="w09">
+  <div class="head"><span class="no">09 · NO.10</span><h2>Monogatari lore map</h2></div>
+  <div class="badges"><span class="badge type">Interactive media</span><span class="badge status">Playable</span><span class="badge">HTML5</span><span class="badge">SVG</span><span class="badge">Data visualisation</span></div>
+  <div class="sec overview"><h3>Overview</h3>
+    <p>A research piece on an anime series rebuilt as a navigable space rather than an article: one character's journey timeline, a draggable relationship graph, and the 2012–2019 series timeline.</p>
+  </div>
+  <div class="sec"><h3>Build</h3>
+    <p>Every fact traced through Japanese primary sources: eight main characters, their order of appearance, how they connect, and the key story beats across the series run. Eight portraits act as shortcuts into the relevant section.</p>
+    <p>Three views, three questions — what this character went through, how these characters relate, how the series evolved. The relationship graph is draggable SVG with live edges and a layout reset. Single HTML file, portraits embedded, works offline.</p>
+  </div>
+  <div class="sec"><h3>Design reasoning</h3>
+    <p>Long-form research decays into forgotten paragraphs. Turned into a map, the reader moves by curiosity and sets their own route — and the three views exist because those three questions kept getting tangled in prose.</p>
+  </div>
+  <div class="sec"><h3>Retrospective</h3>
+    <p>This one was information architecture, not content. Once the material is big enough, how you structure the views and guide exploration outranks how much you put in.</p>
+  </div>
+  <a class="zh-link" href="开发过程与设计思路.html#w09">中文原文 / Chinese original →</a>
+</article>
+
+<!-- ===== 10 ===== -->
+<article class="work" id="w10">
+  <div class="head"><span class="no">10 · NO.11</span><h2>Global game-sales dashboard</h2></div>
+  <div class="badges"><span class="badge type">Interactive media</span><span class="badge status">Playable</span><span class="badge">ECharts</span><span class="badge">Data visualisation</span><span class="badge">Responsive</span></div>
+  <div class="sec overview"><h3>Overview</h3>
+    <p>An interactive dashboard over 16,327 titles that sold 100,000 copies or more between 1980 and 2020, built so a reader can slice the market themselves instead of reading someone else's summary.</p>
+  </div>
+  <div class="sec"><h3>Build</h3>
+    <p>Cleaning and shaping the dataset came first, and the counting rules are stated in the page footer — every figure on screen can be traced back to a definition. Three filters combine: year range, region (North America / Europe / Japan / other) and twelve genres, with every KPI and chart re-rendering on change.</p>
+    <p>Five chart types cross-reference each other: stacked area for yearly trend with a toggle to split lines, a donut for regional share, bars for genre comparison, a platform ranking. Dark theme, responsive layout.</p>
+  </div>
+  <div class="sec"><h3>Design reasoning</h3>
+    <p>"How much did Japanese action games sell in the nineties" has no preset answer page — the filters are the answer. Cross-referencing charts is how a pattern that is invisible in any single view becomes legible.</p>
+  </div>
+  <div class="sec"><h3>Retrospective</h3>
+    <p>Practice with ECharts state sync and responsive dashboard layout. The habit that came out of it: state your data definitions where the reader can see them.</p>
+  </div>
+  <a class="zh-link" href="开发过程与设计思路.html#w10">中文原文 / Chinese original →</a>
+</article>
+
+<!-- ===== 11 ===== -->
+<article class="work" id="w11">
+  <div class="head"><span class="no">11 · NO.12</span><h2>Pulsar Field — playable soundscape</h2></div>
+  <div class="badges"><span class="badge type">Interactive media</span><span class="badge status">Playable</span><span class="badge">Web Audio</span><span class="badge">Canvas 2D</span><span class="badge">Generative</span></div>
+  <div class="sec overview"><h3>Overview</h3>
+    <p>A generative instrument disguised as deep-space instrumentation. Click or drag the night sky and it answers with stardust particles and synthesised notes: horizontal position sets pitch, vertical sets velocity.</p>
+  </div>
+  <div class="sec"><h3>Build</h3>
+    <p>Pitch is mapped across an A-minor pentatonic scale, velocity across vertical position, with four colour phases rotating by note — position, colour and sound sharing one coordinate system. Every sound is synthesised in Web Audio with no samples, across four timbres.</p>
+    <p>A 92 BPM generative composer runs an i–VI–III–VII progression with kick, hats, bass and melody scheduled by audio-clock lookahead, so audio and visuals stay locked. Single file, no dependencies: mute always reachable, reduced-motion respected, touch supported, plus a silent <code>?demo=1</code> preview so the page can be screenshotted or reviewed without sound.</p>
+  </div>
+  <div class="sec"><h3>Design reasoning</h3>
+    <p>Pentatonic because any click has to sound good — no black keys, no wrong notes. Lookahead scheduling because drifting audio clocks destroy rhythm. The piece is an instrument, not a player: your gesture produces the sound rather than triggering a pre-recorded phrase.</p>
+  </div>
+  <div class="sec"><h3>Retrospective</h3>
+    <p>Zero-sample generative audio works on the web, and this is where audio scheduling, pitch mapping and audio-visual sync stopped being abstract.</p>
+  </div>
+  <a class="zh-link" href="开发过程与设计思路.html#w11">中文原文 / Chinese original →</a>
+</article>
+
+<!-- ===== 12 ===== -->
+<article class="work" id="w12">
+  <div class="head"><span class="no">12 · NO.13</span><h2>Stardust Catcher — arcade collection</h2></div>
+  <div class="badges"><span class="badge type">Game design</span><span class="badge status">Playable</span><span class="badge">Canvas 2D</span><span class="badge">Web Audio</span><span class="badge">Particles</span></div>
+  <div class="sec overview"><h3>Overview</h3>
+    <p>A one-screen arcade loop: catch falling stars in a bubble, bank combos, take the risk for a rare cyan star, and lose a life to a red meteor.</p>
+  </div>
+  <div class="sec"><h3>Build</h3>
+    <p>Gold stars build combo and score, cyan stars pay a large bonus, red meteors cost a life. Spawn density and fall speed ramp with play time, so difficulty rises without a scripted curve.</p>
+    <p>Every catch pays out in several channels at once: a suck-in animation, a particle burst, screen shake, and a score multiplier every fifth combo. Music and effects are synthesised live in Web Audio, the best score persists in local storage as something to beat, and <code>?demo=1</code> runs an unattended preview.</p>
+  </div>
+  <div class="sec"><h3>Design reasoning</h3>
+    <p>One-sentence rules, dense feedback — the arcade recipe. The combo multiplier and rare stars add the hook that turns casual catching into light optimisation: there is a best route, and it is worth chasing.</p>
+  </div>
+  <div class="sec"><h3>Retrospective</h3>
+    <p>A second pass on procedural audio and particles after Pulsar Field, with a tighter feedback loop. It also confirmed that a single-file, dependency-free build is the right shape for portfolio work — it opens and plays anywhere.</p>
+  </div>
+  <a class="zh-link" href="开发过程与设计思路.html#w12">中文原文 / Chinese original →</a>
+</article>
+
+<!-- ===== 13 ===== -->
+<article class="work" id="w13">
+  <div class="head"><span class="no">13 · NO.14</span><h2>Branch Road — LLM branching narrative</h2></div>
+  <div class="badges"><span class="badge type">Game design</span><span class="badge status">Prototype</span><span class="badge">glm-4-flash</span><span class="badge">edge-tts</span><span class="badge">CogView</span><span class="badge">TTS</span></div>
+  <div class="sec overview"><h3>Overview</h3>
+    <p>Vertical slice 0.1 of a narrative game where the branches are generated live by an LLM. The question it exists to answer is whether instant generation can carry immersion, not whether it can produce text.</p>
+  </div>
+  <div class="sec"><h3>Build</h3>
+    <p>A fixed frame carries four planted clues — the last train, Lin Wan's phone, a 23:47 scheduled draft, the terminus — and the narrator never spells any of them out. Options are generated per turn alongside free-text input, and eight turns reach an ending, after which the player can revisit the ending their other choice would have produced.</p>
+    <p>At the terminus the 23:47 letter appears as a card and is read aloud by an edge-tts voice; eight CogView scenes are pre-generated so the visuals switch with no wait. Instrumented probes record whether players want to know what the other choice held — the design claim tested against real play.</p>
+  </div>
+  <div class="sec"><h3>Design reasoning</h3>
+    <p>Fixed frame with live branches is the pragmatic trade: the frame guarantees a quality floor, generation guarantees that no two runs match. Free-text input matters because choosing among four prepared options is a quiz, while typing an action is acting.</p>
+  </div>
+  <div class="sec"><h3>Retrospective</h3>
+    <p>Generation can hold immersion at viable cost, and the hybrid — human frame, machine branches — is the version that holds up. The probes also showed that instrumented design works in narrative games, not only in systems.</p>
+  </div>
+  <a class="zh-link" href="开发过程与设计思路.html#w13">中文原文 / Chinese original →</a>
+</article>
+
+<!-- ===== 14 ===== -->
+<article class="work" id="w14">
+  <div class="head"><span class="no">14 · NO.15</span><h2>Room of Choice — 18 endings</h2></div>
+  <div class="badges"><span class="badge type">Game design</span><span class="badge status">Playable</span><span class="badge">JavaScript</span><span class="badge">Zero dependency</span><span class="badge">Branching narrative</span></div>
+  <div class="sec overview"><h3>Overview</h3>
+    <p>A pure-front-end narrative game: four chapters, eighteen endings, eighteen clues, no build step — double-click and play. All content is config-driven and the engine never changes.</p>
+  </div>
+  <div class="sec"><h3>Build</h3>
+    <p>The structure carries the complexity: a chained two-clue true ending in chapter four, a true-ending epilogue that revisits the foundation, trap gates that imitate endings, a fake exit that loops, and merge points where branches rejoin a trap.</p>
+    <p>Two codexes — clues and endings — with progress saved locally, plus divergence hints, turn collection into a reason to replay. A "run regression test" button checks the whole story graph on demand, so an eighteen-ending structure cannot quietly break.</p>
+  </div>
+  <div class="sec"><h3>Design reasoning</h3>
+    <p>Multi-ending narrative is a graph: scenes are nodes, choices are edges, traps and true endings are part of the structure, not exceptions to it. Treating it that way makes the content measurable — you can see how much of the graph a player has walked — and testable, which is what stops branching from becoming hand-maintained contradictions.</p>
+  </div>
+  <div class="sec"><h3>Retrospective</h3>
+    <p>Content in config, engine untouched, is what let writing and building separate cleanly. The general lesson: narrative complexity has to be absorbed by structure, because hand-written branches scale linearly and then collapse.</p>
+  </div>
+  <a class="zh-link" href="开发过程与设计思路.html#w14">中文原文 / Chinese original →</a>
+</article>
+
+<!-- ===== 15 ===== -->
+<article class="work" id="w15">
+  <div class="head"><span class="no">15 · NO.16</span><h2>Living — generative ecosystem</h2></div>
+  <div class="badges"><span class="badge type">Interactive media</span><span class="badge status">Prototype</span><span class="badge">Generative audio</span><span class="badge">Autonomous agents</span><span class="badge">HTML5</span></div>
+  <div class="sec overview"><h3>Overview</h3>
+    <p>An interactive media piece built on autonomous evolution and generative sound: a colony of organisms lives, grows, reproduces and dies on its own, while the player supplies energy and nudges direction.</p>
+  </div>
+  <div class="sec"><h3>Build</h3>
+    <p>Colony behaviour runs on rules — birth, growth, reproduction, death — producing a small ecology that keeps running with nobody at the keyboard. The player never controls an individual; moving and clicking injects energy that bends the direction of growth.</p>
+    <p>Sound is generated from colony state in real time, so a thriving colony literally sounds richer. Four viewing modes, a mute key and pause let a visitor choose between watching and taking part.</p>
+  </div>
+  <div class="sec"><h3>Design reasoning</h3>
+    <p>The design question was what role the player holds in work about life cycles. Not an omniscient controller — an energy source inside the system. Your presence changes where it goes; it does not decide what each organism does. That is a more interesting position than protagonist, and it leaves room for the piece to say something.</p>
+  </div>
+  <div class="sec"><h3>Retrospective</h3>
+    <p>An experiment on the player's role in interactive art, and the result surprised me: released control still produced strong participation. It also set a direction for later interactive-media work.</p>
+  </div>
+  <a class="zh-link" href="开发过程与设计思路.html#w15">中文原文 / Chinese original →</a>
+</article>
+
+<!-- ===== 16 ===== -->
+<article class="work" id="w16">
+  <div class="head"><span class="no">16 · NO.17</span><h2>Co-Desk — networked study desk</h2></div>
+  <div class="badges"><span class="badge type">Systems</span><span class="badge status">Completed</span><span class="badge">Electron</span><span class="badge">React</span><span class="badge">FastAPI</span><span class="badge">WebSocket</span><span class="badge">SQLite</span></div>
+  <div class="sec overview"><h3>Overview</h3>
+    <p>A runnable MVP from an HCI course: an Electron + React desktop client against a FastAPI backend with SQLite persistence, turning "studying alone is lonely" into a product two people can actually share over the internet.</p>
+  </div>
+  <div class="sec"><h3>Build</h3>
+    <p>Room lists and custom rooms, account registration with hashed passwords, a pomodoro timer, task notes with breakdowns, ambient audio with seat-direction preview, encouragement cards, focus statistics and a study-time leaderboard. The backend is designed to sit on a cloud host from the start — HTTPS REST plus WSS — and the client only needs the server address to sync a room across devices.</p>
+    <p>Verification used a two-client simulation script driving ten live assertions: join, peer list, state sync, heartbeat, broadcast, leave and fallback. All ten passed, and a win-x64 build was packaged for distribution.</p>
+  </div>
+  <div class="sec"><h3>Design reasoning</h3>
+    <p>The target was companionship, not chat. Seats, focus state and live progress are the social signals — being in the same room has to be perceptible without talking. Making "cloud-hostable backend" a constraint on day one is what avoided the local-single-machine trap that MVPs usually fall into.</p>
+  </div>
+  <div class="sec"><h3>Retrospective</h3>
+    <p>Full-stack in one pass, through the HCI method of observation, prototype, runnable product. Next steps would be real spatial audio over WebRTC and a PostgreSQL migration; both are deliberately out of MVP scope.</p>
+  </div>
+  <a class="zh-link" href="开发过程与设计思路.html#w16">中文原文 / Chinese original →</a>
+</article>
+
+<!-- ===== 17 ===== -->
+<article class="work" id="w17">
+  <div class="head"><span class="no">17 · NO.18</span><h2>Conversation Archive — AI summary MVP</h2></div>
+  <div class="badges"><span class="badge type">Systems</span><span class="badge status">Prototype</span><span class="badge">HTML5</span><span class="badge">Ollama</span><span class="badge">Local LLM</span><span class="badge">localStorage</span></div>
+  <div class="sec overview"><h3>Overview</h3>
+    <p>An interactive MVP for a feature every AI product needs: turning a long conversation into structured takeaways. Every takeaway is clickable back to its source sentence, deletable and regenerable. A privacy toggle and a local model keep the transcript on the machine, and the archive view turns summaries into searchable memory.</p>
+  </div>
+  <div class="sec"><h3>Build</h3>
+    <p>Before building, the feature was scored on five axes — user pain, frequency, cost, effect, side effects — and the verdict was "build it, but start manual". Auto-summarising changes behaviour and can silently drop detail, so a manual trigger was the right scope for P0: one conversation, three tiers of takeaway, source anchors, an explicit "AI-generated, may be wrong" label.</p>
+    <p>The engine degrades twice: local Ollama running qwen3:8b with output constrained to strict JSON first, then a browser-side rule summariser (keyword and sentence-length scoring) when the model is absent or privacy mode is on. P1 added background archiving on conversation switch and model-generated titles. P2 added the archive library: cross-session search with hit highlighting, aggregation by conversation, jump-back links.</p>
+  </div>
+  <div class="sec"><h3>Design reasoning</h3>
+    <p>Accuracy and privacy are the two lifelines of a feature like this. Anchors make a wrong model output checkable rather than authoritative; the privacy switch hands the compliance decision to the user. The degrade chain — real model, then rules, then demo data — means a review never ends in an empty screen, which is itself part of the argument for shipping it.</p>
+  </div>
+  <div class="sec"><h3>Retrospective</h3>
+    <p>Verified rather than asserted: seventeen parser unit tests, six takeaways from the real model with every anchor inside the transcript, zero console errors in page checks. The conclusion is a scoping one — a demonstrable, degradable, offline-capable AI feature gets further than a complete one.</p>
+  </div>
+  <a class="zh-link" href="开发过程与设计思路.html#w17">中文原文 / Chinese original →</a>
+</article>
+
+<!-- ===== 18 ===== -->
+<article class="work" id="w18">
+  <div class="head"><span class="no">18 · NO.19</span><h2>Mometa (UE5) — hand cards and difficulty</h2></div>
+  <div class="badges"><span class="badge type">Game design</span><span class="badge status">In development</span><span class="badge">UE5 / UMG</span><span class="badge">Hi-fi prototype</span><span class="badge">Automated acceptance</span><span class="badge">Per-floor sampling</span></div>
+  <div class="sec overview"><h3>Overview</h3>
+    <p>A hand-card iteration in a UE5 card game, and the most complete problem → prototype → verification → trade-off chain in my work. The starting problem: in a 1,180 px row, eight cards show 147 px each, so names and numbers cannot be read. Scattering them across the table would fix that — but "position equals index" is the spatial memory players rely on by turn three. Whether scatter destroys blind play is what the iteration had to settle.</p>
+  </div>
+  <div class="sec"><h3>Build</h3>
+    <p>An HTML hi-fi prototype settled the layout first: a 4×2 grid for spread plus jitter for non-alignment. Pure random placement piled all eight into one clump — a pit found at prototype stage, along with rotated bounding boxes clipping the table edge when only half a card of margin was left.</p>
+    <p>In engine, pose data <code>FHandCardPose{X,Y,Angle,Z}</code> lives on the card, so position comes from the card rather than from its index. Action grammar: click flips (ScaleX squash-and-swap, no fake 3D), double-click plays, drag flicks out with 80 ms velocity sampling, landing prediction and a 700 px/s threshold. Selection overlay, cancel-return and hover-lift were all rebased on the pose, otherwise the overlay snapped back to the old row position.</p>
+    <p>Six acceptance steps A1–A6 — pose consistency, flip chain, slow-drag return, fast-flick destroy, collapse to zero — feed coordinates into the same StepDrag / HandlePress / HandleRelease the game runs. 6/6 passed, and they caught two bugs a human would hit: rapid clicks swallowing a card (fixed with a flip queue) and a refresh breaking a drag mid-flight (drags voided in SetHand). A pose guard keeps a same-hand refresh from re-scattering.</p>
+    <p>Version v77e moved scatter out of the permanent state: hold Tab to spread the hand, release to return to the row, play always happens in the row. Flicks in inspect mode now return to the deck instead of tearing, since inspect is for reading and one stray flick should not cost a card. The same six steps were re-run in the inspect state: 6/6.</p>
+    <p>Tearing became the carrier of resource pressure rather than a punishment animation. One battle, one deck: played cards tear and are not recovered, free discards are removed, and the only release valve is "hand over eight returns to deck". The deck is restored whole after the fight with card count conserved, and an extreme-build fallback prevents a first-floor stall. Off-screen cards are eaten by the board — the cost is a card in the build, not health.</p>
+    <p>Difficulty was resampled, not felt. Fixing the map bug revealed the first run dying on floor 8 of the final chapter, a chapter that had never been run against the real enemy pool. Draw counts were isolated behind a pinned-start switch: at one card per turn the final chapter lost four of four, at three cards it cleared three of four, so the curve became 2/3/3. The same pass found two contradictory draw configurations and collapsed them into one source that warns on mismatch. Then win rate alone stopped being useful evidence — the hard point had moved from the final chapter to the first, where the boss broke four of four runs but left players at a dozen health with no recovery window after the map change. Measurement switched to per-floor sampling: entry health, turn count and post-fight health, normalised against the character's maximum into a curve, and tuned only where the curve actually dips. The tightest stretch went from cliff to slope, the lowest entry point rose more than a dozen floors, and first-two-turn deaths went to zero.</p>
+  </div>
+  <div class="sec"><h3>Design reasoning</h3>
+    <p>Scatter was rejected by numbers, not by feel: only three or four of eight cards were genuinely readable across a 1,400 px spread; per-turn reshuffles erase spatial memory, which means re-reading the whole table each turn; the click was already spent on flipping, so the detail overlay got skipped; and "flick equals permanent tear" punished the highest mis-touch action in the whole scheme. But the scatter itself was good — the angles and overlaps really do look like a table, and the action grammar is richer than a row. So the idea was not deleted, it was split: the pretty state appears on demand, the usable state is always there. The same logic graded the penalty — a flick in inspect returns to the deck, a flick in play tears — because the meaning of the gesture should set the cost.</p>
+  </div>
+  <div class="sec"><h3>Retrospective</h3>
+    <p>Boundaries recorded honestly: the Tab-to-InputComponent binding cannot be verified without keyboard automation, so a right-click fallback exists pending a human pass; drag feel is code-complete but human flick testing is outstanding; eaten cards have no fly-out animation, which needs incremental rebuild. On method: the value of automated acceptance is not that it passes — it is that the two bugs it caught are exactly the ones a human produces by clicking fast or refreshing mid-drag. The script translated feel problems into reproducible assertions.</p>
+    <p>One limit worth stating plainly: every sample here is a bot, zero human runs. These curves are the ceiling under ideal execution, not human win rates.</p>
+  </div>
+  <a class="zh-link" href="开发过程与设计思路.html#w18">中文原文 / Chinese original →</a>
+</article>
+
+</div>
+
+<footer>
+  <p>Bingsen Hong · Interactive Media Arts / Game Design portfolio appendix · <a href="index.html?lang=en">Back to portfolio →</a></p>
+  <p style="margin-top:6px;font-size:12px;letter-spacing:.14em;font-family:var(--font-display);">DEV NOTES · © 2026 HONG BINGSEN · M.U.S.T.</p>
+</footer>
+</body>
+</html>

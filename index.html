@@ -701,7 +701,7 @@ html[lang="en"] .hero-name{font-size:clamp(38px,5.6vw,68px);}
         <p class="section-desc" data-i18n="works-desc">20 个作品（NO.00–NO.19）：游戏开发、互动媒体、视觉研究与系统工程，其中 8 个可在浏览器直接打开。<code>点击卡片</code>查看详情。</p>
       </div>
       <div class="section-more rv">
-        <a href="开发过程与设计思路.html" data-i18n="works-more">附册：18 篇广度作品的开发过程与设计思路</a>
+        <a href="开发过程与设计思路.html" id="worksMoreDoc" data-i18n="works-more">附册：18 篇广度作品的开发过程与设计思路</a>
         <span class="section-more-note" data-i18n="works-more-note">每篇含概述 / 开发过程 / 设计思路 / 复盘</span>
       </div>
       <div class="filter-bar rv" role="group" aria-label="作品筛选" data-i18n-aria="aria-filter">
@@ -802,7 +802,7 @@ html[lang="en"] .hero-name{font-size:clamp(38px,5.6vw,68px);}
         <a href="https://www.linkedin.com/in/bingsen-hong-must" target="_blank" rel="noopener">LinkedIn</a>
         <a href="https://github.com/duyv0826" target="_blank" rel="noopener">GitHub</a>
         <a href="https://duyv0826.itch.io" target="_blank" rel="noopener">Itch.io</a>
-        <a href="开发过程与设计思路.html" data-i18n="link-doc">附册 · 开发过程与设计思路</a>
+        <a href="开发过程与设计思路.html" id="contactDoc" data-i18n="link-doc">附册 · 开发过程与设计思路</a>
       </div>
     </div>
   </section>
@@ -1327,7 +1327,7 @@ const I18N_EN = {
   'hero-loc': 'M.U.S.T. · GRADUATE STUDENT · ZHUHAI ↔ MACAU',
   'works-title': 'Selected <em>Works</em>',
   'works-desc': '20 projects (NO.00–NO.19) across game development, interactive media, visual research and systems engineering — 8 open directly in the browser. <code>Click a card</code> for details.',
-  'works-more': 'Appendix: dev process & design notes for 18 breadth projects (in Chinese)',
+  'works-more': 'Appendix: dev process & design notes for 18 projects',
   'works-more-note': 'Each essay: overview / process / design reasoning / retrospective',
   'filter-all': 'All', 'filter-ux': 'UX Picks', 'filter-degree': 'Degree Projects', 'filter-game': 'Game Design',
   'filter-media': 'Interactive Media', 'filter-visual': 'Visual Research', 'filter-systems': 'Systems Engineering',
@@ -1354,7 +1354,7 @@ const I18N_EN = {
   'contact-lead': 'Open to conversations about games, interactive media, or collaboration — reach me by email, LinkedIn, GitHub or Itch.io.',
   'contact-mail': 'Click to reveal email',
   'copy-mail': 'Copy Email Address', 'send-mail': 'Send Email',
-  'link-thesis': 'Degree Project · Aoli', 'link-resume': 'Résumé · PDF', 'link-doc': 'Appendix · Dev Process & Design Notes (Chinese)',
+  'link-thesis': 'Degree Project · Aoli', 'link-resume': 'Résumé · PDF', 'link-doc': 'Appendix · Dev Process & Design Notes',
   'footer-copy': '© 2026 Bingsen Hong · M.U.S.T.',
   'footer-archive': 'Archive · 6 early works (2026-09 version)',
   'aria-nav': 'Main navigation', 'aria-menu': 'Open menu', 'aria-identity': 'Identity panel',
@@ -1367,11 +1367,11 @@ const T = {
   'doc-desc': { zh: '洪昺森，澳门科技大学互动媒体艺术（游戏设计方向）研究生，个人作品集：游戏开发、互动媒体与视觉研究项目。', en: 'Bingsen Hong — M.A. candidate in Interactive Media Arts (game design) at Macau University of Science and Technology. Portfolio of game development, interactive media and visual research projects.' },
   'card-view': { zh: '查看作品', en: 'View project' },
   'cover-suffix': { zh: '封面', en: 'cover' },
-  'work-read': { zh: '附册全文 · 开发过程与设计思路 ↗', en: 'Full essay · dev process & design notes ↗' },
+  'work-read': { zh: '附册全文 · 开发过程与设计思路 ↗', en: 'Full notes · dev process & design reasoning ↗' },
   'story-head': { zh: '开发过程 · 设计思路', en: 'Development · Design Reasoning' },
   'play': { zh: '▶ 在浏览器中试玩', en: '▶ Play in Browser' },
   'gh': { zh: 'GitHub 源码 ↗', en: 'Source on GitHub ↗' },
-  'doc': { zh: '附册全文 ↗', en: 'Full essay (Chinese) ↗' },
+  'doc': { zh: '附册全文 ↗', en: 'Full notes (EN) ↗' },
   'note-both': { zh: '可在线试玩，源码已开源至 GitHub。封面图为实机截图。', en: 'Playable online; source on GitHub. Cover is an in-game screenshot.' },
   'note-link': { zh: '本作品为可运行网页原型，封面图为实机游戏画面。', en: 'A runnable web prototype; cover is actual gameplay.' },
   'note-github': { zh: '源码已开源至 GitHub，可在本地运行体验。封面图为项目实机截图。', en: 'Source on GitHub, runnable locally. Cover is a project screenshot.' },
@@ -1388,6 +1388,9 @@ let LANG = (() => {
 })();
 const t = k => (LANG === 'en' ? T[k].en : T[k].zh);
 const locWork = w => (LANG === 'en' && WORKS_EN[w.no]) ? Object.assign({}, w, WORKS_EN[w.no]) : w;
+/* 附册：中文原册 / 英文版设计笔记（同锚点编号） */
+const DOC_ZH = '开发过程与设计思路.html', DOC_EN = 'design-notes-en.html';
+const docHref = a => (LANG === 'en' ? DOC_EN : DOC_ZH) + (a ? '#' + a : '');
 const zhHTML = new Map();
 function applyStaticLang(){
   document.documentElement.lang = LANG === 'en' ? 'en' : 'zh-CN';
@@ -1411,6 +1414,9 @@ function applyStaticLang(){
     lt.textContent = LANG === 'en' ? '中文' : 'EN';
     lt.setAttribute('aria-label', LANG === 'en' ? '切换到中文' : 'Switch to English');
   }
+  const wm = document.getElementById('worksMoreDoc'), cd = document.getElementById('contactDoc');
+  if (wm) wm.setAttribute('href', docHref());
+  if (cd) cd.setAttribute('href', docHref());
 }
 function setLang(l){
   LANG = l;
@@ -1471,7 +1477,7 @@ function renderWorks(filter = 'all'){
         <h3 class="work-title">${lw.title}</h3>
         <p class="work-desc">${lw.desc}</p>
         <div class="work-tags">${lw.tags.map(tg => `<span class="tag">${tg}</span>`).join('')}</div>
-        ${(!w.link && !w.github && DOC_ANCHORS[w.no]) ? `<a class="work-read" href="开发过程与设计思路.html#${DOC_ANCHORS[w.no]}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${t('work-read')}</a>` : ''}
+        ${(!w.link && !w.github && DOC_ANCHORS[w.no]) ? `<a class="work-read" href="${docHref(DOC_ANCHORS[w.no])}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${t('work-read')}</a>` : ''}
       </div>
     </article>`; }).join('');
   // 重新挂载滚动揭示
@@ -1540,7 +1546,7 @@ function openModal(i, trigger){
   }
   const doc = DOC_ANCHORS[w.no];
   if (doc){
-    playHtml += '<a class="gh-btn" href="开发过程与设计思路.html#' + doc + '" target="_blank" rel="noopener">' + t('doc') + '</a>';
+    playHtml += '<a class="gh-btn" href="' + docHref(doc) + '" target="_blank" rel="noopener">' + t('doc') + '</a>';
   }
   if (w.link && w.hint){
     playHtml += '<span class="play-hint">' + w.hint + '</span>';
