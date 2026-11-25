@@ -798,7 +798,7 @@ html[lang="en"] .hero-name{font-size:clamp(38px,5.6vw,68px);}
       </div>
       <div class="contact-links rv">
         <a href="https://duyv0826.github.io/game-portfolio/thesis/" target="_blank" rel="noopener" data-i18n="link-thesis">学位作品 ·《澳里·光景》</a>
-        <a href="resume.pdf" target="_blank" rel="noopener" data-i18n="link-resume">简历 · PDF</a>
+        <a href="resume.pdf" id="resumeLink" target="_blank" rel="noopener" data-i18n="link-resume">简历 · PDF</a>
         <a href="https://www.linkedin.com/in/bingsen-hong-must" target="_blank" rel="noopener">LinkedIn</a>
         <a href="https://github.com/duyv0826" target="_blank" rel="noopener">GitHub</a>
         <a href="https://duyv0826.itch.io" target="_blank" rel="noopener">Itch.io</a>
@@ -1417,6 +1417,8 @@ function applyStaticLang(){
   const wm = document.getElementById('worksMoreDoc'), cd = document.getElementById('contactDoc');
   if (wm) wm.setAttribute('href', docHref());
   if (cd) cd.setAttribute('href', docHref());
+  const rl = document.getElementById('resumeLink');
+  if (rl) rl.setAttribute('href', LANG === 'en' ? 'resume-en.pdf' : 'resume.pdf');
 }
 function setLang(l){
   LANG = l;
