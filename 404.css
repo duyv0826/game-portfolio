@@ -1,0 +1,46 @@
+/* ============================================================
+   404 页样式 —— 关卡终端 PORTFOLIO.TERMINAL v2 的独立样式文件
+   取值与 index.html 内联 :root 一致；单独成文件是为了页面
+   不依赖主样式表，未命中路径时也能秒开。
+   ============================================================ */
+:root{
+  --bg:#0B0907;
+  --bg-2:#100D09;
+  --surface:#16120D;
+  --border:rgba(243,236,225,.12);
+  --text:#F4EDE1;
+  --muted:#B6AB99;
+  --faint:rgba(243,236,225,.55);
+  --accent:#F0B24B;
+  --accent-dim:#D18F2E;
+  --accent-soft:rgba(240,178,75,.10);
+  --font-display:'Chakra Petch','Noto Sans SC','PingFang SC','Microsoft YaHei',system-ui,sans-serif;
+  --font-body:'Noto Sans SC','PingFang SC','Hiragino Sans GB','Microsoft YaHei','Source Han Sans SC',system-ui,-apple-system,sans-serif;
+  --radius:14px;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{background:var(--bg);color:var(--text);font-family:var(--font-body);-webkit-font-smoothing:antialiased;}
+a{color:inherit;text-decoration:none;}
+.wrap{min-height:100vh;display:flex;flex-direction:column;}
+main{flex:1;display:flex;align-items:center;justify-content:center;}
+.notfound{text-align:center;padding:100px 24px;max-width:640px;}
+.nf-code{font-family:var(--font-display);font-size:56px;letter-spacing:.08em;color:var(--accent);margin:0;line-height:1;}
+.nf-title{font-family:var(--font-display);font-size:28px;font-weight:600;margin:18px 0 0;}
+.nf-text{font-size:16px;color:var(--muted);line-height:1.8;margin:14px 0 0;}
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:var(--bg);
+  font-weight:600;border-radius:var(--radius);padding:14px 28px;font-size:15px;margin-top:34px;
+  transition:background .22s var(--ease),transform .22s var(--ease);}
+.btn:hover{background:var(--accent-dim);transform:translateY(-2px);}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px;}
+.icon{width:18px;height:18px;flex:none;}
+.nf-links{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:26px;}
+.nf-links a{font-size:13px;letter-spacing:.08em;color:var(--muted);border:1px solid var(--border);
+  border-radius:999px;padding:10px 20px;min-height:44px;display:inline-flex;align-items:center;
+  transition:color .22s var(--ease),border-color .22s var(--ease),background .22s var(--ease);}
+.nf-links a:hover{color:var(--accent);border-color:var(--accent-dim);background:var(--accent-soft);}
+footer{border-top:1px solid var(--border);padding:22px;text-align:center;
+  font-family:var(--font-display);font-size:12px;letter-spacing:.12em;color:var(--faint);}
+@media (prefers-reduced-motion:reduce){
+  *{transition-duration:.01ms !important;}
+}

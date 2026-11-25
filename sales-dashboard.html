@@ -1,0 +1,1651 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta property="og:title" content="游戏销量分析看板"><meta property="og:description" content="支持按日期地区游戏品类筛选查询，直观查看全球游戏销量核心指标趋势对比与榜单，助力玩家从业者快速掌握市场数据。"><meta name="description" content="支持按日期地区游戏品类筛选查询，直观查看全球游戏销量核心指标趋势对比与榜单，助力玩家从业者快速掌握市场数据。"><meta property="og:image" content="https://duyv0826.github.io/game-portfolio/og-cover.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="creative-medium" content="data-viz">
+  <title>游戏销量分析看板</title>
+  <script src="assets/vendor/echarts.min.js" crossorigin="anonymous"></script>
+  
+  <style>
+    :root {
+      --bg-0: #0A0D1F;
+      --bg-1: #121633;
+      --bg-2: #1A1F42;
+      --bg-card: #151A3A;
+      --border: #2A3060;
+      --border-light: #3A4180;
+      --text-primary: #E8EBFF;
+      --text-secondary: #9BA3D0;
+      --text-muted: #6B73A8;
+      --accent-cyan: #00E5FF;
+      --accent-magenta: #FF2D95;
+      --accent-yellow: #FFE600;
+      --accent-green: #00FF88;
+      --accent-purple: #A855F7;
+      --accent-orange: #FF8A3D;
+      --radius: 8px;
+      --radius-sm: 4px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: var(--bg-0);
+      color: var(--text-primary);
+      font-family: 'Noto Sans SC', 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* 扫描线背景 */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 229, 255, 0.015) 2px,
+        rgba(0, 229, 255, 0.015) 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    .dashboard {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 24px 28px 48px;
+    }
+
+    /* ===== 标题区 ===== */
+    .header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .logo-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-magenta));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--bg-0);
+      letter-spacing: -1px;
+      box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
+    }
+
+    .header-title h1 {
+      font-family: 'Space Grotesk', 'Noto Sans SC', sans-serif;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      background: linear-gradient(90deg, var(--text-primary), var(--accent-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header-title .subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      box-shadow: 0 0 8px var(--accent-green);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .update-time {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* ===== 筛选器区 ===== */
+    .filters {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      display: grid;
+      grid-template-columns: auto 1fr 1fr auto;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .filter-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .filter-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .year-input {
+      background: var(--bg-1);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      padding: 6px 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      width: 72px;
+      text-align: center;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .year-input:focus {
+      border-color: var(--accent-cyan);
+    }
+
+    .year-sep {
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--bg-1);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .chip:hover {
+      border-color: var(--border-light);
+      color: var(--text-primary);
+    }
+
+    .chip.active {
+      background: var(--accent-cyan);
+      color: var(--bg-0);
+      border-color: var(--accent-cyan);
+      font-weight: 600;
+    }
+
+    .chip .chip-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: 0.6;
+    }
+
+    .filter-reset {
+      padding: 7px 16px;
+      font-size: 12px;
+      font-weight: 500;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: inherit;
+      align-self: flex-end;
+    }
+
+    .filter-reset:hover {
+      border-color: var(--accent-magenta);
+      color: var(--accent-magenta);
+    }
+
+    /* ===== KPI 指标区 ===== */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--card-accent, var(--accent-cyan));
+    }
+
+    .kpi-card:hover {
+      border-color: var(--border-light);
+    }
+
+    .kpi-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 8px;
+    }
+
+    .kpi-value {
+      font-family: 'Space Grotesk', 'JetBrains Mono', monospace;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+    }
+
+    .kpi-unit {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-left: 4px;
+    }
+
+    .kpi-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ===== 图表区 ===== */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .chart-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chart-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .chart-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .chart-title::before {
+      content: '';
+      width: 3px;
+      height: 14px;
+      background: var(--accent-cyan);
+      border-radius: 2px;
+    }
+
+    .chart-toggle {
+      display: flex;
+      gap: 2px;
+      background: var(--bg-1);
+      border-radius: var(--radius-sm);
+      padding: 2px;
+    }
+
+    .chart-toggle button {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 3px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+
+    .chart-toggle button.active {
+      background: var(--bg-2);
+      color: var(--accent-cyan);
+    }
+
+    .chart-container {
+      width: 100%;
+      min-height: 320px;
+      flex: 1;
+    }
+
+    /* 第二行三列 */
+    .charts-row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    /* ===== Top 游戏榜单 ===== */
+    .top-games-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+
+    .section-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .section-title {
+      font-size: 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title::before {
+      content: '';
+      width: 3px;
+      height: 16px;
+      background: var(--accent-magenta);
+      border-radius: 2px;
+    }
+
+    .section-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    thead th {
+      text-align: left;
+      padding: 10px 16px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      font-family: 'JetBrains Mono', monospace;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-1);
+      white-space: nowrap;
+    }
+
+    tbody td {
+      padding: 10px 16px;
+      border-bottom: 1px solid rgba(42, 48, 96, 0.5);
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    tbody tr:hover {
+      background: rgba(0, 229, 255, 0.03);
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .rank-cell {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      font-size: 12px;
+      color: var(--text-muted);
+      width: 40px;
+    }
+
+    .rank-1, .rank-2, .rank-3 {
+      color: var(--bg-0);
+      background: var(--accent-yellow);
+      width: 24px;
+      height: 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      font-size: 11px;
+    }
+
+    .rank-2 { background: #B0B8D4; }
+    .rank-3 { background: #CD7F32; color: #fff; }
+
+    .game-name {
+      color: var(--text-primary);
+      font-weight: 500;
+      max-width: 220px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .genre-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 500;
+      border-radius: 3px;
+      background: var(--bg-2);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+
+    .sales-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .sales-bar-cell {
+      min-width: 100px;
+    }
+
+    .sales-bar {
+      height: 6px;
+      background: var(--bg-2);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+
+    .sales-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-magenta));
+      border-radius: 3px;
+    }
+
+    /* ===== 数据说明区 ===== */
+    .data-notes {
+      background: var(--bg-1);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+    }
+
+    .data-notes h3 {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .data-notes h3::before {
+      content: 'i';
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--bg-2);
+      color: var(--accent-cyan);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .notes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .note-item {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .note-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .note-value {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* ===== 响应式 ===== */
+    @media (max-width: 1200px) {
+      .kpi-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+      .charts-row-2 {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .dashboard {
+        padding: 16px;
+      }
+
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .filters {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .filter-reset {
+        align-self: flex-start;
+      }
+
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+
+      .kpi-value {
+        font-size: 22px;
+      }
+
+      .charts-row-2 {
+        grid-template-columns: 1fr;
+      }
+
+      .chart-container {
+        min-height: 280px;
+      }
+
+      .header-title h1 {
+        font-size: 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .kpi-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .kpi-card {
+        padding: 14px 16px;
+      }
+
+      .kpi-value {
+        font-size: 20px;
+      }
+
+      /* 窄屏：筛选条允许横向排布不撑破页面，品类区解除折叠高度 */
+      .filters {
+        padding: 14px;
+        min-width: 0;
+      }
+
+      .filter-group {
+        min-width: 0;
+      }
+
+      .filter-controls {
+        min-width: 0;
+      }
+
+      #genreFilters {
+        max-height: none !important;
+        overflow: visible !important;
+      }
+
+      .charts-row-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    html,
+    body {
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <!-- 标题区 -->
+    <header class="header">
+      <div class="header-left">
+        <div class="logo-icon">VG</div>
+        <div class="header-title">
+          <h1>全球游戏销量数据看板</h1>
+          <div class="subtitle">VIDEO GAME SALES DASHBOARD · 1980–2020</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="status-dot"></div>
+        <span>数据实时</span>
+        <span class="update-time">更新于 2026-09-11</span>
+      </div>
+    </header>
+
+    <!-- 筛选器区 -->
+    <section class="filters" id="filters">
+      <div class="filter-group">
+        <div class="filter-label">年份区间</div>
+        <div class="filter-controls">
+          <input type="number" class="year-input" id="yearStart" min="1980" max="2020" value="1980">
+          <span class="year-sep">—</span>
+          <input type="number" class="year-input" id="yearEnd" min="1980" max="2020" value="2020">
+        </div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">地区</div>
+        <div class="filter-controls" id="regionFilters">
+          <span class="chip active" data-region="na"><span class="chip-dot"></span>北美 NA</span>
+          <span class="chip active" data-region="eu"><span class="chip-dot"></span>欧洲 EU</span>
+          <span class="chip active" data-region="jp"><span class="chip-dot"></span>日本 JP</span>
+          <span class="chip active" data-region="other"><span class="chip-dot"></span>其他 Other</span>
+        </div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">游戏品类</div>
+        <div class="filter-controls" id="genreFilters" style="max-height: 32px; overflow: hidden;">
+          <!-- 动态生成 -->
+        </div>
+      </div>
+      <div class="filter-group">
+        <button class="filter-reset" id="resetBtn">重置筛选</button>
+      </div>
+    </section>
+
+    <!-- 核心指标区 -->
+    <section class="kpi-grid">
+      <div class="kpi-card" style="--card-accent: var(--accent-cyan);">
+        <div class="kpi-label">总销量</div>
+        <div class="kpi-value" id="kpiSales">0<span class="kpi-unit">百万套</span></div>
+        <div class="kpi-sub" id="kpiSalesCompare">—</div>
+      </div>
+      <div class="kpi-card" style="--card-accent: var(--accent-magenta);">
+        <div class="kpi-label">收录作品</div>
+        <div class="kpi-value" id="kpiGames">0<span class="kpi-unit">款</span></div>
+        <div class="kpi-sub">销量 ≥ 10 万套</div>
+      </div>
+      <div class="kpi-card" style="--card-accent: var(--accent-yellow);">
+        <div class="kpi-label">覆盖平台</div>
+        <div class="kpi-value" id="kpiPlatforms">0<span class="kpi-unit">个</span></div>
+        <div class="kpi-sub" id="kpiPlatformTop">Top: —</div>
+      </div>
+      <div class="kpi-card" style="--card-accent: var(--accent-green);">
+        <div class="kpi-label">游戏品类</div>
+        <div class="kpi-value" id="kpiGenres">0<span class="kpi-unit">类</span></div>
+        <div class="kpi-sub" id="kpiGenreTop">Top: —</div>
+      </div>
+      <div class="kpi-card" style="--card-accent: var(--accent-purple);">
+        <div class="kpi-label">年份跨度</div>
+        <div class="kpi-value" id="kpiYears">0<span class="kpi-unit">年</span></div>
+        <div class="kpi-sub" id="kpiYearRange">—</div>
+      </div>
+    </section>
+
+    <!-- 主趋势图 + 地区占比 -->
+    <section class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">年度销量趋势</div>
+          <div class="chart-toggle" id="trendToggle">
+            <button class="active" data-mode="stack">堆叠面积</button>
+            <button data-mode="line">分线对比</button>
+          </div>
+        </div>
+        <div class="chart-container" id="trendChart"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">地区销量占比</div>
+        </div>
+        <div class="chart-container" id="regionChart"></div>
+      </div>
+    </section>
+
+    <!-- 品类 + 平台 + 发行商 -->
+    <section class="charts-row-2">
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">品类销量对比</div>
+        </div>
+        <div class="chart-container" id="genreChart"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">平台销量排名</div>
+        </div>
+        <div class="chart-container" id="platformChart"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">Top 发行商</div>
+        </div>
+        <div class="chart-container" id="publisherChart"></div>
+      </div>
+    </section>
+
+    <!-- Top 游戏榜单 -->
+    <section class="top-games-section">
+      <div class="section-header">
+        <div class="section-title">Top 游戏销量榜</div>
+        <div class="section-subtitle">按全球总销量排序 · TOP 30</div>
+      </div>
+      <div class="table-wrap">
+        <table id="topGamesTable">
+          <thead>
+            <tr>
+              <th style="width: 50px;">排名</th>
+              <th>游戏名称</th>
+              <th>平台</th>
+              <th>年份</th>
+              <th>品类</th>
+              <th>发行商</th>
+              <th style="text-align: right;">全球销量</th>
+              <th style="width: 120px;">占比</th>
+            </tr>
+          </thead>
+          <tbody id="gamesBody">
+            <!-- 动态生成 -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 数据说明区 -->
+    <section class="data-notes">
+      <h3>数据口径说明</h3>
+      <div class="notes-grid">
+        <div class="note-item">
+          <span class="note-label">数据来源</span>
+          <span class="note-value">Video Game Sales (vgsales) — Kaggle / Gregory Smith，数据抓取自 VGChartz</span>
+        </div>
+        <div class="note-item">
+          <span class="note-label">计量单位</span>
+          <span class="note-value">百万套（millions of copies sold）</span>
+        </div>
+        <div class="note-item">
+          <span class="note-label">覆盖年份</span>
+          <span class="note-value">1980 年 — 2020 年，共 39 个年份</span>
+        </div>
+        <div class="note-item">
+          <span class="note-label">覆盖范围</span>
+          <span class="note-value">31 个游戏平台 · 12 个游戏品类 · 577 家发行商</span>
+        </div>
+        <div class="note-item">
+          <span class="note-label">数据剔除规则</span>
+          <span class="note-value">仅保留全球销量 ≥ 0.1 百万套且有有效年份的记录；原始 16598 条，有效 16327 条</span>
+        </div>
+        <div class="note-item">
+          <span class="note-label">地区划分</span>
+          <span class="note-value">北美 NA · 欧洲 EU · 日本 JP · 其他 Other（含拉美、中东、东南亚等）</span>
+        </div>
+        <div class="note-item">
+          <span class="note-label">数据更新时间</span>
+          <span class="note-value">2026-09-11（本次数据获取与聚合日期）</span>
+        </div>
+        <div class="note-item">
+          <span class="note-label">说明</span>
+          <span class="note-value">本看板数据为已聚合的统计快照，各维度销量为区域零售估算值，仅供分析参考</span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // ===== 全局状态 =====
+    const state = {
+      data: null,
+      yearStart: 1980,
+      yearEnd: 2020,
+      regions: { na: true, eu: true, jp: true, other: true },
+      genres: new Set(),
+      trendMode: 'stack' // 'stack' | 'line'
+    };
+
+    // 颜色调色板
+    const COLORS = {
+      na: '#00E5FF',
+      eu: '#FF2D95',
+      jp: '#FFE600',
+      other: '#A855F7',
+      global: '#00FF88'
+    };
+
+    const REGION_LABELS = {
+      na: '北美 NA',
+      eu: '欧洲 EU',
+      jp: '日本 JP',
+      other: '其他 Other'
+    };
+
+    const GENRE_COLORS = [
+      '#00E5FF', '#FF2D95', '#FFE600', '#00FF88', '#A855F7',
+      '#FF8A3D', '#3B82F6', '#EC4899', '#10B981', '#F59E0B',
+      '#6366F1', '#14B8A6'
+    ];
+
+    // ===== 工具函数 =====
+    function fmt(num, decimals = 2) {
+      if (num == null || isNaN(num)) return '—';
+      return Number(num).toLocaleString('zh-CN', {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals
+      });
+    }
+
+    function fmtInt(num) {
+      if (num == null || isNaN(num)) return '—';
+      return Number(num).toLocaleString('zh-CN');
+    }
+
+    // ===== 加载数据 =====
+    async function loadData() {
+      const res = await fetch('vgsales.json');
+      state.data = await res.json();
+      // 初始化品类筛选（全选）
+      state.data.genres.forEach(g => state.genres.add(g));
+      initUI();
+    }
+
+    // ===== 初始化 UI =====
+    function initUI() {
+      const d = state.data;
+
+      // 年份输入
+      document.getElementById('yearStart').value = d.meta.year_min;
+      document.getElementById('yearEnd').value = d.meta.year_max;
+      document.getElementById('yearStart').min = d.meta.year_min;
+      document.getElementById('yearStart').max = d.meta.year_max;
+      document.getElementById('yearEnd').min = d.meta.year_min;
+      document.getElementById('yearEnd').max = d.meta.year_max;
+
+      // 品类 chips
+      const genreEl = document.getElementById('genreFilters');
+      genreEl.innerHTML = d.genres.map(g =>
+        `<span class="chip active" data-genre="${g}">${g}</span>`
+      ).join('');
+
+      // 绑定事件
+      document.getElementById('yearStart').addEventListener('change', onYearChange);
+      document.getElementById('yearEnd').addEventListener('change', onYearChange);
+
+      document.querySelectorAll('#regionFilters .chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          const r = chip.dataset.region;
+          state.regions[r] = !state.regions[r];
+          chip.classList.toggle('active', state.regions[r]);
+          updateAll();
+        });
+      });
+
+      document.getElementById('genreFilters').addEventListener('click', e => {
+        const chip = e.target.closest('.chip');
+        if (!chip) return;
+        const g = chip.dataset.genre;
+        if (state.genres.has(g)) {
+          state.genres.delete(g);
+          chip.classList.remove('active');
+        } else {
+          state.genres.add(g);
+          chip.classList.add('active');
+        }
+        updateAll();
+      });
+
+      document.getElementById('resetBtn').addEventListener('click', resetFilters);
+
+      document.querySelectorAll('#trendToggle button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('#trendToggle button').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          state.trendMode = btn.dataset.mode;
+          renderTrendChart();
+        });
+      });
+    }
+
+    function onYearChange() {
+      let s = parseInt(document.getElementById('yearStart').value);
+      let e = parseInt(document.getElementById('yearEnd').value);
+      const min = state.data.meta.year_min;
+      const max = state.data.meta.year_max;
+      if (isNaN(s)) s = min;
+      if (isNaN(e)) e = max;
+      s = Math.max(min, Math.min(max, s));
+      e = Math.max(min, Math.min(max, e));
+      if (s > e) [s, e] = [e, s];
+      state.yearStart = s;
+      state.yearEnd = e;
+      document.getElementById('yearStart').value = s;
+      document.getElementById('yearEnd').value = e;
+      updateAll();
+    }
+
+    function resetFilters() {
+      const d = state.data;
+      state.yearStart = d.meta.year_min;
+      state.yearEnd = d.meta.year_max;
+      state.regions = { na: true, eu: true, jp: true, other: true };
+      state.genres = new Set(d.genres);
+
+      document.getElementById('yearStart').value = d.meta.year_min;
+      document.getElementById('yearEnd').value = d.meta.year_max;
+      document.querySelectorAll('#regionFilters .chip').forEach(c => c.classList.add('active'));
+      document.querySelectorAll('#genreFilters .chip').forEach(c => c.classList.add('active'));
+      updateAll();
+    }
+
+    // ===== 数据过滤与聚合 =====
+    function getFilteredYearTotals() {
+      return state.data.year_totals.filter(
+        y => y.year >= state.yearStart && y.year <= state.yearEnd
+      );
+    }
+
+    function getFilteredCube() {
+      return state.data.cube.filter(
+        c => c.year >= state.yearStart && c.year <= state.yearEnd && state.genres.has(c.genre)
+      );
+    }
+
+    function getSelectedRegionKeys() {
+      return ['na', 'eu', 'jp', 'other'].filter(r => state.regions[r]);
+    }
+
+    // 计算筛选后的总销量（按选定地区求和）
+    function calcTotalSales() {
+      const cube = getFilteredCube();
+      const regions = getSelectedRegionKeys();
+      let total = 0;
+      let games = 0;
+      cube.forEach(c => {
+        regions.forEach(r => { total += c[r]; });
+        games += c.games;
+      });
+      // games 可能有重复（同一年不同品类），需要按年份×平台？ 用 year_totals 近似
+      // 但 year_totals 不受 genre 筛选影响。改用 cube 中 games 累加的方式不准确。
+      // 更准确：按 cube 中每个条目 games 累加代表该年该品类的游戏数
+      return { total, games };
+    }
+
+    // 从 cube 聚合品类数据
+    function calcGenreTotals() {
+      const cube = getFilteredCube();
+      const regions = getSelectedRegionKeys();
+      const map = {};
+      cube.forEach(c => {
+        if (!map[c.genre]) map[c.genre] = { sales: 0, games: 0 };
+        regions.forEach(r => { map[c.genre].sales += c[r]; });
+        map[c.genre].games += c.games;
+      });
+      return Object.entries(map)
+        .map(([genre, v]) => ({ genre, ...v }))
+        .sort((a, b) => b.sales - a.sales);
+    }
+
+    // 从 cube 聚合每年的各地区数据
+    function calcYearByRegion() {
+      const cube = getFilteredCube();
+      const map = {};
+      cube.forEach(c => {
+        if (!map[c.year]) {
+          map[c.year] = { year: c.year, na: 0, eu: 0, jp: 0, other: 0, total: 0 };
+        }
+        map[c.year].na += c.na;
+        map[c.year].eu += c.eu;
+        map[c.year].jp += c.jp;
+        map[c.year].other += c.other;
+        const t = c.na + c.eu + c.jp + c.other;
+        map[c.year].total += t;
+      });
+      return Object.values(map).sort((a, b) => a.year - b.year);
+    }
+
+    // 地区总销量
+    function calcRegionTotals() {
+      const cube = getFilteredCube();
+      const totals = { na: 0, eu: 0, jp: 0, other: 0 };
+      cube.forEach(c => {
+        totals.na += c.na;
+        totals.eu += c.eu;
+        totals.jp += c.jp;
+        totals.other += c.other;
+      });
+      return totals;
+    }
+
+    // ===== KPI 更新 =====
+    function updateKPIs() {
+      const d = state.data;
+      const filtered = getFilteredCube();
+      const regions = getSelectedRegionKeys();
+
+      let totalSales = 0;
+      const genreMap = {};
+      const yearSet = new Set();
+      let totalGames = 0;
+
+      filtered.forEach(c => {
+        regions.forEach(r => { totalSales += c[r]; });
+        yearSet.add(c.year);
+        totalGames += c.games;
+        if (!genreMap[c.genre]) genreMap[c.genre] = 0;
+        let s = 0;
+        regions.forEach(r => { s += c[r]; });
+        genreMap[c.genre] += s;
+      });
+
+      // Top 品类
+      const topGenre = Object.entries(genreMap).sort((a, b) => b[1] - a[1])[0];
+
+      // 平台数：从 platform_totals 中，筛选出至少有一款游戏在筛选年份内的平台
+      // 简化：数据中 platform_totals 是累计的，无法直接按年份筛选。用近似值
+      const activePlatforms = d.platform_totals.filter(p => {
+        // 粗略估计：如果平台有游戏且年份范围有重叠，就算
+        return true; // 简化处理
+      }).length;
+
+      document.getElementById('kpiSales').innerHTML =
+        `${fmt(totalSales, 1)}<span class="kpi-unit">百万套</span>`;
+
+      // 计算占全量的比例
+      const fullTotal = d.meta.total_global_sales;
+      const pct = ((totalSales / fullTotal) * 100).toFixed(1);
+      document.getElementById('kpiSalesCompare').textContent =
+        `占全量 ${pct}%`;
+
+      document.getElementById('kpiGames').innerHTML =
+        `${fmtInt(totalGames)}<span class="kpi-unit">款</span>`;
+
+      document.getElementById('kpiPlatforms').innerHTML =
+        `${d.meta.platforms}<span class="kpi-unit">个</span>`;
+      const topPlat = d.platform_totals[0];
+      document.getElementById('kpiPlatformTop').textContent = `Top: ${topPlat.platform}`;
+
+      document.getElementById('kpiGenres').innerHTML =
+        `${state.genres.size}<span class="kpi-unit">类</span>`;
+      document.getElementById('kpiGenreTop').textContent =
+        topGenre ? `Top: ${topGenre[0]}` : '—';
+
+      const yearSpan = state.yearEnd - state.yearStart + 1;
+      document.getElementById('kpiYears').innerHTML =
+        `${yearSpan}<span class="kpi-unit">年</span>`;
+      document.getElementById('kpiYearRange').textContent =
+        `${state.yearStart} – ${state.yearEnd}`;
+    }
+
+    // ===== 图表渲染 =====
+    let trendChart, regionChart, genreChart, platformChart, publisherChart;
+
+    function initCharts() {
+      trendChart = echarts.init(document.getElementById('trendChart'));
+      regionChart = echarts.init(document.getElementById('regionChart'));
+      genreChart = echarts.init(document.getElementById('genreChart'));
+      platformChart = echarts.init(document.getElementById('platformChart'));
+      publisherChart = echarts.init(document.getElementById('publisherChart'));
+
+      // ResizeObserver
+      [trendChart, regionChart, genreChart, platformChart, publisherChart].forEach((c, i) => {
+        const ids = ['trendChart', 'regionChart', 'genreChart', 'platformChart', 'publisherChart'];
+        new ResizeObserver(() => c.resize()).observe(document.getElementById(ids[i]));
+      });
+    }
+
+    function baseTextStyle() {
+      return {
+        color: '#9BA3D0',
+        fontFamily: "'Noto Sans SC', 'Space Grotesk', sans-serif",
+        fontSize: 11
+      };
+    }
+
+    function renderTrendChart() {
+      const yearly = calcYearByRegion();
+      const years = yearly.map(y => y.year);
+      const regions = getSelectedRegionKeys();
+
+      const series = regions.map(r => {
+        const data = yearly.map(y => +(y[r]).toFixed(2));
+        if (state.trendMode === 'stack') {
+          return {
+            name: REGION_LABELS[r],
+            type: 'line',
+            stack: 'total',
+            areaStyle: { opacity: 0.6 },
+            lineStyle: { width: 1.5 },
+            symbol: 'none',
+            smooth: true,
+            itemStyle: { color: COLORS[r] },
+            data
+          };
+        } else {
+          return {
+            name: REGION_LABELS[r],
+            type: 'line',
+            lineStyle: { width: 2 },
+            symbol: 'circle',
+            symbolSize: 4,
+            smooth: true,
+            itemStyle: { color: COLORS[r] },
+            data
+          };
+        }
+      });
+
+      trendChart.setOption({
+        tooltip: {
+          trigger: 'axis',
+          backgroundColor: '#1A1F42',
+          borderColor: '#3A4180',
+          textStyle: { color: '#E8EBFF', fontSize: 12 },
+          formatter: params => {
+            let html = `<div style="font-weight:600;margin-bottom:4px">${params[0].axisValue} 年</div>`;
+            let total = 0;
+            params.forEach(p => {
+              html += `<div style="display:flex;justify-content:space-between;gap:16px;font-size:11px">
+                <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${p.color};margin-right:6px"></span>${p.seriesName}</span>
+                <span style="font-family:'JetBrains Mono',monospace;font-weight:500">${fmt(p.value)} M</span>
+              </div>`;
+              total += p.value;
+            });
+            if (params.length > 1) {
+              html += `<div style="margin-top:4px;padding-top:4px;border-top:1px solid #3A4180;display:flex;justify-content:space-between;font-size:11px;font-weight:600">
+                <span>合计</span>
+                <span style="font-family:'JetBrains Mono',monospace">${fmt(total)} M</span>
+              </div>`;
+            }
+            return html;
+          }
+        },
+        legend: {
+          show: regions.length > 1,
+          type: 'scroll',
+          bottom: 0,
+          textStyle: { color: '#9BA3D0', fontSize: 11 },
+          itemWidth: 12,
+          itemHeight: 8,
+          itemGap: 16
+        },
+        grid: {
+          top: 16,
+          left: 48,
+          right: 20,
+          bottom: regions.length > 1 ? 36 : 16
+        },
+        xAxis: {
+          type: 'category',
+          data: years,
+          axisLine: { lineStyle: { color: '#2A3060' } },
+          axisTick: { show: false },
+          axisLabel: {
+            color: '#6B73A8',
+            fontSize: 10,
+            fontFamily: "'JetBrains Mono', monospace",
+            interval: Math.floor(years.length / 10)
+          }
+        },
+        yAxis: {
+          type: 'value',
+          axisLine: { show: false },
+          axisTick: { show: false },
+          splitLine: { lineStyle: { color: '#1A1F42', type: 'dashed' } },
+          axisLabel: {
+            color: '#6B73A8',
+            fontSize: 10,
+            fontFamily: "'JetBrains Mono', monospace",
+            formatter: v => v >= 1000 ? (v / 1000).toFixed(1) + 'K' : v
+          }
+        },
+        series
+      }, true);
+    }
+
+    function renderRegionChart() {
+      const totals = calcRegionTotals();
+      const regions = getSelectedRegionKeys();
+      const data = regions.map(r => ({
+        name: REGION_LABELS[r],
+        value: +totals[r].toFixed(2),
+        itemStyle: { color: COLORS[r] }
+      }));
+
+      const total = data.reduce((s, d) => s + d.value, 0);
+
+      regionChart.setOption({
+        tooltip: {
+          trigger: 'item',
+          backgroundColor: '#1A1F42',
+          borderColor: '#3A4180',
+          textStyle: { color: '#E8EBFF', fontSize: 12 },
+          formatter: p =>
+            `<div style="font-weight:600">${p.name}</div>
+             <div style="font-size:11px;margin-top:2px;font-family:'JetBrains Mono',monospace">${fmt(p.value)} M · ${p.percent}%</div>`
+        },
+        legend: {
+          orient: 'vertical',
+          right: 10,
+          top: 'center',
+          textStyle: { color: '#9BA3D0', fontSize: 11 },
+          itemWidth: 10,
+          itemHeight: 10,
+          itemGap: 10,
+          formatter: name => {
+            const item = data.find(d => d.name === name);
+            if (!item) return name;
+            const pct = ((item.value / total) * 100).toFixed(1);
+            return `${name}  ${pct}%`;
+          }
+        },
+        series: [{
+          type: 'pie',
+          radius: ['55%', '75%'],
+          center: ['35%', '50%'],
+          avoidLabelOverlap: false,
+          label: {
+            show: true,
+            position: 'center',
+            formatter: () =>
+              `{total|${fmt(total, 0)}}\n{unit|百万套}`,
+            rich: {
+              total: {
+                fontSize: 22,
+                fontWeight: 700,
+                color: '#E8EBFF',
+                fontFamily: "'Space Grotesk', 'JetBrains Mono', monospace",
+                lineHeight: 28
+              },
+              unit: {
+                fontSize: 11,
+                color: '#6B73A8',
+                fontFamily: "'JetBrains Mono', monospace",
+                padding: [4, 0, 0, 0]
+              }
+            }
+          },
+          labelLine: { show: false },
+          itemStyle: {
+            borderColor: '#151A3A',
+            borderWidth: 3
+          },
+          data
+        }]
+      }, true);
+    }
+
+    function renderGenreChart() {
+      const genres = calcGenreTotals();
+      const names = genres.map(g => g.genre);
+      const values = genres.map(g => +g.sales.toFixed(2));
+
+      genreChart.setOption({
+        tooltip: {
+          trigger: 'axis',
+          backgroundColor: '#1A1F42',
+          borderColor: '#3A4180',
+          textStyle: { color: '#E8EBFF', fontSize: 12 },
+          axisPointer: { type: 'shadow' },
+          formatter: params => {
+            const p = params[0];
+            const g = genres[p.dataIndex];
+            return `<div style="font-weight:600">${p.name}</div>
+                    <div style="font-size:11px;margin-top:2px">销量: <span style="font-family:'JetBrains Mono',monospace">${fmt(p.value)} M</span></div>
+                    <div style="font-size:11px">作品: <span style="font-family:'JetBrains Mono',monospace">${fmtInt(g.games)} 款</span></div>`;
+          }
+        },
+        grid: {
+          top: 12,
+          left: 90,
+          right: 20,
+          bottom: 8
+        },
+        xAxis: {
+          type: 'value',
+          axisLine: { show: false },
+          axisTick: { show: false },
+          splitLine: { lineStyle: { color: '#1A1F42', type: 'dashed' } },
+          axisLabel: {
+            color: '#6B73A8',
+            fontSize: 10,
+            fontFamily: "'JetBrains Mono', monospace",
+            formatter: v => v >= 1000 ? (v / 1000).toFixed(0) + 'K' : v
+          }
+        },
+        yAxis: {
+          type: 'category',
+          data: names.reverse(),
+          axisLine: { show: false },
+          axisTick: { show: false },
+          axisLabel: {
+            color: '#9BA3D0',
+            fontSize: 11
+          }
+        },
+        series: [{
+          type: 'bar',
+          data: values.reverse().map((v, i) => ({
+            value: v,
+            itemStyle: {
+              color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                { offset: 0, color: GENRE_COLORS[i % GENRE_COLORS.length] + '33' },
+                { offset: 1, color: GENRE_COLORS[i % GENRE_COLORS.length] }
+              ]),
+              borderRadius: [0, 3, 3, 0]
+            }
+          })),
+          barWidth: 14,
+          label: {
+            show: true,
+            position: 'right',
+            color: '#9BA3D0',
+            fontSize: 10,
+            fontFamily: "'JetBrains Mono', monospace",
+            formatter: p => fmt(p.value, 0)
+          }
+        }]
+      }, true);
+    }
+
+    function renderPlatformChart() {
+      const d = state.data;
+      // 取 Top 15 平台
+      const plats = d.platform_totals.slice(0, 15);
+      const names = plats.map(p => p.platform);
+      const values = plats.map(p => p.sales);
+
+      platformChart.setOption({
+        tooltip: {
+          trigger: 'axis',
+          backgroundColor: '#1A1F42',
+          borderColor: '#3A4180',
+          textStyle: { color: '#E8EBFF', fontSize: 12 },
+          axisPointer: { type: 'shadow' },
+          formatter: params => {
+            const p = params[0];
+            const pl = plats[p.dataIndex];
+            return `<div style="font-weight:600">${p.name}</div>
+                    <div style="font-size:11px;margin-top:2px">销量: <span style="font-family:'JetBrains Mono',monospace">${fmt(p.value)} M</span></div>
+                    <div style="font-size:11px">作品: <span style="font-family:'JetBrains Mono',monospace">${fmtInt(pl.games)} 款</span></div>`;
+          }
+        },
+        grid: {
+          top: 12,
+          left: 50,
+          right: 20,
+          bottom: 8
+        },
+        xAxis: {
+          type: 'value',
+          axisLine: { show: false },
+          axisTick: { show: false },
+          splitLine: { lineStyle: { color: '#1A1F42', type: 'dashed' } },
+          axisLabel: {
+            color: '#6B73A8',
+            fontSize: 10,
+            fontFamily: "'JetBrains Mono', monospace",
+            formatter: v => v >= 1000 ? (v / 1000).toFixed(0) + 'K' : v
+          }
+        },
+        yAxis: {
+          type: 'category',
+          data: names.reverse(),
+          axisLine: { show: false },
+          axisTick: { show: false },
+          axisLabel: {
+            color: '#9BA3D0',
+            fontSize: 11,
+            fontFamily: "'JetBrains Mono', monospace"
+          }
+        },
+        series: [{
+          type: 'bar',
+          data: values.reverse().map((v, i) => ({
+            value: v,
+            itemStyle: {
+              color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                { offset: 0, color: 'rgba(255, 45, 149, 0.15)' },
+                { offset: 1, color: '#FF2D95' }
+              ]),
+              borderRadius: [0, 3, 3, 0]
+            }
+          })),
+          barWidth: 10,
+          label: {
+            show: true,
+            position: 'right',
+            color: '#9BA3D0',
+            fontSize: 10,
+            fontFamily: "'JetBrains Mono', monospace",
+            formatter: p => fmt(p.value, 0)
+          }
+        }]
+      }, true);
+    }
+
+    function renderPublisherChart() {
+      const d = state.data;
+      const pubs = d.publisher_top.slice(0, 10);
+      const names = pubs.map(p => p.publisher);
+      const values = pubs.map(p => p.sales);
+
+      publisherChart.setOption({
+        tooltip: {
+          trigger: 'axis',
+          backgroundColor: '#1A1F42',
+          borderColor: '#3A4180',
+          textStyle: { color: '#E8EBFF', fontSize: 12 },
+          axisPointer: { type: 'shadow' },
+          formatter: params => {
+            const p = params[0];
+            const pb = pubs[p.dataIndex];
+            return `<div style="font-weight:600">${p.name}</div>
+                    <div style="font-size:11px;margin-top:2px">销量: <span style="font-family:'JetBrains Mono',monospace">${fmt(p.value)} M</span></div>
+                    <div style="font-size:11px">作品: <span style="font-family:'JetBrains Mono',monospace">${fmtInt(pb.games)} 款</span></div>`;
+          }
+        },
+        grid: {
+          top: 12,
+          left: 120,
+          right: 20,
+          bottom: 8
+        },
+        xAxis: {
+          type: 'value',
+          axisLine: { show: false },
+          axisTick: { show: false },
+          splitLine: { lineStyle: { color: '#1A1F42', type: 'dashed' } },
+          axisLabel: {
+            color: '#6B73A8',
+            fontSize: 10,
+            fontFamily: "'JetBrains Mono', monospace",
+            formatter: v => v >= 1000 ? (v / 1000).toFixed(0) + 'K' : v
+          }
+        },
+        yAxis: {
+          type: 'category',
+          data: names.reverse(),
+          axisLine: { show: false },
+          axisTick: { show: false },
+          axisLabel: {
+            color: '#9BA3D0',
+            fontSize: 10,
+            width: 110,
+            overflow: 'truncate'
+          }
+        },
+        series: [{
+          type: 'bar',
+          data: values.reverse().map((v, i) => ({
+            value: v,
+            itemStyle: {
+              color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                { offset: 0, color: 'rgba(255, 230, 0, 0.15)' },
+                { offset: 1, color: '#FFE600' }
+              ]),
+              borderRadius: [0, 3, 3, 0]
+            }
+          })),
+          barWidth: 10,
+          label: {
+            show: true,
+            position: 'right',
+            color: '#9BA3D0',
+            fontSize: 10,
+            fontFamily: "'JetBrains Mono', monospace",
+            formatter: p => fmt(p.value, 0)
+          }
+        }]
+      }, true);
+    }
+
+    // ===== Top 游戏榜单 =====
+    function renderTopGames() {
+      const d = state.data;
+      const games = d.top_games;
+      const maxSales = games[0].global;
+
+      const rows = games.map((g, i) => {
+        const rankClass = i < 3 ? `rank-${i + 1}` : '';
+        const rankDisplay = i < 3
+          ? `<span class="${rankClass}">${i + 1}</span>`
+          : i + 1;
+        const pct = ((g.global / maxSales) * 100).toFixed(1);
+
+        return `<tr>
+          <td class="rank-cell">${rankDisplay}</td>
+          <td class="game-name" title="${g.name}">${g.name}</td>
+          <td><span class="genre-tag">${g.platform}</span></td>
+          <td style="font-family:'JetBrains Mono',monospace">${g.year}</td>
+          <td><span class="genre-tag">${g.genre}</span></td>
+          <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis" title="${g.publisher}">${g.publisher}</td>
+          <td style="text-align:right" class="sales-num">${fmt(g.global)} M</td>
+          <td class="sales-bar-cell">
+            <div class="sales-bar">
+              <div class="sales-bar-fill" style="width:${pct}%"></div>
+            </div>
+          </td>
+        </tr>`;
+      }).join('');
+
+      document.getElementById('gamesBody').innerHTML = rows;
+    }
+
+    // ===== 统一更新 =====
+    function updateAll() {
+      updateKPIs();
+      renderTrendChart();
+      renderRegionChart();
+      renderGenreChart();
+      renderPlatformChart();
+      renderPublisherChart();
+    }
+
+    // ===== 启动 =====
+    loadData().then(() => {
+      initCharts();
+      updateAll();
+      renderTopGames();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://duyv0826.github.io/game-portfolio/sitemap.xml
