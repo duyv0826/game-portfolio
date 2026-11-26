@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+<script>document.documentElement.classList.add('js');</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>洪昺森 · 互动媒体艺术 / 游戏设计作品集</title>
@@ -310,10 +311,10 @@ html[lang="en"] .hero-name{font-size:clamp(38px,5.6vw,68px);}
 .section-more a:hover{color:var(--text);border-color:var(--text);}
 .section-more-note{font-size:12.5px;color:var(--faint);}
 
-/* 滚动揭示（克制：仅标题与卡片，非全站铺） */
-.rv{opacity:0;transform:translateY(18px);transition:opacity .6s var(--ease),transform .6s var(--ease);}
-.rv.in{opacity:1;transform:none;}
-@media (prefers-reduced-motion: reduce){.rv{opacity:1;transform:none;}}
+/* 滚动揭示（克制：仅标题与卡片，非全站铺）——仅在 JS 可用时才隐藏，无 JS 时全部可见 */
+html.js .rv{opacity:0;transform:translateY(18px);transition:opacity .6s var(--ease),transform .6s var(--ease);}
+html.js .rv.in{opacity:1;transform:none;}
+@media (prefers-reduced-motion: reduce){html.js .rv{opacity:1;transform:none;}}
 
 /* ---------- 作品区 ---------- */
 .filter-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:44px;}
@@ -714,7 +715,271 @@ html[lang="en"] .hero-name{font-size:clamp(38px,5.6vw,68px);}
         <button class="filter-btn" data-filter="视觉研究"><span data-i18n="filter-visual">视觉研究</span><span class="count"></span></button>
         <button class="filter-btn" data-filter="系统工程"><span data-i18n="filter-systems">系统工程</span><span class="count"></span></button>
       </div>
-      <div class="works-grid" id="worksGrid"></div>
+      <!-- WORKS_STATIC:BEGIN -->
+      <!-- 本区块由 scripts/build-works-static.js 自动生成，勿手改；改完 WORKS 后重跑脚本 -->
+      <div class="works-grid" id="worksGrid">
+        <article class="work-card rv" data-type="学位作品配套 · 可直接试玩">
+          <div class="work-cover">
+            <img src="assets/work-19.jpg" alt="《微光原野》Glimmer Field — 弱目的性原型 封面" loading="lazy" width="1280" height="720">
+            <span class="work-no">00</span>
+            <span class="work-status playable">可试玩</span>
+          </div>
+          <div class="work-body">
+            <p class="work-type">学位作品配套 · 可直接试玩</p>
+            <h3 class="work-title">《微光原野》Glimmer Field — 弱目的性原型</h3>
+            <p class="work-desc">把任务清单、箭头、进度条全删掉之后，怎么证明玩家还知道该往哪走？——5 档 bot × 220 局仿真给答案：读流取道 3.91 异光/100s，2.7 倍压过硬推。</p>
+            <div class="work-tags"><span class="tag">HTML5</span><span class="tag">Canvas 2D</span><span class="tag">氛围探索</span><span class="tag">弱目的性</span><span class="tag">策略仿真</span></div>
+          </div>
+        </article>
+        <article class="work-card rv" data-type="学位作品 · 氛围探索">
+          <div class="work-cover">
+            <img src="assets/work-18.jpg" alt="《澳里·光景》Aoli — 学位作品 封面" loading="lazy" width="1280" height="720">
+            <span class="work-no">01</span>
+            <span class="work-status playable">开发中</span>
+          </div>
+          <div class="work-body">
+            <p class="work-type">学位作品 · 氛围探索</p>
+            <h3 class="work-title">《澳里·光景》Aoli — 学位作品</h3>
+            <p class="work-desc">学位作品（开发中）。仿真答了一半：只留方位，收齐率 10% 到 100%，用时 95.3 秒降到 9.7 秒；再加距离或规划都不动。另跑 3000 局节奏基线：单空间中位 10.6 秒，离 3–6 分钟目标差 17–34 倍，是场地尺度算出来的上限，调参补不回来。玩家那一半还没答。</p>
+            <div class="work-tags"><span class="tag">Unity</span><span class="tag">C#</span><span class="tag">氛围探索</span><span class="tag">弱目的性设计</span><span class="tag">澳门老城纹样</span><span class="tag">无头仿真</span><span class="tag">420 局引导消融</span><span class="tag">3000 局节奏基线</span><span class="tag">204 自动化测试</span></div>
+          </div>
+        </article>
+        <article class="work-card rv" data-type="游戏设计">
+          <div class="work-cover">
+            <img src="assets/work-1.jpg" alt="《Chrono Loop》时间循环解谜 封面" loading="lazy" width="1280" height="720">
+            <span class="work-no">02</span>
+            <span class="work-status">已完成</span>
+          </div>
+          <div class="work-body">
+            <p class="work-type">游戏设计</p>
+            <h3 class="work-title">《Chrono Loop》时间循环解谜</h3>
+            <p class="work-desc">回溯不是附加技能，是整局解谜的地基——先在纸面上定死「回溯多长、哪些状态保留」，关卡才敢往上叠。Unity 程序 + 像素美术一人全流程。</p>
+            <div class="work-tags"><span class="tag">Unity</span><span class="tag">C#</span><span class="tag">Aseprite</span><span class="tag">时间回溯</span></div>
+          </div>
+        </article>
+        <article class="work-card rv" data-type="游戏设计">
+          <div class="work-cover">
+            <img src="assets/work-6.jpg" alt="AI 辅助横版肉鸽游戏 封面" loading="lazy" width="1280" height="720">
+            <span class="work-no">03</span>
+            <span class="work-status">已完成</span>
+          </div>
+          <div class="work-body">
+            <p class="work-type">游戏设计</p>
+            <h3 class="work-title">AI 辅助横版肉鸽游戏</h3>
+            <p class="work-desc">难度不该是写死的曲线：敌人密度、攻击频率跟着玩家血量与失误率实时走，新手不劝退、老手不无聊。4 人团队负责人，Trello 拆到可执行粒度按期交付。</p>
+            <div class="work-tags"><span class="tag">Python</span><span class="tag">Pygame</span><span class="tag">行为树</span><span class="tag">项目管理</span></div>
+          </div>
+        </article>
+        <article class="work-card rv" data-type="视觉研究">
+          <div class="work-cover">
+            <img src="assets/work-3.jpg" alt="Blender 3D 数字内容创作 封面" loading="lazy" width="1280" height="720">
+            <span class="work-no">04</span>
+            <span class="work-status">已完成</span>
+          </div>
+          <div class="work-body">
+            <p class="work-type">视觉研究</p>
+            <h3 class="work-title">Blender 3D 数字内容创作</h3>
+            <p class="work-desc">玻璃和液体是这组静物唯一的硬难点：多层节点叠透射与折射，配合布光反复调到「通透不发灰」。能交给脚本的（搭建、路径、批量渲染）全交 Python。</p>
+            <div class="work-tags"><span class="tag">Blender</span><span class="tag">Cycles</span><span class="tag">Python</span><span class="tag">材质渲染</span></div>
+          </div>
+        </article>
+        <article class="work-card rv" data-type="游戏设计">
+          <div class="work-cover">
+            <img src="assets/work-2.jpg" alt="Android 互动贪吃蛇 封面" loading="lazy" width="1280" height="720">
+            <span class="work-no">05</span>
+            <span class="work-status">已完成</span>
+          </div>
+          <div class="work-body">
+            <p class="work-type">游戏设计</p>
+            <h3 class="work-title">Android 互动贪吃蛇</h3>
+            <p class="work-desc">贪吃蛇要的是毫秒级转向，触控手势天生带延迟——难点不是把键盘搬到屏幕，是重调判定窗口与灵敏度，让滑动真的跟手。Kotlin 全流程独立完成。</p>
+            <div class="work-tags"><span class="tag">Android Studio</span><span class="tag">Kotlin</span><span class="tag">触控交互</span></div>
+          </div>
+        </article>
+        <article class="work-card rv" data-type="视觉研究">
+          <div class="work-cover">
+            <img src="assets/work-5.jpg" alt="YOLOv8 车型识别系统 封面" loading="lazy" width="1280" height="720">
+            <span class="work-no">06</span>
+            <span class="work-status">已完成</span>
+          </div>
+          <div class="work-body">
+            <p class="work-type">视觉研究</p>
+            <h3 class="work-title">YOLOv8 车型识别系统</h3>
+            <p class="work-desc">真难点不是「认车」，是「认 SU7 而不是相似车型」——700 正 + 400 相似车型做正反样本。n(3M) vs s(11M)，小样本下 nano 性价比最优。</p>
+            <div class="work-tags"><span class="tag">Python</span><span class="tag">YOLOv8</span><span class="tag">OpenCV</span><span class="tag">数据增强</span></div>
+          </div>
+        </article>
+        <article class="work-card rv" data-type="互动媒体">
+          <div class="work-cover">
+            <img src="assets/work-4.jpg" alt="RTSP 流媒体服务器 封面" loading="lazy" width="1280" height="720">
+            <span class="work-no">07</span>
+            <span class="work-status">已完成</span>
+          </div>
+          <div class="work-body">
+            <p class="work-type">互动媒体</p>
+            <h3 class="work-title">RTSP 流媒体服务器</h3>
+            <p class="work-desc">不依赖任何现成库：先把五个核心命令的状态迁移画成图，再照着图写——因为「能跑」和「合规」是两件事。FFplay / VLC 实测 &lt;200ms、30FPS。</p>
+            <div class="work-tags"><span class="tag">Python</span><span class="tag">Socket</span><span class="tag">RTSP/RTP</span><span class="tag">多线程</span></div>
+          </div>
+        </article>
+        <article class="work-card rv" data-type="互动媒体">
+          <div class="work-cover">
+            <img src="assets/work-7.jpg" alt="《Chrono Loop Web》时间回溯原型 封面" loading="lazy" width="1280" height="720">
+            <span class="work-no">08</span>
+            <span class="work-status playable">可试玩</span>
+          </div>
+          <div class="work-body">
+            <p class="work-type">互动媒体</p>
+            <h3 class="work-title">《Chrono Loop Web》时间回溯原型</h3>
+            <p class="work-desc">用 5 秒环形缓冲，而不是存档系统——因为试错窗口就那么长。死亡自动倒带 2.5 秒、R 键手动 3 秒，目标是让人 30 秒内看懂核心循环。点开即玩。</p>
+            <div class="work-tags"><span class="tag">HTML5</span><span class="tag">Canvas</span><span class="tag">JavaScript</span><span class="tag">时间回溯</span></div>
+          </div>
+        </article>
+        <article class="work-card rv" data-type="系统工程">
+          <div class="work-cover">
+            <img src="assets/work-8.jpg" alt="XV6 MLFQ 调度器实现与可视化分析 封面" loading="lazy" width="1280" height="720">
+            <span class="work-no">09</span>
+            <span class="work-status">已完成</span>
+          </div>
+          <div class="work-body">
+            <p class="work-type">系统工程</p>
+            <h3 class="work-title">XV6 MLFQ 调度器实现与可视化分析</h3>
+            <p class="work-desc">默认 Round-Robin 换成三级 MLFQ：CPU 密集型用完时间片降级，I/O 密集型靠等待保持高优先级，定时器防饥饿；调度日志导甘特图，交互型响应确实优于 RR。</p>
+            <div class="work-tags"><span class="tag">C</span><span class="tag">XV6</span><span class="tag">MLFQ</span><span class="tag">内核开发</span><span class="tag">Python可视化</span></div>
+          </div>
+        </article>
+        <article class="work-card rv" data-type="互动媒体">
+          <div class="work-cover">
+            <img src="assets/work-9.jpg" alt="《物语系列》设定深挖全景图 封面" loading="lazy" width="1280" height="720">
+            <span class="work-no">10</span>
+            <span class="work-status playable">可试玩</span>
+          </div>
+          <div class="work-body">
+            <p class="work-type">互动媒体</p>
+            <h3 class="work-title">《物语系列》设定深挖全景图</h3>
+            <p class="work-desc">互动式动画设定考据全景图：可拖拽关系网络图 + 角色旅程时间线 + 多视图导航，从斧乃木余接出发深挖贯穿 2012–2019 的设定母题。</p>
+            <div class="work-tags"><span class="tag">HTML5</span><span class="tag">SVG</span><span class="tag">JavaScript</span><span class="tag">数据可视化</span><span class="tag">互动叙事</span></div>
+          </div>
+        </article>
+        <article class="work-card rv" data-type="互动媒体">
+          <div class="work-cover">
+            <img src="assets/work-10.jpg" alt="全球游戏销量数据看板 封面" loading="lazy" width="1280" height="720">
+            <span class="work-no">11</span>
+            <span class="work-status playable">已完成</span>
+          </div>
+          <div class="work-body">
+            <p class="work-type">互动媒体</p>
+            <h3 class="work-title">全球游戏销量数据看板</h3>
+            <p class="work-desc">覆盖 1980–2020 年全球游戏销量的交互式分析看板：年份/地区/品类三维筛选联动，5 个 KPI 实时刷新，5 种图表交叉对比。</p>
+            <div class="work-tags"><span class="tag">数据可视化</span><span class="tag">ECharts</span><span class="tag">交互式看板</span><span class="tag">游戏行业</span></div>
+          </div>
+        </article>
+        <article class="work-card rv" data-type="互动媒体">
+          <div class="work-cover">
+            <img src="assets/work-11.jpg" alt="《脉冲星场》交互式声景生成器 封面" loading="lazy" width="1280" height="720">
+            <span class="work-no">12</span>
+            <span class="work-status playable">可试玩</span>
+          </div>
+          <div class="work-body">
+            <p class="work-type">互动媒体</p>
+            <h3 class="work-title">《脉冲星场》交互式声景生成器</h3>
+            <p class="work-desc">单文件交互式声景生成器：触碰夜空即点亮星尘并实时合成音符，左右定音高、上下定力度；四类合成音色与自走作曲模式。</p>
+            <div class="work-tags"><span class="tag">Web Audio</span><span class="tag">Canvas 2D</span><span class="tag">生成式艺术</span><span class="tag">音画交互</span></div>
+          </div>
+        </article>
+        <article class="work-card rv" data-type="游戏设计">
+          <div class="work-cover">
+            <img src="assets/work-12.jpg" alt="《星尘捕手》交互式收集游戏 封面" loading="lazy" width="1280" height="720">
+            <span class="work-no">13</span>
+            <span class="work-status playable">可试玩</span>
+          </div>
+          <div class="work-body">
+            <p class="work-type">游戏设计</p>
+            <h3 class="work-title">《星尘捕手》交互式收集游戏</h3>
+            <p class="work-desc">规则一句话：接住星辰、躲开流星。剩下全押在反馈密度上——吸入动画、粒子爆裂、屏幕震动、连击每 5 次提倍率，音效全由 Web Audio 实时合成，零采样。</p>
+            <div class="work-tags"><span class="tag">HTML5</span><span class="tag">Canvas 2D</span><span class="tag">Web Audio</span><span class="tag">粒子系统</span><span class="tag">程序化音频</span></div>
+          </div>
+        </article>
+        <article class="work-card rv" data-type="游戏设计">
+          <div class="work-cover">
+            <img src="assets/work-13.jpg" alt="《岔路 Branch Road》LLM 即时分支叙事游戏 封面" loading="lazy" width="1280" height="720">
+            <span class="work-no">14</span>
+            <span class="work-status">原型</span>
+          </div>
+          <div class="work-body">
+            <p class="work-type">游戏设计</p>
+            <h3 class="work-title">《岔路 Branch Road》LLM 即时分支叙事游戏</h3>
+            <p class="work-desc">如果 AI 每次给不一样的选项，玩家会不会想知道「另一种选法」？——这是这个竖切唯一要验的命题，所以内置了探针埋点。框架固定、分支即生，8 回合到结局。</p>
+            <div class="work-tags"><span class="tag">LLM</span><span class="tag">AI 叙事</span><span class="tag">分支叙事</span><span class="tag">TTS</span><span class="tag">CogView</span></div>
+          </div>
+        </article>
+        <article class="work-card rv" data-type="游戏设计">
+          <div class="work-cover">
+            <img src="assets/work-14.jpg" alt="《抉择的房间 Room of Choice》分支叙事游戏 封面" loading="lazy" width="1280" height="720">
+            <span class="work-no">15</span>
+            <span class="work-status playable">可试玩</span>
+          </div>
+          <div class="work-body">
+            <p class="work-type">游戏设计</p>
+            <h3 class="work-title">《抉择的房间 Room of Choice》分支叙事游戏</h3>
+            <p class="work-desc">18 个结局不是一个个手写出来的，是一张图：节点是场景、边是选择，陷阱和真结局都长在结构上。所以能点「运行回归测试」自检剧情图，不靠人肉防穿帮。</p>
+            <div class="work-tags"><span class="tag">JavaScript</span><span class="tag">分支叙事</span><span class="tag">多结局</span><span class="tag">零依赖</span></div>
+          </div>
+        </article>
+        <article class="work-card rv" data-type="互动媒体">
+          <div class="work-cover">
+            <img src="assets/work-15.jpg" alt="《生生不息》互动媒体艺术游戏 封面" loading="lazy" width="1280" height="720">
+            <span class="work-no">16</span>
+            <span class="work-status">原型</span>
+          </div>
+          <div class="work-body">
+            <p class="work-type">互动媒体</p>
+            <h3 class="work-title">《生生不息》互动媒体艺术游戏</h3>
+            <p class="work-desc">玩家在这里不是主角，是生态里的一股能量——能影响演化方向，决定不了任何一个生命的细节。「放手的控制」是这个作品唯一在试的东西。</p>
+            <div class="work-tags"><span class="tag">生成式音频</span><span class="tag">自动演化</span><span class="tag">互动媒体</span><span class="tag">HTML5</span></div>
+          </div>
+        </article>
+        <article class="work-card rv" data-type="系统工程">
+          <div class="work-cover">
+            <img src="assets/work-16.jpg" alt="Co-Desk 联机共创自习桌 封面" loading="lazy" width="1280" height="720">
+            <span class="work-no">17</span>
+            <span class="work-status">已完成</span>
+          </div>
+          <div class="work-body">
+            <p class="work-type">系统工程</p>
+            <h3 class="work-title">Co-Desk 联机共创自习桌</h3>
+            <p class="work-desc">「一个人自习太孤独」是观察，不是功能需求——所以同步的不是聊天，是同伴座位、专注状态、番茄钟剩余时间，让在场感被看见。双客户端 10 项联机断言全过。</p>
+            <div class="work-tags"><span class="tag">Electron</span><span class="tag">React</span><span class="tag">FastAPI</span><span class="tag">WebSocket</span><span class="tag">SQLite</span></div>
+          </div>
+        </article>
+        <article class="work-card rv" data-type="系统工程">
+          <div class="work-cover">
+            <img src="assets/work-17.jpg" alt="对话归档台 · AI 对话总结 MVP 封面" loading="lazy" width="1280" height="720">
+            <span class="work-no">18</span>
+            <span class="work-status">原型</span>
+          </div>
+          <div class="work-body">
+            <p class="work-type">系统工程</p>
+            <h3 class="work-title">对话归档台 · AI 对话总结 MVP</h3>
+            <p class="work-desc">自动总结会改变用户行为、还可能丢细节，所以先做手动触发的轻量版，把选择权还给用户。Ollama 出严格 JSON，模型挂了降级本地规则摘要——演示永不中断。</p>
+            <div class="work-tags"><span class="tag">HTML5</span><span class="tag">Ollama</span><span class="tag">本地大模型</span><span class="tag">JSON 协议</span><span class="tag">localStorage</span></div>
+          </div>
+        </article>
+        <article class="work-card rv" data-type="游戏设计">
+          <div class="work-cover">
+            <img src="assets/work-20.png" alt="Mometa（UE5 卡牌游戏）· 手牌交互与难度调参 封面" loading="lazy" width="1280" height="720">
+            <span class="work-no">19</span>
+            <span class="work-status">开发中</span>
+          </div>
+          <div class="work-body">
+            <p class="work-type">游戏设计</p>
+            <h3 class="work-title">Mometa（UE5 卡牌游戏）· 手牌交互与难度调参</h3>
+            <p class="work-desc">把「散落手牌」从常驻方案降级为检视态，不是妥协，是量化验证后的设计决策：8 张牌常驻散落只有 3–4 张可读，而横排的空间记忆是盲操作的基础。</p>
+            <div class="work-tags"><span class="tag">UE5</span><span class="tag">UMG</span><span class="tag">交互设计</span><span class="tag">高保真原型</span><span class="tag">自动化验收</span><span class="tag">逐层采样</span><span class="tag">难度曲线</span></div>
+          </div>
+        </article>
+      </div>
+<!-- WORKS_STATIC:END -->
       <div class="works-empty" id="worksEmpty" data-i18n="works-empty">该分类下暂无作品。</div>
     </div>
   </section>
