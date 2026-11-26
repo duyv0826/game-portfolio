@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>关于 · 洪昺森 Bingsen Hong</title>
+<meta name="description" content="洪昺森，澳门科技大学互动媒体艺术（游戏设计方向）研究生。关于我怎么做东西：先让原型能跑，用采样代替手感，敢杀掉自己的方案；编程靠 AI 协作，判断和验收由我负责。">
+<meta name="theme-color" content="#0B0907">
+<link rel="icon" href="favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+<meta property="og:type" content="profile">
+<meta property="og:title" content="关于 · 洪昺森 Bingsen Hong">
+<meta property="og:description" content="先让原型能跑，用采样代替手感，敢杀掉自己的方案。互动媒体艺术 / 游戏设计研究生。">
+<meta property="og:url" content="https://duyv0826.github.io/game-portfolio/about.html">
+<meta property="og:image" content="https://duyv0826.github.io/game-portfolio/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:locale:alternate" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://duyv0826.github.io/game-portfolio/about.html">
+<link rel="stylesheet" href="assets/fonts/fonts.css">
+<style>
+/* ============================================================
+   ABOUT 页 · 沿用主页设计系统（暖黑 #0B0907 / 琥珀 #F0B24B）
+   ============================================================ */
+:root{
+  --bg:#0B0907;
+  --bg-2:#100D09;
+  --surface:#16120D;
+  --surface-2:#1D1710;
+  --border:rgba(243,236,225,.12);
+  --border-strong:rgba(243,236,225,.26);
+  --text:#F4EDE1;
+  --muted:#B6AB99;
+  --faint:rgba(243,236,225,.55);
+  --accent:#F0B24B;
+  --accent-dim:#D18F2E;
+  --accent-2:#FF8A5C;
+  --accent-soft:rgba(240,178,75,.10);
+  --font-display:'Chakra Petch','Noto Sans SC','PingFang SC','Microsoft YaHei',system-ui,sans-serif;
+  --font-body:'Noto Sans SC','PingFang SC','Hiragino Sans GB','Microsoft YaHei','Source Han Sans SC',system-ui,-apple-system,sans-serif;
+  --maxw:920px;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);color:var(--text);font-family:var(--font-body);
+  line-height:1.8;font-size:15.5px;-webkit-font-smoothing:antialiased;
+  background-image:
+    radial-gradient(ellipse 80% 40% at 50% -8%, rgba(240,178,75,.09), transparent 62%),
+    repeating-linear-gradient(0deg, transparent, transparent 23px, rgba(243,236,225,.022) 24px),
+    repeating-linear-gradient(90deg, transparent, transparent 23px, rgba(243,236,225,.022) 24px);
+  background-attachment:fixed;
+}
+::selection{background:rgba(240,178,75,.28);}
+a{color:var(--accent);text-decoration:none;transition:color .2s var(--ease),border-color .2s var(--ease);}
+a:hover{color:var(--accent-2);}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 26px;}
+
+/* ---- 顶栏 ---- */
+header.site{
+  position:sticky;top:0;z-index:60;background:rgba(11,9,7,.9);
+  backdrop-filter:blur(12px);border-bottom:1px solid var(--border);
+}
+.navbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:13px 26px;max-width:var(--maxw);margin:0 auto;}
+.brand{font-family:var(--font-display);font-size:12.5px;letter-spacing:.18em;color:var(--muted);white-space:nowrap;}
+.brand b{color:var(--accent);}
+.brand .cursor{display:inline-block;width:7px;height:13px;background:var(--accent);margin-left:6px;vertical-align:-2px;animation:blink 1.1s steps(1) infinite;}
+@keyframes blink{50%{opacity:0;}}
+.navbar .links{display:flex;align-items:center;gap:18px;font-size:12.5px;letter-spacing:.06em;font-family:var(--font-display);}
+.navbar .links a{color:var(--muted);}
+.navbar .links a:hover,.navbar .links a.here{color:var(--accent);}
+.lang-toggle{
+  font-family:var(--font-display);font-size:11.5px;letter-spacing:.1em;color:var(--muted);
+  background:transparent;border:1px solid var(--border-strong);border-radius:999px;
+  padding:5px 12px;cursor:pointer;transition:all .2s var(--ease);
+}
+.lang-toggle:hover{color:var(--accent);border-color:var(--accent);background:var(--accent-soft);}
+
+/* ---- 头部 ---- */
+.hero{padding:76px 0 44px;}
+.kicker{
+  font-family:var(--font-display);font-size:11.5px;letter-spacing:.32em;color:var(--accent-2);
+  display:flex;align-items:center;gap:12px;margin-bottom:22px;
+}
+.kicker::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(255,138,92,.5),transparent);}
+h1{
+  font-family:var(--font-display);font-size:clamp(34px,6vw,62px);font-weight:800;
+  letter-spacing:.01em;line-height:1.08;
+}
+h1 .dot{color:var(--accent);}
+h1 .n1{display:inline;}
+h1 .n2{
+  display:block;font-size:clamp(14px,2vw,19px);font-weight:600;letter-spacing:.24em;
+  color:var(--faint);margin-top:14px;
+}
+h1 .n2 .dot{display:none;}
+html[lang="en"] h1 .n1{display:block;font-size:clamp(13px,1.8vw,17px);font-weight:600;letter-spacing:.3em;color:var(--faint);}
+html[lang="en"] h1 .n2{font-size:clamp(34px,5.4vw,58px);font-weight:800;letter-spacing:.01em;color:var(--text);margin-top:8px;}
+html[lang="en"] h1 .n2 .dot{display:inline;}
+.lede{margin-top:26px;max-width:660px;}
+.lede p{color:var(--muted);font-size:15.5px;}
+.lede p + p{margin-top:14px;}
+.lede p b{color:var(--text);font-weight:600;}
+.meta-row{
+  margin-top:32px;display:flex;flex-wrap:wrap;gap:10px;font-family:var(--font-display);
+  font-size:11.5px;letter-spacing:.13em;color:var(--faint);
+}
+.meta-row span{border:1px solid var(--border);border-radius:999px;padding:5px 12px;}
+.meta-row span.on{color:var(--accent);border-color:rgba(240,178,75,.38);}
+
+/* ---- 区块 ---- */
+section{padding:44px 0 8px;scroll-margin-top:80px;}
+.sec-head{margin-bottom:26px;}
+.sec-no{font-family:var(--font-display);font-size:11px;letter-spacing:.26em;color:var(--accent-dim);}
+.sec-title{
+  font-family:var(--font-display);font-size:clamp(22px,3.4vw,30px);font-weight:800;margin-top:10px;
+  letter-spacing:.02em;
+}
+.sec-title em{font-style:normal;color:var(--accent);}
+.sec-desc{color:var(--faint);font-size:13.5px;margin-top:8px;}
+
+/* ---- 正在做的三件事 ---- */
+.item{
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:24px 26px;margin-bottom:14px;position:relative;overflow:hidden;
+  transition:border-color .25s var(--ease),background .25s var(--ease);
+}
+.item::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--accent),var(--accent-2));opacity:.7;}
+.item:hover{border-color:var(--border-strong);background:var(--surface-2);}
+.item .tag-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;}
+.chip{
+  font-family:var(--font-display);font-size:10.5px;letter-spacing:.1em;color:var(--muted);
+  border:1px solid var(--border-strong);border-radius:999px;padding:3px 9px;
+}
+.chip.hot{color:var(--accent);border-color:rgba(240,178,75,.4);}
+.item h3{font-family:var(--font-display);font-size:17px;font-weight:700;letter-spacing:.01em;margin-bottom:8px;}
+.item p{color:var(--muted);font-size:14.5px;}
+.item .k{color:var(--text);font-weight:600;}
+.item a.more{
+  display:inline-block;margin-top:12px;font-size:12.5px;color:var(--faint);
+  border-bottom:1px solid var(--border-strong);padding-bottom:2px;
+}
+.item a.more:hover{color:var(--accent);border-color:var(--accent);}
+
+/* ---- 工作方式 ---- */
+.methods{display:grid;grid-template-columns:repeat(auto-fit,minmax(268px,1fr));gap:14px;}
+.method{
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px 24px 24px;
+  position:relative;transition:border-color .25s var(--ease),transform .35s var(--ease);
+}
+.method:hover{border-color:var(--border-strong);transform:translateY(-2px);}
+.method .num{
+  font-family:var(--font-display);font-size:26px;font-weight:800;color:rgba(240,178,75,.18);line-height:1;
+}
+.method h3{font-family:var(--font-display);font-size:16px;font-weight:700;margin:10px 0 8px;letter-spacing:.01em;}
+.method p{color:var(--muted);font-size:14px;}
+.method .case{color:var(--faint);font-size:12.5px;margin-top:10px;border-top:1px dashed var(--border);padding-top:10px;}
+
+/* ---- AI 协作 ---- */
+.ai-panel{
+  background:linear-gradient(180deg,var(--surface),var(--bg-2));
+  border:1px solid var(--border);border-radius:14px;padding:0;overflow:hidden;
+}
+.term-bar{
+  display:flex;align-items:center;gap:7px;padding:11px 16px;border-bottom:1px solid var(--border);
+  background:rgba(243,236,225,.03);font-family:var(--font-display);font-size:11.5px;letter-spacing:.14em;color:var(--faint);
+}
+.term-bar i{width:8px;height:8px;border-radius:50%;background:var(--border-strong);display:inline-block;}
+.term-bar em{margin-left:auto;font-style:normal;color:var(--accent-dim);}
+.ai-body{padding:26px 28px 28px;}
+.ai-body p{color:var(--muted);font-size:14.5px;}
+.ai-body p + p{margin-top:14px;}
+.ai-body p strong{color:var(--text);font-weight:600;}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px;}
+.split .col{background:rgba(243,236,225,.025);border:1px solid var(--border);border-radius:12px;padding:16px 18px;}
+.split .col h4{
+  font-family:var(--font-display);font-size:11px;letter-spacing:.18em;margin-bottom:10px;
+}
+.split .col.mine h4{color:var(--accent);}
+.split .col.theirs h4{color:var(--accent-2);}
+.split .col ul{list-style:none;}
+.split .col li{color:var(--muted);font-size:13.5px;padding-left:14px;position:relative;line-height:1.7;}
+.split .col li::before{content:"—";position:absolute;left:0;color:var(--faint);}
+
+/* ---- 履历 ---- */
+.tl{position:relative;padding-left:22px;margin-top:8px;}
+.tl::before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:1px;background:var(--border-strong);}
+.tl-item{position:relative;padding-bottom:26px;}
+.tl-item:last-child{padding-bottom:6px;}
+.tl-item::before{
+  content:"";position:absolute;left:-21px;top:9px;width:9px;height:9px;border-radius:50%;
+  background:var(--bg);border:1px solid var(--accent-dim);
+}
+.tl-item.current::before{background:var(--accent);border-color:var(--accent);box-shadow:0 0 0 5px rgba(240,178,75,.12);}
+.tl-time{font-family:var(--font-display);font-size:11.5px;letter-spacing:.14em;color:var(--accent-dim);}
+.tl-item h3{font-size:15.5px;font-weight:600;margin:5px 0 2px;}
+.tl-item .org{color:var(--faint);font-size:12.5px;font-family:var(--font-display);letter-spacing:.06em;}
+.tl-item p{color:var(--muted);font-size:13.5px;margin-top:6px;}
+
+/* ---- 联系 ---- */
+.contact{
+  margin-top:44px;padding:34px 30px;border:1px solid var(--border);border-radius:16px;
+  background:linear-gradient(180deg,rgba(240,178,75,.06),transparent 70%),var(--surface);
+  text-align:center;
+}
+.contact h2{font-family:var(--font-display);font-size:clamp(20px,3vw,26px);font-weight:800;}
+.contact h2 em{font-style:normal;color:var(--accent);}
+.contact .lead{color:var(--muted);font-size:14px;margin-top:10px;}
+.mail{
+  display:inline-block;margin-top:20px;font-family:var(--font-display);font-size:14px;letter-spacing:.06em;
+  color:var(--text);border:1px solid var(--border-strong);border-radius:10px;padding:11px 22px;
+  cursor:pointer;transition:all .2s var(--ease);background:transparent;
+}
+.mail:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);}
+.mail.revealed{color:var(--accent);border-color:rgba(240,178,75,.4);letter-spacing:.02em;}
+.links{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 22px;margin-top:22px;font-size:13px;}
+.links a{color:var(--muted);}
+.links a:hover{color:var(--accent);}
+
+footer{padding:52px 0 64px;text-align:center;color:var(--faint);font-size:12.5px;}
+footer .brand{display:block;margin-bottom:10px;letter-spacing:.22em;}
+footer a{color:var(--faint);border-bottom:1px solid transparent;}
+footer a:hover{color:var(--accent);border-color:var(--accent);}
+
+@media (max-width:720px){
+  .navbar .links{display:none;}
+  .hero{padding:52px 0 30px;}
+  .split{grid-template-columns:1fr;}
+  .ai-body{padding:20px 18px 24px;}
+  .item{padding:20px 18px;}
+  .contact{padding:26px 18px;}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;}
+}
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="navbar">
+    <a class="brand" href="index.html">PORTFOLIO<b>.</b>TERMINAL<span class="cursor"></span></a>
+    <nav class="links" aria-label="主导航">
+      <a href="index.html#works" data-i18n="nav-works">作品</a>
+      <a href="开发过程与设计思路.html" id="docLink" data-i18n="nav-doc">附册</a>
+      <a href="resume.pdf" id="resumeLink" data-i18n="nav-resume">简历</a>
+      <a href="about.html" class="here" data-i18n="nav-about">关于</a>
+      <button class="lang-toggle" id="langToggle" type="button" aria-label="Switch to English">EN</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="hero">
+    <div class="kicker" data-i18n="kicker">ABOUT · 关于</div>
+    <h1>
+      <span class="n1">洪昺森<span class="dot">.</span></span>
+      <span class="n2">BINGSEN HONG<span class="dot">.</span></span>
+    </h1>
+    <div class="lede">
+      <p data-i18n="lede1">澳门科技大学互动媒体艺术（<b>游戏设计方向</b>）研究生，本科读的是计算机科学。</p>
+      <p data-i18n="lede2">我做的东西大多从一个能回答的问题开始：我放进游戏里的引导，玩家到底有没有接到；如果没接到，是设计错了，还是我根本没测过。所以每个项目通常带着两样东西——<b>一个能上手玩的版本</b>，和<b>一条能跑出数字的验证路径</b>。前者证明它成立，后者说明它为什么成立。</p>
+    </div>
+    <div class="meta-row">
+      <span class="on" data-i18n="meta1">研究生在读</span>
+      <span data-i18n="meta2">M.U.S.T. · 澳门</span>
+      <span data-i18n="meta3">珠海 ↔ 澳门</span>
+      <span data-i18n="meta4">本科 CS 出身</span>
+    </div>
+  </div>
+
+  <section id="now">
+    <div class="sec-head">
+      <span class="sec-no">01 / NOW</span>
+      <h2 class="sec-title" data-i18n="now-title">现在<em>在做</em></h2>
+      <p class="sec-desc" data-i18n="now-desc">三件占比重最大的东西，都能点进去看细节。</p>
+    </div>
+
+    <div class="item">
+      <div class="tag-row">
+        <span class="chip hot" data-i18n="a1-tag1">学位作品</span>
+        <span class="chip">Unity · C#</span>
+        <span class="chip" data-i18n="a1-tag2">氛围探索</span>
+        <span class="chip" data-i18n="a1-tag3">弱目的性</span>
+      </div>
+      <h3 data-i18n="a1-h">《澳里·光景》· 把“目的性”当成自变量来测</h3>
+      <p data-i18n="a1-p">核心变量只有一条：目的性与控制权。我把任务清单、箭头、进度条一条条删掉，看玩家在失去显式目标之后还剩多少方向感。工程侧 79 个自研脚本、204 个自动化测试全部通过——不是为了炫技，是因为“引导有没有被接到”这种事，靠嘴说不清楚。</p>
+      <a class="more" href="thesis/" target="_blank" rel="noopener" data-i18n="a1-more">看学位作品页 →</a>
+    </div>
+
+    <div class="item">
+      <div class="tag-row">
+        <span class="chip">Glimmer Field</span>
+        <span class="chip" data-i18n="a2-tag1">可直接试玩</span>
+        <span class="chip" data-i18n="a2-tag2">策略仿真</span>
+      </div>
+      <h3 data-i18n="a2-h">《微光原野》· 同一条轴上的另一个极值</h3>
+      <p data-i18n="a2-p">它和《澳里·光景》是同作者、同一条自变量轴上的两个端点，不是随手做的对照组。用 5 档策略 bot × 220 局 × 120 秒仿真回答“这样设计到底成不成立”：<span class="k">读流取道 3.91 异光/100s，2.7 倍压过硬推</span>——赢的那条策略，恰好是我希望的读法。</p>
+      <a class="more" href="thesis/glimmer-field.html" target="_blank" rel="noopener" data-i18n="a2-more">直接开玩 →</a>
+    </div>
+
+    <div class="item">
+      <div class="tag-row">
+        <span class="chip" data-i18n="a3-tag1">20 件作品</span>
+        <span class="chip" data-i18n="a3-tag2">18 篇附册</span>
+        <span class="chip" data-i18n="a3-tag3">8 件可在线打开</span>
+      </div>
+      <h3 data-i18n="a3-h">除学位作品之外的广度</h3>
+      <p data-i18n="a3-p">游戏设计、互动媒体、视觉研究、系统工程四个方向，编号 NO.00–NO.19。每一件都写了开发过程、设计思路和复盘，包括那些做砸了、被我砍掉的部分——复盘比成品更能说明一个人是怎么想的。</p>
+      <a class="more" href="index.html#works" data-i18n="a3-more">回主页看全部 →</a>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="sec-head">
+      <span class="sec-no">02 / METHOD</span>
+      <h2 class="sec-title" data-i18n="how-title">我的<em>工作方式</em></h2>
+      <p class="sec-desc" data-i18n="how-desc">三条，都是从踩坑里长出来的，不是方法论口号。</p>
+    </div>
+
+    <div class="methods">
+      <div class="method">
+        <div class="num">01</div>
+        <h3 data-i18n="m1-h">先让东西能跑起来</h3>
+        <p data-i18n="m1-p">提交互方案时，先在高保真原型里验证，再进引擎。差别很实在：原型改一版十分钟，引擎里改一版半天。</p>
+        <p class="case" data-i18n="m1-case">Mometa 的手牌布局先在 HTML 原型里试 4×2 网格槽位 + 抖动——纯随机摆放时 8 张牌会堆成一坨，这个坑在原型阶段就露出来了。</p>
+      </div>
+      <div class="method">
+        <div class="num">02</div>
+        <h3 data-i18n="m2-h">用采样代替手感</h3>
+        <p data-i18n="m2-p">“难度偏高”这种说法没法交付。改成逐层记录入场 HP、回合数、战后 HP，归一成曲线，再决定砍在哪。</p>
+        <p class="case" data-i18n="m2-case">结果和直觉相反：最紧的一段不在最后一章，而在第一章——赢了但掉血，接着没有恢复窗口。修完之后，那个断崖变成了斜坡，最低入场层抬高了十几层。</p>
+      </div>
+      <div class="method">
+        <div class="num">03</div>
+        <h3 data-i18n="m3-h">敢杀掉自己的方案</h3>
+        <p data-i18n="m3-p">漂亮和可用经常不是一回事。当数据说不行，我倾向于改方案，而不是改数据。</p>
+        <p class="case" data-i18n="m3-case">always-on 散牌很好看，实测 8 张只剩 3–4 张能读，每回合重洗还抹掉了“位置=序号”的记忆。量化否决后降级成按住 Tab 检视、松手复位。</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="ai">
+    <div class="sec-head">
+      <span class="sec-no">03 / TOOLS</span>
+      <h2 class="sec-title" data-i18n="ai-title">关于 <em>AI 协作</em></h2>
+    </div>
+
+    <div class="ai-panel">
+      <div class="term-bar"><i></i><i></i><i></i><em>who wrote what</em></div>
+      <div class="ai-body">
+        <p data-i18n="ai-p1">先说清楚：<strong>我的编程是 AI 辅助完成的</strong>。模型写代码，我负责判断、给验收标准、做取舍。我不把它包装成硬核工程能力——对看作品的人没用，也不诚实。</p>
+        <p data-i18n="ai-p2">但 AI 写出来的代码不等于能跑。两版随机布局的逻辑都对，跑起来一版把 8 张牌堆成一坨；另一版只留半张卡宽的边距，旋转放大包围盒后被桌沿吃掉。这类问题只有跑起来才看得见，所以我的验收标准不是读代码，是<strong>能执行的断言</strong>：6 条自动化验收步骤喂进真实的拖拽代码路径，6/6 通过，同时揪出两个真人一定会撞上的 bug——连点吞牌、刷新打断拖拽。</p>
+        <p data-i18n="ai-p3">真正属于我的那一半还是判断：这个方案还活不活、代价该落在玩家身上还是设计身上、玩家读到的到底是不是我想让他读到的东西。<strong>代码可以生成，取舍不能。</strong></p>
+
+        <div class="split">
+          <div class="col theirs">
+            <h4 data-i18n="split-a">AI 承担</h4>
+            <ul>
+              <li data-i18n="split-a1">把方案写成可运行的代码</li>
+              <li data-i18n="split-a2">原型与工程之间的搬运</li>
+              <li data-i18n="split-a3">重复性的测试脚手架</li>
+            </ul>
+          </div>
+          <div class="col mine">
+            <h4 data-i18n="split-b">我承担</h4>
+            <ul>
+              <li data-i18n="split-b1">提出问题与设计判断</li>
+              <li data-i18n="split-b2">验收标准（断言写什么）</li>
+              <li data-i18n="split-b3">方案该不该活下去</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="path">
+    <div class="sec-head">
+      <span class="sec-no">04 / PATH</span>
+      <h2 class="sec-title" data-i18n="path-title">履历<em>速览</em></h2>
+    </div>
+    <div class="tl">
+      <div class="tl-item current">
+        <div class="tl-time" data-i18n="t1-time">2026.09 — 至今</div>
+        <h3 data-i18n="t1-h">研究生 · 互动媒体艺术（游戏设计方向）</h3>
+        <div class="org" data-i18n="t1-org">澳门科技大学</div>
+        <p data-i18n="t1-p">研究方向是氛围探索游戏里的弱目的性设计，同时补交互原型与体验评估的方法。</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">2025.06 — 2025.07</div>
+        <h3 data-i18n="t2-h">音频算法研发实习</h3>
+        <div class="org" data-i18n="t2-org">澳门数字动力科技有限公司</div>
+        <p data-i18n="t2-p">ONNX 转换 + TFLite 全整数量化把模型从 26.8MB 压到 6.9MB（−74%），使其能跑在资源受限的嵌入式设备上；建自动化测试衡量延迟、内存与音质；语料标注一致性从 78% 提到 94%。</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">2022.09 — 2026.06</div>
+        <h3 data-i18n="t3-h">本科 · 计算机科学</h3>
+        <div class="org" data-i18n="t3-org">澳门科技大学 · 校级优秀奖学金</div>
+        <p data-i18n="t3-p">数据结构与算法、操作系统、计算机网络、数据库；课余自己写游戏和原型，把“技术 × 创意”这条路径先跑通。</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="contact">
+    <h2 data-i18n="c-title">找实习、找合作，或者<em>只是聊聊设计</em></h2>
+    <p class="lead" data-i18n="c-lead">邮件最快。也可以先翻作品，或者直接看简历。</p>
+    <button class="mail" id="mailBtn" type="button" data-i18n="c-mail">点击显示邮箱</button>
+    <div class="links">
+      <a href="index.html" data-i18n="c-works">作品集主页</a>
+      <a href="开发过程与设计思路.html" id="docLink2" data-i18n="c-doc">附册 · 18 篇</a>
+      <a href="resume.pdf" id="resumeLink2" data-i18n="c-resume">简历 PDF</a>
+      <a href="https://github.com/duyv0826" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://duyv0826.itch.io" target="_blank" rel="noopener">Itch.io</a>
+      <a href="https://www.linkedin.com/in/bingsen-hong-must" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="brand">PORTFOLIO<b>.</b>TERMINAL</span>
+    <span data-i18n="footer">© 2026 洪昺森 · 澳门科技大学 · </span><a href="index.html" data-i18n="footer-back">回到作品集</a>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   中英切换：沿用主页的 data-i18n 机制（localStorage: pf-lang）
+   ============================================================ */
+const I18N_EN = {
+  'nav-works':'Works','nav-doc':'Appendix','nav-resume':'Résumé','nav-about':'About',
+  'kicker':'ABOUT',
+  'lede1':'M.A. candidate in Interactive Media Arts (<b>game design focus</b>) at Macau University of Science and Technology; my bachelor’s was Computer Science.',
+  'lede2':'Most of what I make starts with a question that can be answered: does the guidance I place in a game actually reach the player — and if not, is the design wrong, or did I simply never test it? So each project tends to carry two things: <b>a version you can play</b>, and <b>a verification path that produces numbers</b>. The first proves it holds up; the second explains why.',
+  'meta1':'Graduate student','meta2':'M.U.S.T. · Macau','meta3':'Zhuhai ↔ Macau','meta4':'B.Sc. Computer Science',
+  'now-title':'What I’m <em>Working On</em>',
+  'now-desc':'Three things that take up most of my time — all of them clickable.',
+  'a1-tag1':'Degree project','a1-tag2':'Atmospheric exploration','a1-tag3':'Weak-purpose',
+  'a1-h':'Aoli — treating “purpose” as the independent variable',
+  'a1-p':'One variable only: purpose and control. I removed the quest list, the arrows and the progress bar one at a time, and watched how much sense of direction survived the loss of explicit goals. On the engineering side, 79 custom scripts and 204 automated tests all pass — not for show, but because “did the guidance land” is not something you can argue in prose.',
+  'a1-more':'Open the degree project →',
+  'a2-tag1':'Playable in browser','a2-tag2':'Strategy simulation',
+  'a2-h':'Glimmer Field — the other extreme on the same axis',
+  'a2-p':'Same author, same independent variable as Aoli — two endpoints, not a casual control group. Five strategy-bot tiers × 220 runs × 120 seconds answer whether the design holds: <span class="k">current-reading routes yield 3.91 glimmers/100s, 2.7× the brute-force push</span> — and the winning strategy is exactly the reading I hoped for.',
+  'a2-more':'Play it now →',
+  'a3-tag1':'20 projects','a3-tag2':'18 written notes','a3-tag3':'8 open online',
+  'a3-h':'Breadth beyond the degree project',
+  'a3-p':'Four directions — game design, interactive media, visual research, systems engineering — numbered NO.00–NO.19. Each one has its build process, design reasoning and retrospective written up, including the parts that failed and got cut: a retrospective says more about how someone thinks than a finished piece does.',
+  'a3-more':'See all works →',
+  'how-title':'How I <em>Work</em>',
+  'how-desc':'Three rules, all grown out of mistakes rather than methodology slogans.',
+  'm1-h':'Make it run first',
+  'm1-p':'Interaction proposals get validated in a hi-fi prototype before they enter the engine. Where it counts: a prototype revision takes ten minutes, an engine revision half a day.',
+  'm1-case':'Mometa’s hand layout was tried in HTML first — 4×2 grid slots plus jitter. Pure random placement piled all 8 cards into one clump, and that pit showed up at prototype stage.',
+  'm2-h':'Sample instead of feel',
+  'm2-p':'“Difficulty is too high” is not a deliverable. So record entry HP, turn count and post-battle HP per floor, normalise them into curves, and only then decide where to cut.',
+  'm2-case':'The result contradicted intuition: the tightest stretch was not the final chapter but the first — win the boss, lose the HP, no recovery window before the next map. After the fix the cliff became a slope and the lowest entry floor rose by more than a dozen floors.',
+  'm3-h':'Be willing to kill your own idea',
+  'm3-p':'Pretty and usable are often different things. When the data says no, I change the design rather than the data.',
+  'm3-case':'Always-on scatter looked great; in test only 3–4 of 8 cards stayed readable, and per-turn reshuffles erased position-as-index memory. Quantitatively rejected, demoted to hold-Tab inspect, release to restore the row.',
+  'ai-title':'On <em>Working with AI</em>',
+  'ai-p1':'To be clear up front: <strong>my programming is AI-assisted</strong>. The model writes code; I make the judgement calls, set the acceptance criteria and decide the trade-offs. I don’t dress this up as hardcore engineering ability — it is neither useful to whoever reads this nor honest.',
+  'ai-p2':'But AI-written code is not the same as code that runs. Two versions of the random layout were both logically fine: one piled eight cards into a clump on screen, the other kept only half a card-width of margin and got clipped by the table edge once rotation enlarged its bounding box. Problems like these only appear when it runs, so my acceptance standard is not reading the code — it is <strong>executable assertions</strong>: six automated acceptance steps fed into the real drag code path, 6/6 passing, which also surfaced two bugs a human would definitely hit — rapid clicks swallowing a card, and a refresh interrupting a drag.',
+  'ai-p3':'The half that is genuinely mine is still judgement: whether the idea survives at all, whether the cost lands on the player or on the design, and whether what the player reads is what I meant them to read. <strong>Code can be generated; trade-offs cannot.</strong>',
+  'split-a':'AI does','split-a1':'Turns the plan into runnable code','split-a2':'Porting between prototype and engine','split-a3':'Repetitive test scaffolding',
+  'split-b':'I do','split-b1':'Asking the question and design judgement','split-b2':'Acceptance criteria — what the assertions check','split-b3':'Whether the idea should live',
+  'path-title':'The <em>Short Version</em>',
+  't1-time':'2026.09 — Present','t1-h':'M.A. · Interactive Media Arts (Game Design)','t1-org':'Macau University of Science and Technology',
+  't1-p':'Research on weak-purpose design in atmospheric exploration games, alongside prototyping and experience-evaluation methods.',
+  't2-h':'Audio Algorithm R&D Intern','t2-org':'Macau Digital Power Technology Co., Ltd.',
+  't2-p':'ONNX conversion + TFLite full-integer quantization cut a model from 26.8MB to 6.9MB (−74%) so it could run on resource-constrained embedded devices; built automated tests for latency, memory and audio quality; raised annotation agreement from 78% to 94%.',
+  't3-h':'B.Sc. · Computer Science','t3-org':'M.U.S.T. · University Excellence Scholarship',
+  't3-p':'Data structures and algorithms, operating systems, computer networks, databases; built games and prototypes outside class to get the “technology × creativity” path working early.',
+  'c-title':'Internships, collaboration — or <em>just talking about design</em>',
+  'c-lead':'Email is fastest. Or read the works first, and the résumé if you prefer.',
+  'c-mail':'Click to reveal email','c-works':'Portfolio home','c-doc':'Appendix · 18 notes','c-resume':'Résumé PDF',
+  'footer':'© 2026 Bingsen Hong · M.U.S.T. · ','footer-back':'Back to portfolio'
+};
+
+const zhHTML = new Map();
+let LANG = 'zh';
+try { LANG = localStorage.getItem('pf-lang') === 'en' ? 'en' : 'zh'; } catch(e){}
+try {
+  if (new URL(location.href).searchParams.get('lang') === 'en') LANG = 'en';
+} catch(e){}
+
+function applyLang(){
+  document.documentElement.lang = LANG === 'en' ? 'en' : 'zh-CN';
+  document.title = LANG === 'en' ? 'About · Bingsen Hong' : '关于 · 洪昺森 Bingsen Hong';
+  const md = document.querySelector('meta[name="description"]');
+  if (md) md.setAttribute('content', LANG === 'en'
+    ? 'Bingsen Hong, M.A. candidate in Interactive Media Arts (game design) at M.U.S.T. On how I work: prototype first, sample instead of feel, and kill my own ideas. AI-assisted code, human judgement.'
+    : '洪昺森，澳门科技大学互动媒体艺术（游戏设计方向）研究生。关于我怎么做东西：先让原型能跑，用采样代替手感，敢杀掉自己的方案；编程靠 AI 协作，判断和验收由我负责。');
+
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    if (!zhHTML.has(el)) zhHTML.set(el, el.innerHTML);
+    const k = el.getAttribute('data-i18n');
+    el.innerHTML = LANG === 'en' ? (I18N_EN[k] != null ? I18N_EN[k] : zhHTML.get(el)) : zhHTML.get(el);
+  });
+
+  const lt = document.getElementById('langToggle');
+  lt.textContent = LANG === 'en' ? '中文' : 'EN';
+  lt.setAttribute('aria-label', LANG === 'en' ? '切换到中文' : 'Switch to English');
+
+  document.getElementById('docLink').setAttribute('href', LANG === 'en' ? 'design-notes-en.html' : '开发过程与设计思路.html');
+  document.getElementById('docLink2').setAttribute('href', LANG === 'en' ? 'design-notes-en.html' : '开发过程与设计思路.html');
+  const rz = LANG === 'en' ? 'resume-en.pdf' : 'resume.pdf';
+  document.getElementById('resumeLink').setAttribute('href', rz);
+  document.getElementById('resumeLink2').setAttribute('href', rz);
+
+  const mb = document.getElementById('mailBtn');
+  if (mb.dataset.revealed === '1') { mb.textContent = mailAddr(); mb.classList.add('revealed'); }
+}
+
+function setLang(l){
+  LANG = l;
+  try { localStorage.setItem('pf-lang', l); } catch(e){}
+  try {
+    const url = new URL(location.href);
+    if (l === 'en') url.searchParams.set('lang', 'en'); else url.searchParams.delete('lang');
+    history.replaceState(null, '', url);
+  } catch(e){}
+  applyLang();
+}
+
+/* 邮箱：源码里不写完整地址，点击时拼接（与主页一致） */
+function mailAddr(){ return '2260030089' + String.fromCharCode(64) + 'student.must.edu.mo'; }
+const mailBtn = document.getElementById('mailBtn');
+mailBtn.addEventListener('click', () => {
+  const el = mailBtn;
+  if (el.dataset.revealed === '1') { location.href = 'mailto:' + mailAddr(); return; }
+  el.textContent = mailAddr();
+  el.dataset.revealed = '1';
+  el.classList.add('revealed');
+  el.insertAdjacentHTML('afterend', '<div class="mail-hint" style="font-family:var(--font-display);font-size:11px;letter-spacing:.12em;color:var(--faint);margin-top:10px;">' + (LANG === 'en' ? 'click again to open your mail app' : '再点一次直接打开邮件客户端') + '</div>');
+});
+
+document.getElementById('langToggle').addEventListener('click', () => setLang(LANG === 'en' ? 'zh' : 'en'));
+applyLang();
+</script>
+</body>
+</html>

@@ -55,6 +55,7 @@
 ```
 game-portfolio/
 ├── index.html          # 完整页面（样式与脚本内联，自包含）
+├── about.html          # 「关于」页：定位、工作方式、AI 协作说明、履历速览（中英同页切换）
 ├── chrono-web.html     # 第 7 号作品：时间回溯平台跳跃游戏（单文件可玩）
 ├── favicon.ico         # 站点图标（终端风格）
 ├── favicon-16.png      # favicon 16px
@@ -165,6 +166,8 @@ game-portfolio/
 <summary>部署与发布历史（开发备忘，2026-09-24 归档）</summary>
 
 ## 部署状态（2026-09-23 更新）
+
+- ✅ 2026-11-26 新增「关于」页 `about.html`：五个部分 —— 现在在做（学位作品 /《微光原野》/ 广度作品）、工作方式三条（先让原型能跑 / 用采样代替手感 / 敢杀自己的方案）、AI 协作说明（明写编程为 AI 辅助、我负责判断与验收，附「AI 承担 / 我承担」两栏）、履历速览、联系区（邮箱按需拼接揭示，与主页同一套 `2260030089@student.must.edu.mo` 防爬写法）。与主页共用设计系统（暖黑 #0B0907 / 琥珀 #F0B24B、Chakra Petch + Noto Sans SC），`data-i18n` + `localStorage.pf-lang` + `?lang=en` 与主页同机制，中英同页切换；英文模式下姓名大小互换（BINGSEN HONG 为主、洪昺森为副）。`index.html` 导航在「经历」后插入「关于」并补 `nav-about` 字典；`sitemap.xml` 由脚本重建含该页。1280 / 390（iframe 锁视口）两档截图核验，无溢出、无错行
 
 - ✅ 2026-11-25 英文版附册上线：新增 `design-notes-en.html`（18 篇，与中文册同四段结构 Overview / Build / Design reasoning / Retrospective，锚点同为 `w01`–`w18`，每篇尾附中文原文深链）。`index.html` 加 `docHref()`：作品卡「Full notes」、作品区 `works-more`、联系区 `link-doc`、弹窗 `doc` 按钮四处入口按 `LANG` 切换，英文模式指向 EN 册对应锚点、中文模式仍回中文册；`I18N_EN` 去掉「(in Chinese)」与「Full essay (Chinese)」的旧标注。两册互加 `hreflang` alternate。`sitemap.xml` 改由 `scripts/build-sitemap.ps1` 生成（补此前缺失的 `stardust-iaa.html` 与 `design-notes-en.html`，`lastmod` 取文件真实修改日，不再手写）。Edge 无头 `--dump-dom` 双向核验：EN 模式 10 条 work-read 全部指向 `design-notes-en.html#wNN`、`worksMoreDoc`/`contactDoc` 同步，ZH 模式全部回中文册；线上 38 个地址巡检全绿
 - ✅ 2026-11-17 旧站 `portfolio` 归档合流：那个 8 作品站点改为跳转页指向本站，原站内容留在其 `archive.html`；同时把两个有用的独立资产迁进本站 —— `resume.pdf`（517KB，2026-09-20 生成，页面联系区新增「简历 · PDF」入口）与自定义 404 页（`404.html` + `404.css`，未命中路径时给回首页／学位作品页／附册／简历四个入口）。旧站里 6 个从未被任何页面引用的 3D 交付包（166.9MB）已从那个仓库的 Git 历史移除，本站不受影响。另在页脚加一条低权重的「旧版存档 · 2026-09 版早期 6 件作品」外链——旧站 4 件作品（山水生成器 / 雾舟·Game Jam / 听雨·媒体装置 / 游戏设计内容矩阵）在本站没有对应条目，且四处都找不到真实封面素材（本机全盘、旧站 `projects.json` 的 `img` 全空、附册 0 张图、旧仓库全历史），按「只用真实来源图」的口径不硬并进来，先用一条外链保住可达性

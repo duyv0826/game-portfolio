@@ -7,6 +7,7 @@ $pages = @(
   @('index.html', '1.0'),
   @('开发过程与设计思路.html', '0.9'),
   @('design-notes-en.html', '0.9'),
+  @('about.html', '0.8'),
   @('thesis/index.html', '0.9'),
   @('thesis/glimmer-field.html', '0.8'),
   @('thesis/aoli-architecture.html', '0.7'),
