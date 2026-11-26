@@ -102,6 +102,23 @@ if ($idxText -notmatch 'WORKS') { $blockers += 'index.html 里找不到 WORKS �
 if ($idxText.Length -lt 5000) { $blockers += 'index.html 体积异常（小于 5KB）' }
 Write-Ok ("index.html {0:N0} 字符，检测到 {1} 条作品条目" -f $idxText.Length, $worksCount)
 
+# 静态作品卡（无 JS 兜底）是否与 WORKS 同步
+$staticScript = Join-Path $RepoPath 'scripts\build-works-static.js'
+if (Test-Path -LiteralPath $staticScript -PathType Leaf) {
+    if (Get-Command node -ErrorAction SilentlyContinue) {
+        & node $staticScript --check 2>&1 | ForEach-Object { Write-Host "    $_" }
+        switch ($LASTEXITCODE) {
+            0 { Write-Ok '静态作品卡与 WORKS 同步' }
+            2 { $blockers += '静态作品卡与 WORKS 不同步：先运行 node scripts/build-works-static.js' }
+            default { Write-Warn2 "静态作品卡校验脚本返回 $LASTEXITCODE，跳过" }
+        }
+    } else {
+        Write-Warn2 '未找到 node，跳过静态作品卡同步检查'
+    }
+} else {
+    Write-Warn2 'scripts/build-works-static.js 不存在，跳过静态作品卡同步检查'
+}
+
 # .gitignore 覆盖
 $ignore = if (Test-Path -LiteralPath (Join-Path $RepoPath '.gitignore')) { [IO.File]::ReadAllText((Join-Path $RepoPath '.gitignore')) } else { '' }
 foreach ($need in @('_backup/', 'assets/_ai_backup/')) {
