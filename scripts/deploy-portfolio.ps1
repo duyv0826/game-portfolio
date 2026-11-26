@@ -168,8 +168,10 @@ if ($remoteUrl -match '^(?i)https?://[^/]+/(.+)$') {
     $sshUrl = $remoteUrl
 }
 
+$originScheme = if ($remoteUrl -match '^(?i)git@|^(?i)ssh://') { 'SSH' } elseif ($remoteUrl -match '^(?i)https?://') { 'HTTPS' } else { '未知' }
+
 $targets = @()
-if ($Transport -ne 'ssh') { $targets += @{ Label = 'origin（HTTPS）'; Target = 'origin' } }
+if ($Transport -ne 'ssh') { $targets += @{ Label = "origin（$originScheme）"; Target = 'origin' } }
 if ($Transport -ne 'https' -and $sshUrl -and ($sshUrl -ne $remoteUrl)) {
     $targets += @{ Label = "SSH（$sshUrl）"; Target = $sshUrl }
 }
