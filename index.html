@@ -12,7 +12,7 @@
 <!-- 社交分享卡片：og:image 使用本仓库自托管封面（2026-09-24 修复：不再依赖外部部署域名） -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="洪昺森 · 互动媒体艺术 / 游戏设计作品集">
-<meta property="og:description" content="澳门科技大学游戏设计方向在读硕士。20 个作品，含学位作品《澳里·光景》氛围探索游戏：Chrono Loop 时间循环解谜、声景生成器、LLM 分支叙事等，其中 8 个可在浏览器直接打开。">
+<meta property="og:description" content="澳门科技大学游戏设计方向在读硕士。20 个作品，含学位作品《澳里·光景》氛围探索游戏：Chrono Loop 时间循环解谜、声景生成器、LLM 分支叙事等，其中 7 个可在浏览器直接打开。">
 <meta property="og:url" content="https://duyv0826.github.io/game-portfolio/">
 <meta property="og:site_name" content="洪昺森 · 互动媒体艺术 / 游戏设计作品集">
 <meta property="og:locale" content="zh_CN">
@@ -21,7 +21,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="洪昺森 · 互动媒体艺术 / 游戏设计作品集">
-<meta name="twitter:description" content="20 个作品（含学位作品《澳里·光景》），其中 8 个可在浏览器直接打开。">
+<meta name="twitter:description" content="20 个作品（含学位作品《澳里·光景》），其中 7 个可在浏览器直接打开，学位作品提供说明页。">
 <meta name="twitter:image" content="https://duyv0826.github.io/game-portfolio/og-cover.png">
 <meta name="twitter:image:alt" content="洪昺森作品集分享卡">
 <link rel="canonical" href="https://duyv0826.github.io/game-portfolio/">
@@ -699,7 +699,7 @@ html[lang="en"] .hero-name{font-size:clamp(38px,5.6vw,68px);}
       <div class="section-head rv" data-bg="01">
         <span class="section-no">01 / SELECTED WORKS</span>
         <h2 class="section-title" data-i18n="works-title">精选<em>作品</em></h2>
-        <p class="section-desc" data-i18n="works-desc">20 个作品（NO.00–NO.19）：游戏开发、互动媒体、视觉研究与系统工程，其中 8 个可在浏览器直接打开。<code>点击卡片</code>查看详情。</p>
+        <p class="section-desc" data-i18n="works-desc">20 个作品（NO.00–NO.19）：游戏开发、互动媒体、视觉研究与系统工程，其中 7 个可直接试玩，学位作品《澳里·光景》另附说明页。<code>点击卡片</code>查看详情。</p>
       </div>
       <div class="section-more rv">
         <a href="开发过程与设计思路.html" id="worksMoreDoc" data-i18n="works-more">附册：18 篇广度作品的开发过程与设计思路</a>
@@ -877,6 +877,8 @@ const WORKS = [
       '边界：420 局全是 bot 行为，只说明引导在理想执行下的上限，不能说明玩家有没有接住。真人被试那一半还没做，页面上照实写着没答。'
     ]},
     link: 'https://duyv0826.github.io/game-portfolio/thesis/',
+    linkLabel: '▶ 打开学位作品说明页',
+    note: '这是学位作品的说明页（系统架构 + 12 张界面截图），游戏本体仍在开发中，暂未开放试玩；封面图为原型实机画面。',
     hint: '学位作品页：系统架构一页图 + 12 张界面截图'
   },
   {
@@ -1132,6 +1134,8 @@ const WORKS_EN = {
       'What I changed myself were the design judgments. The 3,000-run baseline returned a 10.6s median per space against a 3–6 minute GDD target, and the agent would happily tune fragment counts to close the gap. One diagonal of the 18×12 venue takes 6.4s, and reaching 180s needs 28 diagonal laps — so the gap was a wrong timing metric, not a parameter to tune.',
       'Boundary: all 420 runs are bot behaviour. They show the ceiling of guidance under ideal execution, not whether players receive it. The human-participant half is not done, and the page says so.'
     ]},
+    linkLabel: '▶ View Degree Project Page',
+    note: 'This opens the degree-project page (system architecture + 12 UI screenshots). The game itself is still in development, so it is not playable yet; the cover is a prototype screenshot.',
     hint: 'Degree project page: one-page system architecture + 12 UI screenshots'
   },
   '02': {
@@ -1327,7 +1331,7 @@ const I18N_EN = {
   'term-status': 'Graduate student · Zhuhai ↔ Macau',
   'hero-loc': 'M.U.S.T. · GRADUATE STUDENT · ZHUHAI ↔ MACAU',
   'works-title': 'Selected <em>Works</em>',
-  'works-desc': '20 projects (NO.00–NO.19) across game development, interactive media, visual research and systems engineering — 8 open directly in the browser. <code>Click a card</code> for details.',
+  'works-desc': '20 projects (NO.00–NO.19) across game development, interactive media, visual research and systems engineering — 7 are playable in the browser, and the degree project has its own documentation page. <code>Click a card</code> for details.',
   'works-more': 'Appendix: dev process & design notes for 18 projects',
   'works-more-note': 'Each essay: overview / process / design reasoning / retrospective',
   'filter-all': 'All', 'filter-ux': 'UX Picks', 'filter-degree': 'Degree Projects', 'filter-game': 'Game Design',
@@ -1555,7 +1559,9 @@ function openModal(i, trigger){
     playHtml += '<span class="play-hint">' + w.hint + '</span>';
   }
   playBox.innerHTML = playHtml;
-  $('#modalNote').textContent = (w.link && w.github)
+  $('#modalNote').textContent = w.note
+    ? w.note
+    : (w.link && w.github)
     ? t('note-both')
     : w.link
       ? t('note-link')
